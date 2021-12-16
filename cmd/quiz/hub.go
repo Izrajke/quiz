@@ -24,6 +24,14 @@ type hub struct {
 
 	// Unregister requests from connections.
 	unregister chan subscription
+
+	gameCh chan *game
+}
+
+type game struct {
+	round       int
+	answers     int
+	connections []*connection
 }
 
 var h = hub{
@@ -31,7 +39,13 @@ var h = hub{
 	register:   make(chan subscription),
 	unregister: make(chan subscription),
 	rooms:      make(map[string]map[*connection]bool),
+	gameCh:     make(chan *game),
 }
+
+const maxConnections = 2
+
+// Хранилка для игры
+var globalGame = &game{}
 
 func (h *hub) run() {
 	for {
@@ -43,6 +57,16 @@ func (h *hub) run() {
 				h.rooms[s.room] = connections
 			}
 			h.rooms[s.room][s.conn] = true
+			// Запуск игры
+			if len(connections) == maxConnections {
+				cons := make([]*connection, 0, len(connections))
+				for c := range connections {
+					cons = append(cons, c)
+				}
+				globalGame.round = 1
+				globalGame.connections = cons
+				h.gameCh <- globalGame
+			}
 		case s := <-h.unregister:
 			connections := h.rooms[s.room]
 			if connections != nil {
@@ -56,6 +80,13 @@ func (h *hub) run() {
 			}
 		case m := <-h.broadcast:
 			connections := h.rooms[m.room]
+			// Считаем кол-во ответов и вызываем следующий вопрос
+			globalGame.answers++
+			if globalGame.answers == maxConnections {
+				globalGame.answers = 0
+				globalGame.round++
+				h.gameCh <- globalGame
+			}
 			for c := range connections {
 				select {
 				case c.send <- m.data:

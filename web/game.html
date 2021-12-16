@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Game</title>
+    <script type="text/javascript">
+        window.onload = function () {
+            // Modal
+            // Get the modal
+            var modal = document.getElementById("myModal");
+
+            // Get the button that opens the modal
+            var btn = document.getElementById("myBtn");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the user clicks the button, open the modal
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            // Socket
+            let conn;
+            let msg = document.getElementById("msg");
+            let log = document.getElementById("log");
+
+            function appendLog(item) {
+                let doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+                log.appendChild(item);
+                if (doScroll) {
+                    log.scrollTop = log.scrollHeight - log.clientHeight;
+                }
+            }
+
+            document.getElementById("form").onsubmit = function () {
+                if (!conn) {
+                    return false;
+                }
+                if (!msg.value) {
+                    return false;
+                }
+                conn.send(msg.value);
+                msg.value = "";
+                return false;
+            };
+
+            let answer = {
+                type: 1,
+                option: ""
+            };
+
+            // Обработчики отправки ответа
+            document.getElementById("quiz-option-1").onclick = function () {
+                if (!conn) {
+                    return false;
+                }
+                answer.option = this.innerHTML
+                conn.send(JSON.stringify(answer));
+                return false;
+            };
+            document.getElementById("quiz-option-2").onclick = function () {
+                if (!conn) {
+                    return false;
+                }
+                answer.option = this.innerHTML
+                conn.send(JSON.stringify(answer));
+                return false;
+            };
+            document.getElementById("quiz-option-3").onclick = function () {
+                if (!conn) {
+                    return false;
+                }
+                answer.option = this.innerHTML
+                conn.send(JSON.stringify(answer));
+                return false;
+            };
+            document.getElementById("quiz-option-4").onclick = function () {
+                if (!conn) {
+                    return false;
+                }
+                answer.option = this.innerHTML
+                conn.send(JSON.stringify(answer));
+                return false;
+            };
+
+            if (window["WebSocket"]) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const roomId = urlParams.get('room');
+                conn = new WebSocket("ws://127.0.0.1:8080/ws?room=" + roomId);
+                conn.onclose = function (evt) {
+                    let item = document.createElement("div");
+                    item.innerHTML = "<b>Connection closed.</b>";
+                    appendLog(item);
+                };
+                conn.onmessage = function (evt) {
+                    let messages = evt.data.split('\n');
+                    for (let i = 0; i < messages.length; i++) {
+                        let item = document.createElement("div");
+                        item.innerText = messages[i];
+                        appendLog(item);
+                    }
+                    let obj = JSON.parse(messages);
+                    if (typeof obj.type !== 'undefined') {
+
+                        if (obj.type === 1) {
+                            document.getElementById("quiz-title").innerHTML = obj.question;
+                            document.getElementById("quiz-option-1").innerHTML = obj.options[0];
+                            document.getElementById("quiz-option-2").innerHTML = obj.options[1];
+                            document.getElementById("quiz-option-3").innerHTML = obj.options[2];
+                            document.getElementById("quiz-option-4").innerHTML = obj.options[3];
+
+                            var modal = document.getElementById("myModal");
+                            modal.style.display = "block";
+                        } else if (obj.type === 999) {
+                            document.getElementById("quiz-title").innerHTML = "Финиш. Игра закончена.";
+                            document.getElementById("quiz-option-1").innerHTML = "";
+                            document.getElementById("quiz-option-2").innerHTML = "";
+                            document.getElementById("quiz-option-3").innerHTML = "";
+                            document.getElementById("quiz-option-4").innerHTML = "";
+
+                            var modal = document.getElementById("myModal");
+                            modal.style.display = "block";
+                        }
+                    }
+                };
+            } else {
+                let item = document.createElement("div");
+                item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
+                appendLog(item);
+            }
+        };
+    </script>
+    <style type="text/css">
+        html {
+            overflow: hidden;
+        }
+
+        body {
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background: gray;
+        }
+
+        #log {
+            background: white;
+            margin: 0;
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            position: absolute;
+            top: 0.5em;
+            left: 0.5em;
+            right: 0.5em;
+            bottom: 3em;
+            overflow: auto;
+        }
+
+        #form {
+            padding: 0 0.5em 0 0.5em;
+            margin: 0;
+            position: absolute;
+            bottom: 1em;
+            left: 0px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Модалка */
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: auto;
+            padding: 0;
+            border: 1px solid #888;
+            width: 40%;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            -webkit-animation-name: animatetop;
+            -webkit-animation-duration: 0.4s;
+            animation-name: animatetop;
+            animation-duration: 0.4s
+        }
+
+        /* Add Animation */
+        @-webkit-keyframes animatetop {
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
+        }
+
+        @keyframes animatetop {
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
+        }
+
+        /* The Close Button */
+        .close {
+            color: white;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            padding: 2px 16px;
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .modal-body {padding: 2px 16px;}
+    </style>
+</head>
+<body>
+<!-- Лог, если соединение закрылось -->
+<div id="log"></div>
+<!-- Форма -->
+<form id="form">
+    <input type="text" id="msg" size="64" autofocus/>
+    <input type="submit" value="Send"/>
+</form>
+
+<button id="myBtn" style="display: none">Open Modal</button>
+
+<!-- Модалка -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2 id="quiz-title"></h2>
+        </div>
+        <div class="modal-body">
+            <button id="quiz-option-1" class="quiz-option"></button>
+            <button id="quiz-option-2" class="quiz-option"></button>
+            <button id="quiz-option-3" class="quiz-option"></button>
+            <button id="quiz-option-4" class="quiz-option"></button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

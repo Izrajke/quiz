@@ -1,32 +1,34 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"github.com/google/uuid"
 	"log"
 	"net/http"
 )
 
-var addr = flag.String("addr", ":8080", "http service address")
-
-func serveHome(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.URL)
-	if r.URL.Path != "/" {
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
-	}
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-	http.ServeFile(w, r, "index.html")
-}
+const serverPort = ":8080"
 
 func main() {
 	go h.run()
+	go h.start()
 
-	flag.Parse()
-	http.HandleFunc("/", serveHome)
+	// TODO
+	// 1. Добавить zap логгер
+
+	// Главная страница
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "../../web/home.html")
+	})
+	// Создание комнаты
+	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
+		id := uuid.New()
+		http.Redirect(w, r, "/game?room="+id.String(), 301)
+	})
+	// Страница игры
+	http.HandleFunc("/game", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "../../web/game.html")
+	})
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
 		roomIds, found := query["room"]
@@ -36,7 +38,7 @@ func main() {
 		fmt.Println("Room id: " + roomIds[0])
 		serveWs(w, r, roomIds[0])
 	})
-	err := http.ListenAndServe(*addr, nil)
+	err := http.ListenAndServe(serverPort, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
