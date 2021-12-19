@@ -1,16 +1,19 @@
 {
-  "name": "typescript-mobx-react",
+  "name": "quiz",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "i18next": "^21.6.3",
     "mobx": "^6.3.9",
+    "mobx-react": "^7.2.1",
     "mobx-react-lite": "^3.2.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^6.2.1",
+    "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "web-vitals": "^2.1.2"
   },
