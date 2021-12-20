@@ -113,16 +113,25 @@
                     }
                     let obj = JSON.parse(messages);
                     if (typeof obj.type !== 'undefined') {
+                        document.getElementById("quiz-option-1").style.color = "";
+                        document.getElementById("quiz-option-2").style.color = "";
+                        document.getElementById("quiz-option-3").style.color = "";
+                        document.getElementById("quiz-option-4").style.color = "";
 
                         if (obj.type === 1) {
-                            document.getElementById("quiz-title").innerHTML = obj.question;
-                            document.getElementById("quiz-option-1").innerHTML = obj.options[0];
-                            document.getElementById("quiz-option-2").innerHTML = obj.options[1];
-                            document.getElementById("quiz-option-3").innerHTML = obj.options[2];
-                            document.getElementById("quiz-option-4").innerHTML = obj.options[3];
+                            // Получение вопроса первого типа
+                            document.getElementById("quiz-title").innerHTML = obj.question.title;
+                            document.getElementById("quiz-option-1").innerHTML = obj.question.options[1];
+                            document.getElementById("quiz-option-2").innerHTML = obj.question.options[2];
+                            document.getElementById("quiz-option-3").innerHTML = obj.question.options[3];
+                            document.getElementById("quiz-option-4").innerHTML = obj.question.options[4];
 
                             var modal = document.getElementById("myModal");
                             modal.style.display = "block";
+                        } else if (obj.type === 5) {
+                            // Получение ответа для вопроса первого типа
+                            document.getElementById("quiz-option-" + obj.answer.value).style.color = "red";
+
                         } else if (obj.type === 999) {
                             document.getElementById("quiz-title").innerHTML = "Финиш. Игра закончена.";
                             document.getElementById("quiz-option-1").innerHTML = "";

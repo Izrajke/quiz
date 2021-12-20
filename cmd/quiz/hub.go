@@ -29,10 +29,20 @@ type hub struct {
 }
 
 type game struct {
-	round       int
-	answers     int
 	connections []*connection
+	state       int
+	round       int
+
+	answers int
+
+	firstQuestionCounter  int
+	secondQuestionCounter int
 }
+
+const (
+	GameStateSendFirstQuestion = 1
+	GameStateWaitAnswers       = 2
+)
 
 var h = hub{
 	broadcast:  make(chan message),
@@ -44,8 +54,8 @@ var h = hub{
 
 const maxConnections = 2
 
-// Хранилка для игры
-var globalGame = &game{}
+// Хранилище для игр
+var globalGame = map[string]*game{}
 
 func (h *hub) run() {
 	for {
@@ -57,15 +67,20 @@ func (h *hub) run() {
 				h.rooms[s.room] = connections
 			}
 			h.rooms[s.room][s.conn] = true
-			// Запуск игры
+			// Создание и запуск игры
 			if len(connections) == maxConnections {
 				cons := make([]*connection, 0, len(connections))
 				for c := range connections {
 					cons = append(cons, c)
 				}
-				globalGame.round = 1
-				globalGame.connections = cons
-				h.gameCh <- globalGame
+				game := &game{
+					connections: cons,
+					state:       GameStateSendFirstQuestion,
+					round:       1,
+				}
+
+				globalGame[s.room] = game
+				h.gameCh <- game
 			}
 		case s := <-h.unregister:
 			connections := h.rooms[s.room]
@@ -81,12 +96,13 @@ func (h *hub) run() {
 		case m := <-h.broadcast:
 			connections := h.rooms[m.room]
 			// Считаем кол-во ответов и вызываем следующий вопрос
-			globalGame.answers++
-			if globalGame.answers == maxConnections {
-				globalGame.answers = 0
-				globalGame.round++
-				h.gameCh <- globalGame
+			game := globalGame[m.room]
+			game.answers++
+			if game.answers == maxConnections {
+				game.answers = 0
+				h.gameCh <- game
 			}
+
 			for c := range connections {
 				select {
 				case c.send <- m.data:

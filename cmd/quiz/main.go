@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"log"
@@ -13,9 +14,6 @@ func main() {
 	go h.run()
 	go h.start()
 
-	// TODO
-	// 1. Добавить zap логгер
-
 	// Главная страница
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "../../web/home.html")
@@ -23,6 +21,15 @@ func main() {
 	// Создание комнаты
 	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
 		id := uuid.New()
+		if r.Method == http.MethodPost {
+			id := struct {
+				ID uuid.UUID `json:"id"`
+			}{ID: id}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(id)
+			return
+		}
 		http.Redirect(w, r, "/game?room="+id.String(), 301)
 	})
 	// Страница игры
