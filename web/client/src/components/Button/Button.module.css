@@ -1,0 +1,11 @@
+.button {
+  cursor: pointer;
+}
+
+.regular {
+  background: var(--dark-1);
+  border: none;
+  padding: 10px;
+  border-radius: 16px;
+  color: var(--white);
+}
