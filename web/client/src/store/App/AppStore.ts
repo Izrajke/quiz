@@ -37,7 +37,8 @@ export class AppStore {
     );
     if (this.socket) {
       this.socket.onmessage = (evt) => {
-        this.room.setQuestion(JSON.parse(evt.data));
+        const data = JSON.parse(evt.data);
+        this.room.setQuestion(data);
       };
       this.socket.onclose = () => {
         console.log('Сокет закрылся');

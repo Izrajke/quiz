@@ -1,3 +1,4 @@
+import 'normalize.css';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 

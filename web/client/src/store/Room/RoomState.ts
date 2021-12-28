@@ -2,19 +2,32 @@ import { makeObservable, observable, action } from 'mobx';
 import { RootStore } from '../RootStore';
 
 /** Типы вопросов */
-enum questionType {
+enum TQuestionType {
   /** Обычный вопрос с 4-мя вариантами ответа */
-  firstType = 1,
+  firstQuestionType = 1,
   /** Вопрос без вариантов ответа */
-  secondType = 2,
+  secondQuestionType = 2,
+  /** Ответ на вопрос первого типа */
+  answerFirstQuestionType = 5,
+  /** Ответ на вопрос второго типа */
+  answerSecondQuestionType = 6,
+  /** Конец игры */
+  endGame = 999,
+}
+
+interface IQuestion {
+  title: string;
+  options: string[];
 }
 
 /** Интерфейс вопросов призодящих с бекенда */
-interface IQuestionData {
-  options: string[];
-  question: string;
-  type: questionType;
+export interface IQuestionData {
+  question: IQuestion;
+  type: TQuestionType;
 }
+
+/** Тип статуса игры */
+export type TStatus = 'question';
 
 export class RoomState {
   /** Root store */
@@ -22,16 +35,18 @@ export class RoomState {
   /** Варианты ответа  */
   options: string[] = [];
   /** Тип вопроса */
-  type: questionType = 1;
+  type: TQuestionType = 1;
   /** Название вопроса */
-  questionName: string = '';
+  title: string = '';
+  /** Статус игры */
+  status: TStatus = 'question';
 
   constructor(root: RootStore) {
     makeObservable(this, {
       // observable
       options: observable,
       type: observable,
-      questionName: observable,
+      title: observable,
       // action
       setQuestion: action,
     });
@@ -40,9 +55,9 @@ export class RoomState {
 
   /** Распарсить данные вопроса, призодящие с сокета */
   setQuestion(questionData: IQuestionData) {
-    const { options, question, type } = questionData;
-    this.options = options;
-    this.questionName = question;
+    const { question, type } = questionData;
+    this.options = Object.values(question.options);
+    this.title = question.title;
     this.type = type;
   }
 }
