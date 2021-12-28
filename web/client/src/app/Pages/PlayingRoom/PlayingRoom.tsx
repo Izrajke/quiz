@@ -27,6 +27,7 @@ export const PlayingRoom = observer(() => {
     <div className={classes.wrapper}>
       <Modal show={true} className={classes.modal}>
         <Modal.Header>
+          
           <Typography.Text className={classes.question} type="text-2" color="white">
             {app.room.title}
           </Typography.Text>
