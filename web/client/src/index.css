@@ -1,13 +1,30 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import './fonts/fonts.css';
+
+:root {
+  /* тёмный */
+  --dark-1: #07121b;
+  --dark-2: #233c4e;
+  --dark-3: #274357;
+  --dark-4: #32546c;
+
+  /* игроки */
+  --player-3: #ffc05f;
+  --player-2: #ff826e;
+  --player-1: #3096e1;
+
+  /* белый */
+  --white: #ffffff;
+  --white-70: rgba(255, 255, 255, 0.7);
+
+  /* черный */
+  --black-50: rgba(0, 0, 0, 0.5);
+
+  /* Шрифты */
+  --font-regular: 'Montserrat-Regular', sans-serif;
+  --font-bold: 'Montserrat-Bold', sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  background-color: var(--dark-1);
+  font-family: var(--font-regular);
 }
