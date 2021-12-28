@@ -1,0 +1,13 @@
+.white {
+  color: var(--white);
+}
+
+.text-1 {
+  font-size: 28px;
+  line-height: 140%;
+}
+
+.text-2 {
+  font-size: 34px;
+  line-height: 140%;
+}
