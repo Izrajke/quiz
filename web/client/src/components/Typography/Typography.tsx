@@ -6,7 +6,7 @@ interface ITypography extends FunctionComponent {
   Text: IText;
 }
 
-export type ITypographyColor = 'white';
+export type ITypographyColor = 'white' | 'disabled';
 
 export const Typography: ITypography = () => null;
 

@@ -1,11 +1,28 @@
 .button {
   cursor: pointer;
-}
-
-.regular {
-  background: var(--dark-1);
+  border-radius: 16px;
   border: none;
   padding: 10px;
-  border-radius: 16px;
+  transition: all 0.2s;
+}
+
+/* Type */
+.regular {
+  background: var(--dark-1);
   color: var(--white);
+}
+
+.regular:hover {
+  background: var(--dark-6);
+}
+
+/* Size */
+.normal {
+  font-size: 22px;
+  line-height: 140%;
+}
+
+.disabled {
+  background: var(--dark-5);
+  color: var(--gray-1);
 }

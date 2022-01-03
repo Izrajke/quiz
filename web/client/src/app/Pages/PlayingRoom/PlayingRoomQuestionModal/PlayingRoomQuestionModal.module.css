@@ -1,0 +1,38 @@
+.modal {
+  max-width: 1130px;
+  padding: 36px;
+}
+
+.question {
+  margin-bottom: 42px;
+}
+
+.body {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 540px 540px;
+}
+
+.button {
+  min-width: 520px;
+  font-family: var(--font-bold);
+}
+
+.rightAnswer {
+  animation: shadow 0.75s infinite alternate;
+}
+
+.givenAnswer {
+  background: var(--player-2) !important;
+  color: var(--white) !important;
+}
+
+@keyframes shadow {
+  from {
+    box-shadow: var(--dark-1);
+  }
+
+  to {
+    box-shadow: var(--white-shadow);
+  }
+}

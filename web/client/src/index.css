@@ -6,11 +6,17 @@
   --dark-2: #233c4e;
   --dark-3: #274357;
   --dark-4: #32546c;
+  --dark-5: #162b3c;
+  --dark-6: #0a1d2c;
 
   /* игроки */
   --player-3: #ffc05f;
   --player-2: #ff826e;
+  --player-2-hover: #de6754;
   --player-1: #3096e1;
+
+  /* серый */
+  --gray-1: rgba(230, 230, 230, 0.3);
 
   /* белый */
   --white: #ffffff;
@@ -22,6 +28,9 @@
   /* Шрифты */
   --font-regular: 'Montserrat-Regular', sans-serif;
   --font-bold: 'Montserrat-Bold', sans-serif;
+
+  /* Тени */
+  --white-shadow: 0px 0px 20px rgba(255, 255, 255, 0.5);
 }
 
 body {

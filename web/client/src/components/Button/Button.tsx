@@ -1,31 +1,34 @@
-import type { FunctionComponent } from 'react';
+import { FunctionComponent, useMemo } from 'react';
 
 import clsx from 'clsx';
 
 import { observer } from 'mobx-react-lite';
 
-import { Typography } from 'components';
-
 import classes from './Button.module.css';
 
-type TButtonType = 'regular';
+type TButtonType = 'regular' | 'disabled';
 
 interface IButton {
   type: TButtonType;
   onClick: () => void;
   className?: string;
+  size?: string;
 }
 
 export const Button: FunctionComponent<IButton> = observer(
-  ({ type, onClick, className, children }) => {
+  ({ type, onClick, className, size = 'normal', children }) => {
+    const styles = useMemo(
+      () => clsx(classes.button, classes[type], classes[size], className),
+      [className, type, size],
+    );
+
     return (
       <button
-        className={clsx(classes.button, classes[type], className)}
+        className={styles}
         onClick={onClick}
+        disabled={type === 'disabled'}
       >
-        <Typography.Text color="white" type="text-1">
-          {children}
-        </Typography.Text>
+        {children}
       </button>
     );
   },

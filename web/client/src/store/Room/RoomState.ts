@@ -1,30 +1,11 @@
 import { makeObservable, observable, action } from 'mobx';
 import { RootStore } from '../RootStore';
-
-/** Типы вопросов */
-enum TQuestionType {
-  /** Обычный вопрос с 4-мя вариантами ответа */
-  firstQuestionType = 1,
-  /** Вопрос без вариантов ответа */
-  secondQuestionType = 2,
-  /** Ответ на вопрос первого типа */
-  answerFirstQuestionType = 5,
-  /** Ответ на вопрос второго типа */
-  answerSecondQuestionType = 6,
-  /** Конец игры */
-  endGame = 999,
-}
-
-interface IQuestion {
-  title: string;
-  options: string[];
-}
-
-/** Интерфейс вопросов призодящих с бекенда */
-export interface IQuestionData {
-  question: IQuestion;
-  type: TQuestionType;
-}
+import type {
+  TSocketResponseType,
+  ISocketOptions,
+  ISocketQuestionData,
+  ISocketAnswerData,
+} from 'api';
 
 /** Тип статуса игры */
 export type TStatus = 'question';
@@ -33,13 +14,15 @@ export class RoomState {
   /** Root store */
   root: RootStore;
   /** Варианты ответа  */
-  options: string[] = [];
+  options: ISocketOptions = {};
   /** Тип вопроса */
-  type: TQuestionType = 1;
+  type: TSocketResponseType = 1;
   /** Название вопроса */
-  title: string = '';
+  title = '';
   /** Статус игры */
   status: TStatus = 'question';
+  /** Ответ на вопрос */
+  answer?: string;
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -47,17 +30,26 @@ export class RoomState {
       options: observable,
       type: observable,
       title: observable,
+      answer: observable,
       // action
       setQuestion: action,
+      setAnswer: action,
     });
     this.root = root;
   }
 
   /** Распарсить данные вопроса, призодящие с сокета */
-  setQuestion(questionData: IQuestionData) {
+  setQuestion(questionData: ISocketQuestionData) {
     const { question, type } = questionData;
-    this.options = Object.values(question.options);
+    this.options = question.options;
     this.title = question.title;
+    this.type = type;
+  }
+
+  setAnswer(answerData: ISocketAnswerData) {
+    const { answer, type } = answerData;
+    // TODO: Убрать когда Женя пофиксит
+    this.answer = answer.value.toString();
     this.type = type;
   }
 }

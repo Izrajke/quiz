@@ -18,7 +18,7 @@ export interface IText extends FunctionComponent<ITextProps> {}
 export const Text: IText = ({ color, className, type, children }) => {
   const styles = useMemo(
     () => clsx(classes[color], classes[type], className),
-    [className],
+    [className, color, type],
   );
   return <div className={styles}>{children}</div>;
 };
