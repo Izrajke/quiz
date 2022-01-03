@@ -6,17 +6,19 @@ import (
 	"github.com/google/uuid"
 	"log"
 	"net/http"
+	"quiz/internal"
 )
 
-const serverPort = ":8080"
+const (
+	serverPort = ":8080"
+)
 
 func main() {
-	go h.run()
-	go h.start()
+	go internal.H.Run()
 
 	// Главная страница
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "../../web/home.html")
+		http.ServeFile(w, r, "home.html")
 	})
 	// Создание комнаты
 	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +36,7 @@ func main() {
 	})
 	// Страница игры
 	http.HandleFunc("/game", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "../../web/game.html")
+		http.ServeFile(w, r, "game.html")
 	})
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		query := r.URL.Query()
@@ -43,7 +45,7 @@ func main() {
 			fmt.Println("failed http params")
 		}
 		fmt.Println("Room id: " + roomIds[0])
-		serveWs(w, r, roomIds[0])
+		internal.ServeWs(w, r, roomIds[0])
 	})
 	err := http.ListenAndServe(serverPort, nil)
 	if err != nil {
