@@ -1,0 +1,49 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 600px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--white);
+  z-index: 2000;
+}
+
+.wrapper span {
+  line-height: 140%;
+}
+
+.loggerContent {
+  height: 180px;
+  overflow-y: auto;
+  background: var(--white);
+  width: 100%;
+}
+
+.message {
+  margin-bottom: 6px;
+}
+
+.input {
+  height: 20px;
+  width: 594px;
+  border-radius: 0;
+  border: 1px solid var(--dark-4);
+}
+
+.button {
+  height: 40px;
+  width: 600px;
+  cursor: pointer;
+  border-radius: 0;
+  border: none;
+}
+
+.sent {
+  color: green;
+}
+
+.received {
+  color: var(--player-2);
+}
