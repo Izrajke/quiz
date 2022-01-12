@@ -1,0 +1,31 @@
+.wrapper {
+  height: 130px;
+  width: 380px;
+  background: var(--dark-3);
+  border-radius: 6px;
+}
+
+.content {
+  display: flex;
+  gap: 18px;
+  width: 100%;
+  margin: 0px 20px;
+  padding: 20px 0px;
+}
+
+.avatar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  object-fit: cover;
+  height: 70px;
+  width: 70px;
+  border-radius: 100%;
+}
+
+.playerLine {
+  background: var(--player-1);
+  height: 10px;
+  width: 100%;
+  border-radius: 6px 6px 0px 0px;
+}
