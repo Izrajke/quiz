@@ -25,9 +25,9 @@ export const SocketLogger: FunctionComponent = observer(() => {
   return (
     <div className={classes.wrapper}>
       <div className={classes.loggerContent}>
-        {app.socketLog.map(([sendingType, message]) => {
+        {app.socketLog.map(([sendingType, message], index) => {
           return (
-            <div className={classes.message} key={sendingType + message}>
+            <div className={classes.message} key={index}>
               <b className={classes[sendingType]}>{sendingType}:</b>{' '}
               <span>{JSON.stringify(message)}</span>
             </div>

@@ -2,6 +2,10 @@
   color: var(--white);
 }
 
+.white-70 {
+  color: var(--white-70);
+}
+
 .disabled {
   color: var(--gray-1);
 }
@@ -14,4 +18,17 @@
 .text-2 {
   font-size: 28px;
   line-height: 140%;
+}
+
+.text-3 {
+  font-size: 34px;
+  line-height: 140%;
+}
+
+.weight-regular {
+  font-family: var(--font-regular);
+}
+
+.weight-bold {
+  font-family: var(--font-bold);
 }

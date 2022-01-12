@@ -45,10 +45,10 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
         </Typography.Text>
       </Modal.Header>
       <Modal.Body className={classes.body}>
-        {Object.keys(app.room.options).map((id) => {
+        {Object.keys(app.room.options).map((id, index) => {
           return (
             <Button
-              key={app.room.options[id]}
+              key={index}
               type={localAnswer ? 'disabled' : 'regular'}
               className={buttonStyle(id)}
               onClick={answerHandler({

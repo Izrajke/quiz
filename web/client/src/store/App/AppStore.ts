@@ -45,7 +45,6 @@ export class AppStore {
         const data = JSON.parse(evt.data);
 
         this.socketActionRegister('received', data);
-        console.log(this.socketLog);
         switch (data.type) {
           case TSocketResponseType.answerFirstQuestionType:
           case TSocketResponseType.answerSecondQuestionType:
