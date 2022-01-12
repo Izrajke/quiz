@@ -147,7 +147,11 @@ func (h *hub) Run() {
 			// Запуск игры
 			if len(connections) == maxConnections {
 				currentGame.state = GameStateWaitAnswers
-
+				// TODO refactoring
+				// Из-за того, что увеличиваем счетчик при заходе, поэтому не правильно считаем номер первого вопроса
+				if len(domain.Questions) == currentGame.firstQuestionCounter {
+					currentGame.firstQuestionCounter = 0
+				}
 				question := domain.Questions[currentGame.firstQuestionCounter]
 				question.Answer = nil
 				currentGame.firstQuestionCounter++
@@ -169,6 +173,13 @@ func (h *hub) Run() {
 		case s := <-h.unregister:
 			connections := h.rooms[s.room]
 			if connections != nil {
+				// TODO refactoring
+				// Удаляем игрока после отключения
+				game, found := games[s.room]
+				if found {
+					game.Players = game.Players[:len(game.Players)-1]
+				}
+
 				if _, ok := connections[s.conn]; ok {
 					delete(connections, s.conn)
 					close(s.conn.send)
