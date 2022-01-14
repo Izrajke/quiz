@@ -11,6 +11,8 @@ export enum TSocketResponseType {
   answerFirstQuestionType = 5,
   /** Ответ на вопрос второго типа */
   answerSecondQuestionType = 6,
+  /** Информация о игроках */
+  playersInfo = 12,
   /** Конец игры */
   endGame = 999,
 }
@@ -38,8 +40,8 @@ export interface ISocketQuestion {
 
 /** Интерфейс вопроса */
 export interface ISocketQuestionData {
-  question: ISocketQuestion;
   type: TSocketResponseType;
+  question: ISocketQuestion;
 }
 
 /** Интерфейс ответа на вопрос */
@@ -48,6 +50,18 @@ export interface ISocketAnswerData {
   answer: {
     value: string;
   };
+}
+
+/** Интерфейс игрока */
+export interface IPlayer {
+  id: string;
+  name: string;
+  points: number;
+}
+
+export interface ISocketPlayesData {
+  type: TSocketResponseType;
+  players: IPlayer[];
 }
 
 /** - - - - - - - - - - - - - - - - - - - - - - - - */

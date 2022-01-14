@@ -54,6 +54,9 @@ export class AppStore {
           case TSocketResponseType.secondQuestionType:
             this.room.setQuestion(data);
             break;
+          case TSocketResponseType.playersInfo:
+            this.room.setPlayers(data);
+            break;
           default:
             break;
         }

@@ -5,6 +5,8 @@ import type {
   ISocketOptions,
   ISocketQuestionData,
   ISocketAnswerData,
+  ISocketPlayesData,
+  IPlayer,
 } from 'api';
 
 /** Тип статуса игры */
@@ -23,6 +25,8 @@ export class RoomState {
   status: TStatus = 'question';
   /** Ответ на вопрос */
   answer?: string;
+  /** Игроки */
+  players: IPlayer[] = [];
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -31,9 +35,11 @@ export class RoomState {
       type: observable,
       title: observable,
       answer: observable,
+      players: observable,
       // action
       setQuestion: action,
       setAnswer: action,
+      setPlayers: action,
     });
     this.root = root;
   }
@@ -51,5 +57,10 @@ export class RoomState {
     // TODO: Убрать когда Женя пофиксит
     this.answer = answer.value.toString();
     this.type = type;
+  }
+
+  setPlayers(playersData: ISocketPlayesData) {
+    const { players } = playersData;
+    this.players = players;
   }
 }
