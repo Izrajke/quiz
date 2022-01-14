@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import type { FunctionComponent } from 'react';
 import { observer } from 'mobx-react-lite';
 import clsx from 'clsx';
@@ -13,6 +13,10 @@ import classes from './PlayingRoomQuestionModal.module.css';
 export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
   const { app } = useStore();
   const [localAnswer, setlocalAnswer] = useState<string>('');
+
+  useEffect(() => {
+    setlocalAnswer('');
+  }, [app.room.options]);
 
   /** Обработчик ответа на вопрос */
   const answerHandler = (answer: ISocketAnswer) => () => {

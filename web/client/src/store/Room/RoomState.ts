@@ -24,7 +24,7 @@ export class RoomState {
   /** Статус игры */
   status: TStatus = 'question';
   /** Ответ на вопрос */
-  answer?: string;
+  answer = '';
   /** Игроки */
   players: IPlayer[] = [];
 
@@ -40,6 +40,7 @@ export class RoomState {
       setQuestion: action,
       setAnswer: action,
       setPlayers: action,
+      resetAnswer: action,
     });
     this.root = root;
   }
@@ -57,6 +58,10 @@ export class RoomState {
     // TODO: Убрать когда Женя пофиксит
     this.answer = answer.value.toString();
     this.type = type;
+  }
+
+  resetAnswer() {
+    this.answer = '';
   }
 
   setPlayers(playersData: ISocketPlayesData) {

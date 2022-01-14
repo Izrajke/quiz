@@ -1,9 +1,10 @@
 import { makeObservable, flow, observable, action } from 'mobx';
 import { RootStore } from '../RootStore';
 import { RoomState } from 'store/Room';
-import { TSocketResponseType } from 'api';
+import { TSocketResponseType, TSocketRequestType } from 'api';
 import type { TSocketAction, TSocketLog, TSocketSendingType } from 'api';
 
+const answerDelay = 2000;
 export class AppStore {
   /** Root store */
   root: RootStore;
@@ -49,10 +50,14 @@ export class AppStore {
           case TSocketResponseType.answerFirstQuestionType:
           case TSocketResponseType.answerSecondQuestionType:
             this.room.setAnswer(data);
+            setTimeout(() => {
+              this.socketMessage({ type: TSocketRequestType.getQuestion });
+            }, answerDelay);
             break;
           case TSocketResponseType.firstQuestionType:
           case TSocketResponseType.secondQuestionType:
             this.room.setQuestion(data);
+            this.room.resetAnswer();
             break;
           case TSocketResponseType.playersInfo:
             this.room.setPlayers(data);
