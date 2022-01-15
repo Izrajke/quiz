@@ -55,8 +55,7 @@ export class RoomState {
 
   setAnswer(answerData: ISocketAnswerData) {
     const { answer, type } = answerData;
-    // TODO: Убрать когда Женя пофиксит
-    this.answer = answer.value.toString();
+    this.answer = answer.value;
     this.type = type;
   }
 
@@ -67,5 +66,9 @@ export class RoomState {
   setPlayers(playersData: ISocketPlayesData) {
     const { players } = playersData;
     this.players = players;
+  }
+
+  setType(type: TSocketResponseType) {
+    this.type = type;
   }
 }

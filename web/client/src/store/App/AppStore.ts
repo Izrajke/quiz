@@ -62,6 +62,9 @@ export class AppStore {
           case TSocketResponseType.playersInfo:
             this.room.setPlayers(data);
             break;
+          case TSocketResponseType.endGame:
+            this.room.setType(TSocketResponseType.endGame);
+            break;
           default:
             break;
         }

@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 import { observer } from 'mobx-react-lite';
 import clsx from 'clsx';
@@ -7,6 +7,7 @@ import { Modal, Button, Typography } from 'components';
 
 import { useStore } from 'store';
 import type { ISocketAnswer } from 'api';
+import { TSocketResponseType } from 'api';
 
 import classes from './PlayingRoomQuestionModal.module.css';
 
@@ -37,8 +38,13 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
     [app.room.answer, localAnswer],
   );
 
+  const isModalShowing = useMemo(
+    () => app.room.type !== TSocketResponseType.endGame,
+    [app.room.type],
+  );
+
   return (
-    <Modal show={true} className={classes.modal}>
+    <Modal show={isModalShowing} className={classes.modal}>
       <Modal.Header>
         <Typography.Text
           className={classes.question}
