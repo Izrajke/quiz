@@ -8,6 +8,7 @@ import classes from './SocketLogger.module.css';
 
 export const SocketLogger: FunctionComponent = observer(() => {
   const [message, setMessage] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
   const { app } = useStore();
 
   const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -22,30 +23,41 @@ export const SocketLogger: FunctionComponent = observer(() => {
     app.socketMessage({ type: 2 });
   };
 
+  const closeHandler = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className={classes.wrapper}>
-      <div className={classes.loggerContent}>
-        {app.socketLog.map(([sendingType, message], index) => {
-          return (
-            <div className={classes.message} key={index}>
-              <b className={classes[sendingType]}>{sendingType}:</b>{' '}
-              <span>{JSON.stringify(message)}</span>
-            </div>
-          );
-        })}
-      </div>
-      <input
-        className={classes.input}
-        onChange={inputHandler}
-        type="text"
-        placeholder="событие"
-      />
-      <button onClick={messageHandler} className={classes.button}>
-        Отправить событие
+      <button onClick={closeHandler}>
+        {isOpen ? '↑скрыть↑' : '↓открыть↓'}
       </button>
-      <button onClick={getQuestionHandler} className={classes.button}>
-        Получить вопрос
-      </button>
+      {isOpen ? (
+        <>
+          <div className={classes.loggerContent}>
+            {app.socketLog.map(([sendingType, message], index) => {
+              return (
+                <div className={classes.message} key={index}>
+                  <b className={classes[sendingType]}>{sendingType}:</b>{' '}
+                  <span>{JSON.stringify(message)}</span>
+                </div>
+              );
+            })}
+          </div>
+          <input
+            className={classes.input}
+            onChange={inputHandler}
+            type="text"
+            placeholder="событие"
+          />
+          <button onClick={messageHandler} className={classes.button}>
+            Отправить событие
+          </button>
+          <button onClick={getQuestionHandler} className={classes.button}>
+            Получить вопрос
+          </button>
+        </>
+      ) : null}
     </div>
   );
 });
