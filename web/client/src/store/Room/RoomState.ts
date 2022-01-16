@@ -18,7 +18,7 @@ export class RoomState {
   /** Варианты ответа  */
   options: ISocketOptions = {};
   /** Тип вопроса */
-  type: TSocketResponseType = 1;
+  type: TSocketResponseType = 999;
   /** Название вопроса */
   title = '';
   /** Статус игры */

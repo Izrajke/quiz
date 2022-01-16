@@ -1,0 +1,38 @@
+/* map */
+.map {
+  display: flex;
+  flex-direction: column;
+  transform: rotateX(50deg) rotateY(0deg) rotateZ(-35deg) scale(1.3);
+  margin: auto;
+}
+
+/* row */
+.row {
+  display: flex;
+  position: relative;
+}
+
+.topMarginRow {
+  margin-top: -24px;
+}
+
+.evenRow {
+  margin-left: 44px;
+}
+
+/* cell */
+.hex {
+  fill: var(--dark-3);
+}
+
+.player-1 {
+  fill: var(--player-1);
+}
+
+.player-2 {
+  fill: var(--player-2);
+}
+
+.player-3 {
+  fill: var(--player-3);
+}
