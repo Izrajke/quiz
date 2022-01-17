@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"log"
+	"math/rand"
 	"net/http"
+	"net/url"
 	"quiz/internal"
+	"strconv"
 )
 
 const (
@@ -39,13 +42,23 @@ func main() {
 		http.ServeFile(w, r, "game.html")
 	})
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		query := r.URL.Query()
-		roomIds, found := query["room"]
-		if !found || len(roomIds) != 1 {
-			fmt.Println("failed http params")
+		params, _ := url.ParseQuery(r.URL.RawQuery)
+		// Получаем имя игрока
+		playerName := "Аноним " + strconv.Itoa(rand.Intn(99))
+		if len(params["name"]) > 0 {
+			playerName = params["name"][0]
 		}
-		fmt.Println("Room id: " + roomIds[0])
-		internal.ServeWs(w, r, roomIds[0])
+		// Получаем id комнаты
+		var roomId string
+		if len(params["room"]) > 0 {
+			roomId = params["room"][0]
+		}
+		if roomId == "" {
+			fmt.Println("Failed to get room id")
+			return
+		}
+
+		internal.ServeWs(w, r, playerName, roomId)
 	})
 	err := http.ListenAndServe(serverPort, nil)
 	if err != nil {

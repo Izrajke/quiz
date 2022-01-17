@@ -2,7 +2,6 @@ package internal
 
 import (
 	"encoding/json"
-	"github.com/google/uuid"
 	"quiz/internal/domain"
 )
 
@@ -13,8 +12,9 @@ type message struct {
 }
 
 type subscription struct {
-	conn *connection
-	room string
+	conn   *connection
+	room   string
+	player *domain.Player
 }
 
 // hub maintains the set of active connections and broadcasts messages to the
@@ -68,6 +68,7 @@ var games = map[string]*game{}
 func (h *hub) Run() {
 	for {
 		select {
+		// подключилось новое соединение
 		case s := <-h.register:
 			connections := h.rooms[s.room]
 			if connections == nil {
@@ -87,11 +88,7 @@ func (h *hub) Run() {
 					round:       1,
 				}
 				games[s.room] = game
-				game.Players = append(game.Players, &domain.Player{
-					Id:     uuid.New().String(),
-					Name:   "Аноним 1",
-					Points: 500,
-				})
+				game.Players = append(game.Players, s.player)
 
 				// TODO refactoring
 				playersMessage := &domain.PlayersMessage{
@@ -118,11 +115,7 @@ func (h *hub) Run() {
 					cons = append(cons, c)
 				}
 				currentGame.connections = cons
-				currentGame.Players = append(currentGame.Players, &domain.Player{
-					Id:     uuid.New().String(),
-					Name:   "Аноним 2",
-					Points: 1000,
-				})
+				currentGame.Players = append(currentGame.Players, s.player)
 
 				// TODO refactoring
 				playersMessage := &domain.PlayersMessage{
