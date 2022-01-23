@@ -14,6 +14,7 @@
   --player-2: #ff826e;
   --player-2-hover: #de6754;
   --player-1: #3096e1;
+  --player-1-hover: #1f75b3;
 
   /* серый */
   --gray-1: rgba(230, 230, 230, 0.3);
@@ -21,6 +22,7 @@
   /* белый */
   --white: #ffffff;
   --white-70: rgba(255, 255, 255, 0.7);
+  --white-50: rgba(255, 255, 255, 0.5);
 
   /* черный */
   --black-50: rgba(0, 0, 0, 0.5);

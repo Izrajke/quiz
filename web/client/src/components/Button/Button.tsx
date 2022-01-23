@@ -6,13 +6,14 @@ import { observer } from 'mobx-react-lite';
 
 import classes from './Button.module.css';
 
-type TButtonType = 'regular' | 'disabled';
+type TButtonType = 'regular' | 'disabled' | 'primary';
+type TButtonSize = 'normal' | 'large' | 'small';
 
 interface IButton {
   type: TButtonType;
   onClick: () => void;
   className?: string;
-  size?: string;
+  size?: TButtonSize;
 }
 
 export const Button: FunctionComponent<IButton> = observer(
