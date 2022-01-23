@@ -98,7 +98,7 @@
             if (window["WebSocket"]) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const roomId = urlParams.get('room');
-                conn = new WebSocket("ws://127.0.0.1:8080/ws?room=" + roomId);
+                conn = new WebSocket("ws://127.0.0.1:8080/ws?room=" + roomId + "&name=СуперАноним " + Math.floor(Math.random() * 99));
                 conn.onclose = function (evt) {
                     let item = document.createElement("div");
                     item.innerHTML = "<b>Connection closed.</b>";
