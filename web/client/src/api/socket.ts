@@ -22,6 +22,10 @@ export enum TSocketRequestType {
   sendAnswer = 1,
   /** Получить вопрос */
   getQuestion = 2,
+  /** Получить клетку */
+  getCell = 3,
+  /** Напасть на клетку */
+  attackCell = 3,
 }
 
 /** - - - - - - - - - - - - - - - - - - - - - - - - */

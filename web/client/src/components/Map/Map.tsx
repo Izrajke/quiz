@@ -10,10 +10,12 @@ import { Row } from './Row';
 /** ------------------------------------------------------------ */
 /** Типы */
 
-export type TOwner = 'player-1' | 'player-2' | 'player-3' | null;
+/** Владелец ячейки */
+export type TOwner = 'player-1' | 'player-2' | 'player-3' | 'empty';
 
 export interface ICellData {
-  owner: TOwner;
+  isExists: boolean;
+  owner?: TOwner;
 }
 
 export type TRow = ICellData[];

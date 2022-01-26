@@ -8,8 +8,7 @@ interface IModalHeader {
   className?: string;
 }
 
-export interface IModalHeaderComponent
-  extends FunctionComponent<IModalHeader> {}
+export type IModalHeaderComponent = FunctionComponent<IModalHeader>
 
 export const ModalHeader: IModalHeaderComponent = observer(({ children }) => {
   return <div className={classes.header}>{children}</div>;

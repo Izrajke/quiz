@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import classes from './Map.module.css';
 
 export interface IRowProps {
-  rowNumber: number;
+  rowIndex: number;
 }
 
 export interface IRow extends FunctionComponent<IRowProps> {
@@ -14,17 +14,17 @@ export interface IRow extends FunctionComponent<IRowProps> {
 }
 
 /** Линия ячеек игрового поля */
-export const Row: IRow = ({ children, rowNumber }) => {
-  const isEven = useMemo(() => rowNumber % 2 === 0, [rowNumber]);
+export const Row: IRow = ({ children, rowIndex }) => {
+  const isEven = useMemo(() => rowIndex % 2 === 0, [rowIndex]);
 
   const styles = useMemo(
     () =>
       clsx(
         classes.row,
         isEven && classes.evenRow,
-        rowNumber !== 1 && classes.topMarginRow,
+          rowIndex !== 0 && classes.topMarginRow,
       ),
-    [isEven, rowNumber],
+    [isEven, rowIndex],
   );
 
   return <div className={styles}>{children}</div>;

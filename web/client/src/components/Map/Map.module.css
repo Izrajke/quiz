@@ -2,8 +2,14 @@
 .map {
   display: flex;
   flex-direction: column;
-  transform: rotateX(50deg) rotateY(0deg) rotateZ(-35deg) scale(1.3);
   margin: auto;
+
+  -moz-transform-origin: 50% 100%;
+  -moz-transform: perspective(450px) rotateX(15deg);
+  -webkit-transform-origin: 50% 100%;
+  -webkit-transform: perspective(450px) rotateX(15deg);
+  transform-origin: 50% 100%;
+  transform: perspective(450px) rotateX(15deg) scale(1.5);
 }
 
 /* row */
@@ -21,7 +27,11 @@
 }
 
 /* cell */
-.hex {
+.none {
+  fill: var(--dark-1);
+}
+
+.empty {
   fill: var(--dark-3);
 }
 
@@ -35,4 +45,10 @@
 
 .player-3 {
   fill: var(--player-3);
+}
+
+*:is(.empty, .player-1, .player-2, .player-3):hover {
+  filter: brightness(150%);
+  /* TODO Доделать отображение при наведении на клетку, которую можно захватить */
+  cursor: crosshair
 }
