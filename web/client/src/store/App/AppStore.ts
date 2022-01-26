@@ -39,7 +39,7 @@ export class AppStore {
 
   *socketConnection() {
     this.socket = yield new WebSocket(
-      'ws://127.0.0.1:8080/ws?room=' + this.roomId,
+      'ws://127.0.0.1:8080/ws?room=' + this.roomId + '&name=Vasiliy',
     );
     if (this.socket) {
       this.socket.onmessage = (evt) => {

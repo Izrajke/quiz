@@ -22,7 +22,7 @@ export const Row: IRow = ({ children, rowNumber }) => {
       clsx(
         classes.row,
         isEven && classes.evenRow,
-        rowNumber !== 1 && classes.topMarginRow,
+        rowNumber !== 0 && classes.topMarginRow,
       ),
     [isEven, rowNumber],
   );

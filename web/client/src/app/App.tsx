@@ -8,7 +8,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home, PlayingRoom } from './Pages';
 import { SocketLogger } from 'components';
 
-import { useStore } from '../store/store';
+import { useStore } from '../store';
 
 import './App.css';
 

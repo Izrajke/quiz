@@ -10,7 +10,7 @@ interface IModalBody {
   className?: string;
 }
 
-export interface IModalBodyComponent extends FunctionComponent<IModalBody> {}
+export type IModalBodyComponent = FunctionComponent<IModalBody>
 
 export const ModalBody: IModalBodyComponent = observer(
   ({ children, className }) => {
