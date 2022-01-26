@@ -2,7 +2,7 @@ package inmemory
 
 import "sync"
 
-type Cache struct {
+type Storage struct {
 	items map[string]Item
 	mu    sync.RWMutex
 }
@@ -12,11 +12,11 @@ type Item struct {
 	value string
 }
 
-func NewCache() *Cache {
-	return &Cache{items: make(map[string]Item)}
+func NewStorage() *Storage {
+	return &Storage{items: make(map[string]Item)}
 }
 
-func (c *Cache) Set(key string, value string) {
+func (c *Storage) Set(key string, value string) {
 	c.mu.Lock()
 	c.items[key] = Item{
 		valid: true,
@@ -25,7 +25,7 @@ func (c *Cache) Set(key string, value string) {
 	c.mu.Unlock()
 }
 
-func (c *Cache) Get(key string) Item {
+func (c *Storage) Get(key string) Item {
 	c.mu.RLock()
 
 	item, found := c.items[key]
@@ -37,7 +37,7 @@ func (c *Cache) Get(key string) Item {
 	return item
 }
 
-func (c *Cache) Flush() {
+func (c *Storage) Flush() {
 	c.mu.Lock()
 	c.items = make(map[string]Item)
 	c.mu.Unlock()

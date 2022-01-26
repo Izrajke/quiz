@@ -77,6 +77,7 @@ func (h *hub) Run() {
 			}
 			h.rooms[s.room][s.conn] = true
 			// Создание игры
+			// TODO создавать игру раньше
 			currentGame, found := games[s.room]
 			if !found {
 				cons := make([]*connection, 0, len(connections))
