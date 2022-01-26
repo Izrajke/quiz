@@ -3,7 +3,7 @@ import { useStore } from 'store';
 
 import { observer } from 'mobx-react-lite';
 
-import { Paper, Textarea, Button, Divider } from 'components';
+import { Paper, Textarea, Button, Divider, Typography, Icon } from 'components';
 
 import classes from './Home.module.css';
 
@@ -17,7 +17,19 @@ export const Home = observer(() => {
 
   return (
     <div className={classes.wrapper}>
-      <header className={classes.header}>О игре</header>
+      <header className={classes.header}>
+        <Typography.Text color="white" type="text-0">
+          О игре
+        </Typography.Text>
+        <Typography.Text
+          color="white"
+          type="text-0"
+          className={classes.nickname}
+        >
+          Anonim
+        </Typography.Text>
+        <Icon type="cog" size={16} />
+      </header>
       <div className={classes.body}>
         <Paper className={classes.chat}>
           <div className={classes.messagesContainer}></div>

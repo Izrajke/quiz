@@ -5,7 +5,7 @@ import type { ITypographyColor } from './Typography';
 
 import classes from './Typography.module.css';
 
-export type TTextType = 'text-1' | 'text-2' | 'text-3';
+export type TTextType = 'text-0' | 'text-1' | 'text-2' | 'text-3';
 export type TTextWeight = 'weight-bold' | 'weight-regular';
 
 export interface ITextProps {

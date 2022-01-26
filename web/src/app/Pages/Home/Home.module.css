@@ -1,13 +1,23 @@
 .wrapper {
-  margin-top: 10vh;
+  margin-top: 6vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 20px;
 }
 
 .header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
   width: calc(30vw + 45vw + 32px);
+  height: 40px;
+}
+
+.nickname {
+  margin-left: auto;
 }
 
 .body {
