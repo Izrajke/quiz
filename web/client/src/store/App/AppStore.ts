@@ -14,6 +14,8 @@ export class AppStore {
   roomId = '4d325b51-8dfe-4be2-ba97-b636ba2243d8';
   /** Сокет */
   socket: WebSocket | undefined;
+  /** Соединение с сокетом */
+  connection: Generator | undefined;
   /** Стейт комнаты */
   room: RoomState;
   /** Массив сообщений сокета */
@@ -78,6 +80,7 @@ export class AppStore {
   /** Инициальзация приложение */
   init() {
     this.isInit = true;
+    this.connection = this.socketConnection()
   }
 
   /** Отправить сообщение сокету */

@@ -11,7 +11,7 @@ import { Row } from './Row';
 /** Типы */
 
 /** Владелец ячейки */
-export type TOwner = 'player-1' | 'player-2' | 'player-3' | null;
+export type TOwner = 'player-1' | 'player-2' | 'player-3' | 'empty';
 
 export interface ICellData {
   isExists: boolean;

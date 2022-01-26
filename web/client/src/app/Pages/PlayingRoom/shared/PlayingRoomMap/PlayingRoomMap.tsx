@@ -35,7 +35,7 @@ const PlayingMap: TMap = [
         },
         { // 3
             isExists: true,
-            owner: null
+            owner: 'empty'
         },
         { // 4
             isExists: true,
@@ -56,11 +56,11 @@ const PlayingMap: TMap = [
         },
         { // 3
             isExists: true,
-            owner: null
+            owner: 'empty'
         },
         { // 4
             isExists: true,
-            owner: null
+            owner: 'empty'
         },
         { // 5
             isExists: true,
@@ -78,11 +78,11 @@ const PlayingMap: TMap = [
         },
         { // 3
             isExists: true,
-            owner: null
+            owner: 'empty'
         },
         { // 4
             isExists: true,
-            owner: null
+            owner: 'empty'
         },
         { // 5
             isExists: true,
@@ -96,7 +96,7 @@ const PlayingMap: TMap = [
         },
         { // 2
             isExists: true,
-            owner: null
+            owner: 'empty'
         },
         { // 3
             isExists: false,
@@ -116,9 +116,9 @@ export const PlayingRoomMap: FunctionComponent = observer(() => {
         <div className={classes.wrapper}>
             <Map>
                 {PlayingMap.map((row, i) => (
-                    <Map.Row rowNumber={i} key={Math.random()}>
+                    <Map.Row rowIndex={i} key={Math.random()}>
                         {row.map((cell, j) => (
-                            <Map.Cell isExists={cell.isExists} owner={cell.owner} indexI={i} indexJ={j} key={Math.random()}/>
+                            <Map.Cell isExists={cell.isExists} owner={cell.owner} rowIndex={i} cellIndex={j} key={Math.random()}/>
                         ))}
                     </Map.Row>
                 ))}
