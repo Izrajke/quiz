@@ -1,17 +1,79 @@
+import type { ChangeEvent } from 'react';
+
 import { useNavigate } from 'react-router';
+
+import { observer, useLocalObservable } from 'mobx-react-lite';
+
 import { useStore } from 'store';
 
-import { observer } from 'mobx-react-lite';
-
-import { Paper, Textarea, Button, Divider, Typography, Icon } from 'components';
+import {
+  Paper,
+  Textarea,
+  Button,
+  Divider,
+  Typography,
+  Icon,
+  Input,
+} from 'components';
 
 import classes from './Home.module.css';
 
+interface HomeSettingsModalState {
+  /** Обработчик нажатия на иконку настроек */
+  onSettingsClick: () => void;
+  /** Никнейм пользователя, в локальном стейте */
+  nickname: string;
+  /** Обновить никнейм локально */
+  onChangeNickname: (e: ChangeEvent<HTMLInputElement>) => void;
+  /** Сохранить никнем в сторе */
+  saveNickname: () => void;
+}
+
 export const Home = observer(() => {
-  const { app } = useStore();
+  const { app, player } = useStore();
   const navigate = useNavigate();
 
-  const clickHandler = () => {
+  const { onSettingsClick } = useLocalObservable<HomeSettingsModalState>(
+    () => ({
+      nickname: player.nickname,
+      onChangeNickname(e) {
+        this.nickname = e.target.value;
+      },
+      saveNickname() {
+        player.setNickname(this.nickname);
+      },
+      onSettingsClick() {
+        app.setDialog({
+          header: (
+            <Typography.Text color="white" type="text-2" weight="weight-bold">
+              Настройки
+            </Typography.Text>
+          ),
+          body: (
+            <Input
+              placeholder="123"
+              defaultValue={this.nickname}
+              onChange={this.onChangeNickname}
+              label="Никнейм"
+            />
+          ),
+          dialogButtons: [
+            {
+              type: 'primary',
+              onClick: this.saveNickname,
+              size: 'normal',
+              text: 'Сохранить',
+              className: classes.dialogButton,
+              clickType: 'submit',
+            },
+          ],
+        });
+      },
+    }),
+  );
+
+  /** Обработчик нажатия на иконку настроек */
+  const onCreateLobbyClick = () => {
     navigate(`/room/${app.roomId}`);
   };
 
@@ -26,9 +88,14 @@ export const Home = observer(() => {
           type="text-0"
           className={classes.nickname}
         >
-          Anonim
+          {player.nickname}
         </Typography.Text>
-        <Icon type="cog" size={16} />
+        <Icon
+          className={classes.icon}
+          type="cog"
+          size={16}
+          onClick={onSettingsClick}
+        />
       </header>
       <div className={classes.body}>
         <Paper className={classes.chat}>
@@ -42,9 +109,9 @@ export const Home = observer(() => {
           <div className={classes.lobbysContainer}></div>
           <Divider className={classes.divider} />
           <Button
-            className={classes.button}
+            className={classes.createLobbybutton}
             type="primary"
-            onClick={clickHandler}
+            onClick={onCreateLobbyClick}
           >
             Создать лобби
           </Button>

@@ -1,5 +1,10 @@
 import { useMemo, createElement } from 'react';
-import type { FunctionComponent, CSSProperties } from 'react';
+import type {
+  FunctionComponent,
+  CSSProperties,
+  DetailedHTMLProps,
+  HTMLAttributes,
+} from 'react';
 
 import clsx from 'clsx';
 
@@ -15,7 +20,8 @@ export type IconTypes = keyof typeof icons;
 
 export type IconColors = 'white';
 
-export interface IconProps {
+export interface IconProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {
   type: IconTypes;
   className?: string;
   color?: IconColors;

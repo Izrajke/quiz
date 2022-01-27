@@ -6,18 +6,19 @@ import { observer } from 'mobx-react-lite';
 
 import classes from './Button.module.css';
 
-type TButtonType = 'regular' | 'disabled' | 'primary';
-type TButtonSize = 'normal' | 'large' | 'small';
+type ButtonType = 'regular' | 'disabled' | 'primary';
+type ButtonSize = 'normal' | 'large' | 'small';
 
-interface IButton {
-  type: TButtonType;
+export interface ButtonProps {
+  type: ButtonType;
   onClick: () => void;
   className?: string;
-  size?: TButtonSize;
+  size?: ButtonSize;
+  text?: string;
 }
 
-export const Button: FunctionComponent<IButton> = observer(
-  ({ type, onClick, className, size = 'normal', children }) => {
+export const Button: FunctionComponent<ButtonProps> = observer(
+  ({ type, onClick, className, size = 'normal', children, text }) => {
     const styles = useMemo(
       () => clsx(classes.button, classes[type], classes[size], className),
       [className, type, size],
@@ -29,7 +30,7 @@ export const Button: FunctionComponent<IButton> = observer(
         onClick={onClick}
         disabled={type === 'disabled'}
       >
-        {children}
+        {text || children}
       </button>
     );
   },
