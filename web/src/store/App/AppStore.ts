@@ -1,10 +1,14 @@
 import { makeObservable, flow, observable, action } from 'mobx';
+
 import { RootStore } from '../RootStore';
 import { RoomState } from 'store/Room';
+import { DialogProps } from 'components';
+
 import { TSocketResponseType, TSocketRequestType } from 'api';
 import type { TSocketAction, TSocketLog, TSocketSendingType } from 'api';
 
 const answerDelay = 2000;
+
 export class AppStore {
   /** Root store */
   root: RootStore;
@@ -18,6 +22,8 @@ export class AppStore {
   room: RoomState;
   /** Массив сообщений сокета */
   socketLog: TSocketLog = [];
+  /** Модальные окна */
+  dialogs: DialogProps[] = [];
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -26,10 +32,13 @@ export class AppStore {
       roomId: observable,
       socket: observable,
       socketLog: observable,
+      dialogs: observable,
       // action
       init: action,
       socketActionRegister: action,
       socketMessage: action,
+      setDialog: action,
+      removeDialog: action,
       // flow
       socketConnection: flow,
     });
@@ -39,7 +48,7 @@ export class AppStore {
 
   *socketConnection() {
     this.socket = yield new WebSocket(
-      'ws://127.0.0.1:8080/ws?room=' + this.roomId + '&name=Vasiliy',
+      `ws://127.0.0.1:8080/ws?room=${this.roomId}&name=${this.root.player.nickname}`,
     );
     if (this.socket) {
       this.socket.onmessage = (evt) => {
@@ -75,7 +84,7 @@ export class AppStore {
     }
   }
 
-  /** Инициальзация приложение */
+  /** Инициальзация приложения */
   init() {
     this.isInit = true;
   }
@@ -90,4 +99,12 @@ export class AppStore {
   socketActionRegister(type: TSocketSendingType, body: TSocketAction) {
     this.socketLog.push([type, body]);
   }
+
+  setDialog(dialog: DialogProps) {
+    this.dialogs.push(dialog);
+  }
+
+  removeDialog = () => {
+    this.dialogs.shift();
+  };
 }
