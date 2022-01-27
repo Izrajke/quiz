@@ -9,6 +9,8 @@
   justify-content: center;
   align-items: center;
   z-index: 500;
+
+  animation: fadeIn 0.3s;
 }
 
 .wrapper {
@@ -22,9 +24,24 @@
 }
 
 .header {
-  padding: 12px;
+  padding: 24px;
 }
 
 .body {
-  padding: 12px;
+  padding: 0px 24px;
+}
+
+.footer {
+  padding: 20px 24px 24px 24px;
+  display: flex;
+  gap: 16px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

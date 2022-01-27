@@ -6,6 +6,8 @@ import { ModalHeader } from './ModalHeader';
 import type { IModalHeaderComponent } from './ModalHeader';
 import { ModalBody } from './ModalBody';
 import type { IModalBodyComponent } from './ModalBody';
+import { ModalFooter } from './ModalFooter';
+import type { ModalFooterComponent } from './ModalFooter';
 
 import classes from './Modal.module.css';
 
@@ -18,6 +20,7 @@ interface IModal {
 export interface IModalComponent extends FunctionComponent<IModal> {
   Header: IModalHeaderComponent;
   Body: IModalBodyComponent;
+  Footer: ModalFooterComponent;
 }
 
 /** Компонент модального окна */
@@ -27,18 +30,25 @@ export const Modal: IModalComponent = ({
   className,
   children,
 }) => {
-  return (
-    <>
-      {show ? (
-        <div className={classes.backdrop} onClick={closeModal}>
-          <div className={clsx(classes.wrapper, className)}>{children}</div>
-        </div>
-      ) : null}
-    </>
-  );
+  return show ? (
+    <div
+      className={clsx(classes.backdrop, !show && classes.notVisible)}
+      onClick={closeModal}
+    >
+      <div
+        className={clsx(classes.wrapper, className)}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  ) : null;
 };
 
 Modal.Header = ModalHeader;
 Modal.Body = ModalBody;
+Modal.Footer = ModalFooter;
 
 Modal.displayName = 'Modal';
