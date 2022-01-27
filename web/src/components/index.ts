@@ -7,3 +7,5 @@ export * from './Paper';
 export * from './Textarea';
 export * from './Divider';
 export * from './Icon';
+export * from './Dialog';
+export * from './Input';

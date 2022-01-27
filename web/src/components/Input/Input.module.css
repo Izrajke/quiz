@@ -1,0 +1,21 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--white-50);
+}
+
+.input {
+  background: var(--dark-4);
+  border-radius: 8px;
+  height: 30px;
+  outline: none;
+  border: none;
+  padding: 12px;
+  color: var(--white);
+  font-size: 22px;
+}
+
+.input::placeholder {
+  color: var(--white-50);
+}
