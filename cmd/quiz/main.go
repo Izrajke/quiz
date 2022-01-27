@@ -19,10 +19,6 @@ const (
 func main() {
 	go internal.H.Run()
 
-	// Главная страница
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "home.html")
-	})
 	// Создание комнаты
 	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
 		id := uuid.New()
@@ -35,12 +31,8 @@ func main() {
 			json.NewEncoder(w).Encode(id)
 			return
 		}
-		http.Redirect(w, r, "/game?room="+id.String(), 301)
 	})
-	// Страница игры
-	http.HandleFunc("/game", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "game.html")
-	})
+	// Подключение к сокету
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		params, _ := url.ParseQuery(r.URL.RawQuery)
 		// Получаем имя игрока
