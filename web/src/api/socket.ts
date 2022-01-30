@@ -1,3 +1,5 @@
+import {TMap} from "../components";
+
 /** ------------------------------------------------------------ */
 /** Типы и интерфейсы сокета */
 
@@ -13,6 +15,8 @@ export enum TSocketResponseType {
   answerSecondQuestionType = 6,
   /** Информация о игроках */
   playersInfo = 12,
+  /** Информация о карте */
+  mapInfo = 13,
   /** Конец игры */
   endGame = 999,
 }
@@ -63,9 +67,16 @@ export interface IPlayer {
   points: number;
 }
 
-export interface ISocketPlayesData {
+/** Информация о игроках */
+export interface ISocketPlayersData {
   type: TSocketResponseType;
   players: IPlayer[];
+}
+
+/** Информация о карте */
+export interface ISocketMapData {
+  type: TSocketResponseType;
+  map: TMap;
 }
 
 /** - - - - - - - - - - - - - - - - - - - - - - - - */
