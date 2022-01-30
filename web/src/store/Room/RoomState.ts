@@ -5,9 +5,11 @@ import type {
   ISocketOptions,
   ISocketQuestionData,
   ISocketAnswerData,
-  ISocketPlayesData,
+  ISocketPlayersData,
   IPlayer,
 } from 'api';
+import { TMap } from "../../components";
+import {ISocketMapData} from "api";
 
 /** Тип статуса игры */
 export type TStatus = 'question';
@@ -27,6 +29,8 @@ export class RoomState {
   answer = '';
   /** Игроки */
   players: IPlayer[] = [];
+  /** Карта */
+  map: TMap = [];
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -36,6 +40,7 @@ export class RoomState {
       title: observable,
       answer: observable,
       players: observable,
+      map: observable,
       // action
       setQuestion: action,
       setAnswer: action,
@@ -63,12 +68,17 @@ export class RoomState {
     this.answer = '';
   }
 
-  setPlayers(playersData: ISocketPlayesData) {
+  setPlayers(playersData: ISocketPlayersData) {
     const { players } = playersData;
     this.players = players;
   }
 
   setType(type: TSocketResponseType) {
     this.type = type;
+  }
+
+  setMap(mapData: ISocketMapData) {
+    const { map } = mapData;
+    this.map = map;
   }
 }

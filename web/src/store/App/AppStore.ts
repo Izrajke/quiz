@@ -71,11 +71,13 @@ export class AppStore {
           case TSocketResponseType.playersInfo:
             this.room.setPlayers(data);
             break;
+          case TSocketResponseType.mapInfo:
+            this.room.setMap(data)
+            break;
           case TSocketResponseType.endGame:
             this.room.setType(TSocketResponseType.endGame);
             break;
           default:
-            break;
         }
       };
       this.socket.onclose = () => {

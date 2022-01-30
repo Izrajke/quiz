@@ -13,17 +13,17 @@ import classes from './PlayingRoomQuestionModal.module.css';
 
 export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
   const { app } = useStore();
-  const [localAnswer, setlocalAnswer] = useState<string>('');
+  const [localAnswer, setLocalAnswer] = useState<string>('');
 
   useEffect(() => {
-    setlocalAnswer('');
+    setLocalAnswer('');
   }, [app.room.options]);
 
   /** Обработчик ответа на вопрос */
   const answerHandler = (answer: ISocketAnswer) => () => {
     if (app.socket) {
       app.socketMessage(answer);
-      setlocalAnswer(answer.option);
+      setLocalAnswer(answer.option);
     }
   };
 
