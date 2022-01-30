@@ -17,7 +17,10 @@ const (
 )
 
 func main() {
-	go internal.H.Run()
+	hub := internal.NewHub()
+	go hub.Run()
+
+	fmt.Println("Starting server...")
 
 	// Создание комнаты
 	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +53,7 @@ func main() {
 			return
 		}
 
-		internal.ServeWs(w, r, playerName, roomId)
+		internal.ServeWs(w, r, hub, playerName, roomId)
 	})
 	err := http.ListenAndServe(serverPort, nil)
 	if err != nil {

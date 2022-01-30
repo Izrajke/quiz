@@ -20,9 +20,6 @@ type subscription struct {
 // hub maintains the set of active connections and broadcasts messages to the
 // connections.
 type hub struct {
-	// Registered connections.
-	rooms map[string]map[*connection]bool
-
 	// Inbound messages from the connections.
 	broadcast chan message
 
@@ -31,6 +28,9 @@ type hub struct {
 
 	// Unregister requests from connections.
 	unregister chan subscription
+
+	// Комнаты
+	rooms map[string]map[*connection]bool
 }
 
 type game struct {
@@ -46,24 +46,26 @@ type game struct {
 	Players []*domain.Player
 }
 
+// Хранилище для игр
+var games = map[string]*game{}
+
 const (
 	GameStateSendFirstQuestion = 1
 	GameStateWaitAnswers       = 2
 )
 
-var H = hub{
-	broadcast:  make(chan message),
-	register:   make(chan subscription),
-	unregister: make(chan subscription),
-	rooms:      make(map[string]map[*connection]bool),
+func NewHub() *hub {
+	return &hub{
+		broadcast:  make(chan message),
+		register:   make(chan subscription),
+		unregister: make(chan subscription),
+		rooms:      make(map[string]map[*connection]bool),
+	}
 }
 
 const (
 	maxConnections = 2
 )
-
-// Хранилище для игр
-var games = map[string]*game{}
 
 func (h *hub) Run() {
 	for {
@@ -76,6 +78,10 @@ func (h *hub) Run() {
 				h.rooms[s.room] = connections
 			}
 			h.rooms[s.room][s.conn] = true
+			// 1. Инициализация карты
+			map3, _ := json.Marshal(domain.MessageMap3)
+			s.conn.send <- map3
+
 			// Создание игры
 			// TODO создавать игру раньше
 			currentGame, found := games[s.room]

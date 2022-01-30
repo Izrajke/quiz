@@ -43,7 +43,7 @@ func NewConnection(ws *websocket.Conn) *connection {
 }
 
 // ServeWs обработка подключения к сокету
-func ServeWs(w http.ResponseWriter, r *http.Request, playerName string, roomId string) {
+func ServeWs(w http.ResponseWriter, r *http.Request, hub *hub, playerName string, roomId string) {
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
@@ -59,9 +59,9 @@ func ServeWs(w http.ResponseWriter, r *http.Request, playerName string, roomId s
 	p := domain.NewPlayer(playerName)
 	c := NewConnection(ws)
 	s := subscription{c, roomId, p}
-	H.register <- s
+	hub.register <- s
 	go s.writePump()
-	go s.readPump()
+	go s.readPump(hub)
 }
 
 // writePump отправляет сообщения в сокет и пингует его
@@ -99,10 +99,10 @@ func (c *connection) write(mt int, payload []byte) error {
 }
 
 // readPump читает сообщения и отправляет событие отключения от сокета
-func (s subscription) readPump() {
+func (s subscription) readPump(hub *hub) {
 	c := s.conn
 	defer func() {
-		H.unregister <- s
+		hub.unregister <- s
 		c.ws.Close()
 	}()
 	c.ws.SetReadLimit(maxMessageSize)
@@ -126,7 +126,7 @@ func (s subscription) readPump() {
 				m := message{
 					msg, s.room, &request,
 				}
-				H.broadcast <- m
+				hub.broadcast <- m
 			} else {
 				log.Printf("Request of unknown type: %d", request.Type)
 			}
