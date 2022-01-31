@@ -8,8 +8,8 @@ import type {
   ISocketPlayersData,
   IPlayer,
 } from 'api';
-import { TMap } from "../../components";
-import {ISocketMapData} from "api";
+import { TMap } from 'components';
+import { ISocketMapData } from 'api';
 
 /** Тип статуса игры */
 export type TStatus = 'question';
@@ -46,6 +46,7 @@ export class RoomState {
       setAnswer: action,
       setPlayers: action,
       resetAnswer: action,
+      setMap: action,
     });
     this.root = root;
   }
