@@ -25,12 +25,16 @@ export class RoomState {
   title = '';
   /** Статус игры */
   status: TStatus = 'question';
-  /** Ответ на вопрос */
+  /** Ответ игрока */
+  playerAnswer = '';
+  /** Ответ на вопрос с сервера */
   answer = '';
   /** Игроки */
   players: IPlayer[] = [];
   /** Карта */
   map: TMap = [];
+  // TODO
+  isModalShowing = false
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -41,6 +45,7 @@ export class RoomState {
       answer: observable,
       players: observable,
       map: observable,
+      isModalShowing: observable,
       // action
       setQuestion: action,
       setAnswer: action,
