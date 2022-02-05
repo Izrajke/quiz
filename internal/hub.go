@@ -184,7 +184,14 @@ func (h *hub) Run() {
 				// Удаляем игрока после отключения
 				game, found := games[s.room]
 				if found {
-					game.Players = game.Players[:len(game.Players)-1]
+					var playerStore []*domain.Player
+					// TODO Сделать через хэш мапу
+					for _, player := range game.Players {
+						if player.Id != s.player.Id {
+							playerStore = append(playerStore, player)
+						}
+					}
+					game.Players = playerStore
 				}
 
 				if _, ok := connections[s.conn]; ok {
