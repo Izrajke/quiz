@@ -78,9 +78,6 @@ func (h *hub) Run() {
 				h.rooms[s.room] = connections
 			}
 			h.rooms[s.room][s.conn] = true
-			// 1. Инициализация карты
-			map3, _ := json.Marshal(domain.MessageMap)
-			s.conn.send <- map3
 
 			// Создание игры
 			// TODO создавать игру раньше
@@ -103,6 +100,7 @@ func (h *hub) Run() {
 					Players: game.Players,
 				}
 
+				// 1. Инициализация игроков
 				event, _ := json.Marshal(playersMessage)
 				for c := range connections {
 					select {
@@ -115,6 +113,10 @@ func (h *hub) Run() {
 						}
 					}
 				}
+
+				// 2. Инициализация карты
+				map3, _ := json.Marshal(domain.MessageMap)
+				s.conn.send <- map3
 
 			} else {
 				cons := make([]*connection, 0, len(connections))
@@ -130,6 +132,7 @@ func (h *hub) Run() {
 					Players: currentGame.Players,
 				}
 
+				// 1. Инициализация игроков
 				event, _ := json.Marshal(playersMessage)
 				for c := range connections {
 					select {
@@ -142,6 +145,10 @@ func (h *hub) Run() {
 						}
 					}
 				}
+
+				// 2. Инициализация карты
+				map3, _ := json.Marshal(domain.MessageMap)
+				s.conn.send <- map3
 			}
 
 			// Запуск игры
