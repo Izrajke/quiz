@@ -1,5 +1,7 @@
 import type { FunctionComponent } from 'react';
 
+import type { CellData } from 'api';
+
 import classes from './Map.module.css';
 
 import type { ICell } from './Cell';
@@ -10,17 +12,14 @@ import { Row } from './Row';
 /** ------------------------------------------------------------ */
 /** Типы */
 
-/** Владелец ячейки */
-export type TOwner = 'player-1' | 'player-2' | 'player-3' | 'empty';
-
-export interface ICellData {
-  isExists: boolean;
-  owner?: TOwner;
+export interface Cell extends CellData {
+  /** Может ли игрок сходить на эту клетку */
+  canMove?: boolean;
 }
 
-export type TRow = ICellData[];
+export type Row = Cell[];
 
-export type TMap = TRow[];
+export type Map = Row[];
 
 export interface IMap extends FunctionComponent {
   Cell: ICell;

@@ -1,5 +1,3 @@
-import {TMap} from "../components";
-
 /** ------------------------------------------------------------ */
 /** Типы и интерфейсы сокета */
 
@@ -60,11 +58,14 @@ export interface ISocketAnswerData {
   };
 }
 
+export type PlayerColors = 'player-1' | 'player-2' | 'player-3';
+
 /** Интерфейс игрока */
 export interface IPlayer {
   id: string;
   name: string;
   points: number;
+  color: PlayerColors;
 }
 
 /** Информация о игроках */
@@ -73,10 +74,30 @@ export interface ISocketPlayersData {
   players: IPlayer[];
 }
 
+/** - - - - - - - - - - - - - - - - - - - - - - - - */
+/** Карта */
+
+/** Владелец ячейки */
+export type CellOwner = 'player-1' | 'player-2' | 'player-3' | 'empty';
+
+/** Ячейка карты */
+export interface CellData {
+  /** Доступна ли для игры клетка */
+  isExists: boolean;
+  /** Владелец */
+  owner?: CellOwner;
+}
+
+/** Row */
+export type RowData = CellData[];
+
+/** Карта */
+export type MapData = RowData[];
+
 /** Информация о карте */
-export interface ISocketMapData {
+export interface SocketMapData {
   type: TSocketResponseType;
-  map: TMap;
+  map: MapData;
 }
 
 /** - - - - - - - - - - - - - - - - - - - - - - - - */

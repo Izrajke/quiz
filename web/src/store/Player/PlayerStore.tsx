@@ -2,16 +2,27 @@ import { makeObservable, observable, action } from 'mobx';
 
 import { RootStore } from '../RootStore';
 
+import { PlayerColors, IPlayer } from 'api';
+
 /** Информация о игроке */
 export class PlayerStore {
   /** Root store */
   root: RootStore;
   /** Никнейм */
   nickname = localStorage.getItem('nickname') || 'Anonim';
+  /** Цвет */
+  color?: PlayerColors;
+  /** uuid */
+  id = '';
   constructor(root: RootStore) {
     makeObservable(this, {
+      // observable
+      color: observable,
       nickname: observable,
+      id: observable,
+      // action
       setNickname: action,
+      setPlayerInfo: action,
     });
     this.root = root;
   }
@@ -19,5 +30,15 @@ export class PlayerStore {
   setNickname = (nickname: string) => {
     this.nickname = nickname;
     localStorage.setItem('nickname', nickname);
+  };
+
+  /** Устанавливает id и цвет игрока */
+  setPlayerInfo = () => {
+    console.log('players', this.root.app.room.players);
+    const { id, color } = this.root.app.room.players.find(
+      (player) => (player.name = this.nickname),
+    ) as IPlayer;
+    this.id = id;
+    this.color = color;
   };
 }

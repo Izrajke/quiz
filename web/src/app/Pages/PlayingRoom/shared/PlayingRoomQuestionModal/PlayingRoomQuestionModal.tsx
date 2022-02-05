@@ -13,7 +13,7 @@ import classes from './PlayingRoomQuestionModal.module.css';
 export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
   const { app } = useStore();
   // TODO убрать, использовать app.room.playerAnswer
-  const [localAnswer, setLocalAnswer] = useState<string>('');
+  const [localAnswer, setLocalAnswer] = useState('');
 
   useEffect(() => {
     setLocalAnswer('');
@@ -23,7 +23,7 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
   const answerHandler = (answer: ISocketAnswer) => () => {
     if (app.socket) {
       app.socketMessage(answer);
-      app.room.playerAnswer = answer.option
+      app.room.playerAnswer = answer.option;
       setLocalAnswer(answer.option);
     }
   };
@@ -40,7 +40,7 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
   );
 
   return (
-    <Modal show={app.room.isModalShowing} className={classes.modal}>
+    <Modal show={app.room.isQuestionModalOpen} className={classes.modal}>
       <Modal.Header>
         <Typography.Text
           className={classes.question}

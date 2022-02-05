@@ -24,6 +24,7 @@ export const PlayingRoomPlayersContainer: FunctionComponent = observer(() => {
           id={player.id}
           name={player.name}
           points={player.points}
+          color={player.color}
         />
       ))}
     </div>

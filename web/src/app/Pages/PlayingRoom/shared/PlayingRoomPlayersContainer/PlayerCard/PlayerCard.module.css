@@ -24,8 +24,19 @@
 }
 
 .playerLine {
-  background: var(--player-1);
   height: 10px;
   width: 100%;
   border-radius: 6px 6px 0px 0px;
+}
+
+.line-player-1 {
+  background: var(--player-1);
+}
+
+.line-player-2 {
+  background: var(--player-2);
+}
+
+.line-player-3 {
+  background: var(--player-3);
 }
