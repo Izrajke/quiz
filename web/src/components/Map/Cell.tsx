@@ -41,7 +41,7 @@ export const Cell: ICell = observer(({
 
     /** Отправляем сообщение о получении или о захвате клетки */
     const clickHandle = () => {
-        app.socketMessage({type: TSocketRequestType.attackCell, playerId: "3333-4444-5555", rowIndex: rowIndex, cellIndex: cellIndex})
+        app.socketMessage({type: TSocketRequestType.getCell, rowIndex: rowIndex, cellIndex: cellIndex})
     };
 
     // TODO Завязка на isExists пока не доработана логика нападения на противника

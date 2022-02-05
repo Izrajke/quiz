@@ -29,7 +29,7 @@ export enum TSocketRequestType {
   /** Получить клетку */
   getCell = 3,
   /** Напасть на клетку */
-  attackCell = 3,
+  attackCell = 4,
 }
 
 /** - - - - - - - - - - - - - - - - - - - - - - - - */

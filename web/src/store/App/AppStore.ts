@@ -59,12 +59,22 @@ export class AppStore {
           case TSocketResponseType.answerFirstQuestionType:
           case TSocketResponseType.answerSecondQuestionType:
             this.room.setAnswer(data);
+            // закрытие модалки
             setTimeout(() => {
-              this.socketMessage({ type: TSocketRequestType.getQuestion });
+              this.room.isModalShowing = false;
             }, answerDelay);
+
+            // если ответ игрока равен правильному
+            // даём возможность выбрать территорию
+            if (this.room.playerAnswer !== this.room.answer) {
+              setTimeout(() => {
+                this.socketMessage({ type: TSocketRequestType.getQuestion });
+              }, answerDelay);
+            }
             break;
           case TSocketResponseType.firstQuestionType:
           case TSocketResponseType.secondQuestionType:
+            this.room.isModalShowing = true
             this.room.setQuestion(data);
             this.room.resetAnswer();
             break;
@@ -73,6 +83,9 @@ export class AppStore {
             break;
           case TSocketResponseType.mapInfo:
             this.room.setMap(data)
+            setTimeout(() => {
+              this.socketMessage({ type: TSocketRequestType.getQuestion });
+            }, answerDelay);
             break;
           case TSocketResponseType.endGame:
             this.room.setType(TSocketResponseType.endGame);

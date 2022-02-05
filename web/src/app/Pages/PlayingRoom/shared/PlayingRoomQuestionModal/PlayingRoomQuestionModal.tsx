@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useMemo } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import type { FunctionComponent } from 'react';
 import { observer } from 'mobx-react-lite';
 import clsx from 'clsx';
@@ -7,12 +7,12 @@ import { Modal, Button, Typography } from 'components';
 
 import { useStore } from 'store';
 import type { ISocketAnswer } from 'api';
-import { TSocketResponseType } from 'api';
 
 import classes from './PlayingRoomQuestionModal.module.css';
 
 export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
   const { app } = useStore();
+  // TODO убрать, использовать app.room.playerAnswer
   const [localAnswer, setLocalAnswer] = useState<string>('');
 
   useEffect(() => {
@@ -23,6 +23,7 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
   const answerHandler = (answer: ISocketAnswer) => () => {
     if (app.socket) {
       app.socketMessage(answer);
+      app.room.playerAnswer = answer.option
       setLocalAnswer(answer.option);
     }
   };
@@ -38,13 +39,8 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
     [app.room.answer, localAnswer],
   );
 
-  const isModalShowing = useMemo(
-    () => app.room.type !== TSocketResponseType.endGame,
-    [app.room.type],
-  );
-
   return (
-    <Modal show={isModalShowing} className={classes.modal}>
+    <Modal show={app.room.isModalShowing} className={classes.modal}>
       <Modal.Header>
         <Typography.Text
           className={classes.question}
