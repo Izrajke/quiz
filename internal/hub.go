@@ -79,7 +79,7 @@ func (h *hub) Run() {
 			}
 			h.rooms[s.room][s.conn] = true
 			// 1. Инициализация карты
-			map3, _ := json.Marshal(domain.MessageMap3)
+			map3, _ := json.Marshal(domain.MessageMap)
 			s.conn.send <- map3
 
 			// Создание игры
@@ -226,6 +226,9 @@ func (h *hub) Run() {
 					game.state = GameStateWaitAnswers
 					game.round++
 				}
+			case 3:
+				domain.GlobalMap[m.request.RowIndex][m.request.CellIndex].Owner = "player-2"
+				event, _ = json.Marshal(domain.MessageMap)
 			}
 
 			if event != nil {
