@@ -22,6 +22,7 @@ export const PlayingRoomMap: FunctionComponent = observer(() => {
                 owner={cell.owner}
                 rowIndex={i}
                 cellIndex={j}
+                canMove={cell.canMove}
                 key={Math.random()}
               />
             ))}

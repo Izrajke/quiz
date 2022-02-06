@@ -12,7 +12,7 @@ type Map struct {
 	Map  [][]*Cell `json:"map"`
 }
 
-var GlobalMap = Map4
+var GlobalMap = Map3
 
 var Map4 = [][]*Cell{
 	{ // 1

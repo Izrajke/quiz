@@ -71,7 +71,6 @@ export class AppStore {
             this.room.useQuetionModal(true);
             break;
           case TSocketResponseType.playersInfo:
-            console.log('playes info', data);
             this.room.setPlayers(data);
             this.root.player.setPlayerInfo();
             break;
