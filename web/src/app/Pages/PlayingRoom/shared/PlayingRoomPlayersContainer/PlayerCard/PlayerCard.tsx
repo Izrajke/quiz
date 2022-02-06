@@ -5,13 +5,14 @@ import { observer } from 'mobx-react-lite';
 import { Typography } from 'components';
 import { IPlayer } from 'api';
 
+import { PlyerCardLine } from './PlyerCardLine';
 import classes from './PlayerCard.module.css';
 
 export const PlayerCard: FunctionComponent<IPlayer> = observer(
-  ({ id, name, points }) => {
+  ({ id, name, points, color }) => {
     return (
       <div id={id} className={classes.wrapper}>
-        <div className={classes.playerLine}></div>
+        <PlyerCardLine color={color} />
         <div className={classes.content}>
           <img
             className={classes.avatar}

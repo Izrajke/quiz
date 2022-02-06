@@ -7,9 +7,13 @@ import type {
   ISocketAnswerData,
   ISocketPlayersData,
   IPlayer,
+  MapData,
+  PlayerColors,
 } from 'api';
-import { TMap } from 'components';
-import { ISocketMapData } from 'api';
+import { MapMoveControl } from 'classes';
+
+import type { Map } from 'components';
+import type { SocketMapData } from 'api';
 
 /** Тип статуса игры */
 export type TStatus = 'question';
@@ -17,6 +21,8 @@ export type TStatus = 'question';
 export class RoomState {
   /** Root store */
   root: RootStore;
+  /** Статические методы для работы с передвижением по карте */
+  mapMoveControl = MapMoveControl;
   /** Варианты ответа  */
   options: ISocketOptions = {};
   /** Тип вопроса */
@@ -32,9 +38,9 @@ export class RoomState {
   /** Игроки */
   players: IPlayer[] = [];
   /** Карта */
-  map: TMap = [];
-  // TODO
-  isModalShowing = false
+  map: Map = [];
+  /** Модалка вопроса */
+  isQuestionModalOpen = false;
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -45,13 +51,14 @@ export class RoomState {
       answer: observable,
       players: observable,
       map: observable,
-      isModalShowing: observable,
+      isQuestionModalOpen: observable,
       // action
       setQuestion: action,
       setAnswer: action,
       setPlayers: action,
       resetAnswer: action,
       setMap: action,
+      useQuetionModal: action,
     });
     this.root = root;
   }
@@ -83,8 +90,27 @@ export class RoomState {
     this.type = type;
   }
 
-  setMap(mapData: ISocketMapData) {
+  setMap(mapData: SocketMapData) {
     const { map } = mapData;
-    this.map = map;
+    this.root.player.color &&
+      (this.map = this.mapFormat(map, this.root.player.color));
   }
+
+  useQuetionModal = (value: boolean) => {
+    this.isQuestionModalOpen = value;
+  };
+
+  /** Приведение карты к игровому формату (добавление поля canMove)  */
+  mapFormat = (mapData: MapData, player: PlayerColors): Map =>
+    mapData.map((row, rowIndex) =>
+      row.map((cell, cellIndex) => ({
+        ...cell,
+        canMove: this.mapMoveControl.checkCanMoveCapture(
+          mapData,
+          rowIndex,
+          cellIndex,
+          player,
+        ),
+      })),
+    );
 }

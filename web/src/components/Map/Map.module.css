@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   margin: auto;
+  gap: -24px;
 
   -moz-transform-origin: 50% 100%;
   -moz-transform: perspective(450px) rotateX(15deg);
@@ -15,11 +16,11 @@
 /* row */
 .row {
   display: flex;
-  position: relative;
 }
 
 .topMarginRow {
   margin-top: -24px;
+  pointer-events: none;
 }
 
 .evenRow {
@@ -27,12 +28,19 @@
 }
 
 /* cell */
+
+.cell {
+  transition: all 0.3s;
+  cursor: not-allowed;
+  pointer-events: visibleFill;
+}
+
 .none {
   fill: var(--dark-1);
 }
 
 .empty {
-  fill: var(--dark-3);
+  fill: var(--dark-2);
 }
 
 .player-1 {
@@ -47,8 +55,23 @@
   fill: var(--player-3);
 }
 
-*:is(.empty, .player-1, .player-2, .player-3):hover {
-  filter: brightness(150%);
-  /* TODO Доделать отображение при наведении на клетку, которую можно захватить */
-  cursor: crosshair
+.canMove {
+  fill: var(--dark-3);
+  filter: brightness(125%);
+  cursor: pointer;
+}
+
+.canMove-player-1:hover {
+  fill: var(--player-1);
+  filter: brightness(80%);
+}
+
+.canMove-player-2:hover {
+  fill: var(--player-2);
+  filter: brightness(80%);
+}
+
+.canMove-player-3:hover {
+  fill: var(--player-3);
+  filter: brightness(80%);
 }
