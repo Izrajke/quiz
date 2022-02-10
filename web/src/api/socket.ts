@@ -85,7 +85,7 @@ export interface CellData {
   /** Доступна ли для игры клетка */
   isExists: boolean;
   /** Владелец */
-  owner?: CellOwner;
+  owner: CellOwner;
 }
 
 /** Row */

@@ -1,5 +1,7 @@
 import type { MapData, PlayerColors } from 'api';
 
+
+
 /** Класс со статическими методами проверки клетки на доступность хода */
 export class MapCellCheck {
   /** Проверка клеток */

@@ -3,7 +3,6 @@
   display: flex;
   flex-direction: column;
   margin: auto;
-  gap: -24px;
 
   -moz-transform-origin: 50% 100%;
   -moz-transform: perspective(450px) rotateX(15deg);
@@ -28,15 +27,18 @@
 }
 
 /* cell */
-
 .cell {
   transition: all 0.3s;
-  cursor: not-allowed;
   pointer-events: visibleFill;
+  fill: var(--dark-1);
 }
 
-.none {
-  fill: var(--dark-1);
+.notAllowed {
+  cursor: not-allowed;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 .empty {
@@ -55,10 +57,16 @@
   fill: var(--player-3);
 }
 
-.canMove {
-  fill: var(--dark-3);
-  filter: brightness(125%);
-  cursor: pointer;
+.canMove-player-1 {
+  animation: pulsation 0.9s infinite alternate;
+}
+
+.canMove-player-2 {
+  animation: pulsation 0.9s infinite alternate;
+}
+
+.canMove-player-3 {
+  animation: pulsation 0.9s infinite alternate;
 }
 
 .canMove-player-1:hover {
@@ -74,4 +82,14 @@
 .canMove-player-3:hover {
   fill: var(--player-3);
   filter: brightness(80%);
+}
+
+@keyframes pulsation {
+  from {
+    filter: brightness(60%);
+  }
+
+  to {
+    filter: brightness(100%);
+  }
 }

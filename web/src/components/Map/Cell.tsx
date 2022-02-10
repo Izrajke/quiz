@@ -6,13 +6,12 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
 import { TSocketRequestType } from 'api';
+import type { CellData } from 'api';
 
 import classes from './Map.module.css';
 
-export interface ICellProps {
+export interface ICellProps extends CellData {
   className?: string;
-  isExists: boolean;
-  owner: string | undefined | null;
   canMove?: boolean;
   /** Индексы матрицы клеток */
   rowIndex: number;
@@ -27,13 +26,16 @@ export interface ICell extends FunctionComponent<ICellProps> {
 export const Cell: ICell = observer(
   ({ className, isExists, owner, rowIndex, cellIndex, canMove }) => {
     const { app, player } = useStore();
+
     const styles = useMemo(
       () =>
         clsx(
           className,
           classes.cell,
-          isExists ? owner && classes[owner] : classes.none,
-          canMove && `${classes.canMove} ${classes[`canMove-${player.color}`]}`,
+          isExists && owner && classes[owner],
+          canMove
+            ? `${classes[`canMove-${player.color}`]}  ${classes.pointer}`
+            : classes.notAllowed,
         ),
       [className, isExists, owner, canMove, player.color],
     );
