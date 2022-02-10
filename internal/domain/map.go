@@ -14,6 +14,39 @@ type Map struct {
 
 var GlobalMap = Map3
 
+var Map5 = [][]*Cell{
+	{ // 2
+		{ // 1
+			IsExists: true,
+			Owner:    "player-2",
+		},
+		{ // 2
+			IsExists: true,
+			Owner:    "player-2",
+		},
+	},
+	{ // 2
+		{ // 1
+			IsExists: true,
+			Owner:    "player-1",
+		},
+		{ // 2
+			IsExists: true,
+			Owner:    "player-1",
+		},
+	},
+	{ // 3
+		{ // 1
+			IsExists: true,
+			Owner:    "player-3",
+		},
+		{ // 2
+			IsExists: true,
+			Owner:    "player-3",
+		},
+	},
+}
+
 var Map4 = [][]*Cell{
 	{ // 1
 		{ // 1

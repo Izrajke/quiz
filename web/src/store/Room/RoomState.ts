@@ -10,7 +10,8 @@ import type {
   MapData,
   PlayerColors,
 } from 'api';
-import { MapMoveControl } from 'classes';
+import { MapMoveControl } from './classes';
+import type { CaptureCheckNames } from './classes';
 
 import type { Map } from 'components';
 import type { SocketMapData } from 'api';
@@ -41,6 +42,8 @@ export class RoomState {
   map: Map = [];
   /** Модалка вопроса */
   isQuestionModalOpen = false;
+  /** Capture статус */
+  moveStatus: CaptureCheckNames = 'attack';
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -105,7 +108,7 @@ export class RoomState {
     mapData.map((row, rowIndex) =>
       row.map((cell, cellIndex) => ({
         ...cell,
-        canMove: this.mapMoveControl.checkCanMoveCapture(
+        canMove: this.mapMoveControl.checks[this.moveStatus](
           mapData,
           rowIndex,
           cellIndex,
