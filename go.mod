@@ -7,5 +7,6 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/klauspost/compress v1.13.6 // indirect
+	github.com/stretchr/testify v1.7.0
 	github.com/valyala/fasthttp v1.31.0 // indirect
 )

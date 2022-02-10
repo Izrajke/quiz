@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"encoding/json"
 	"quiz/internal/domain"
 )
 
@@ -12,7 +11,7 @@ type message struct {
 }
 
 type subscription struct {
-	conn   *connection
+	conn   *domain.Connection
 	room   string
 	player *domain.Player
 }
@@ -20,248 +19,162 @@ type subscription struct {
 // hub maintains the set of active connections and broadcasts messages to the
 // connections.
 type hub struct {
-	// Inbound messages from the connections.
-	broadcast chan message
-
-	// Register requests from the connections.
+	// регистрируемые соединения
 	register chan subscription
 
-	// Unregister requests from connections.
+	// полученные сообщения
+	broadcast chan message
+
+	// отключённые соединения
 	unregister chan subscription
 
-	// Комнаты
-	rooms map[string]map[*connection]bool
+	// игры
+	games map[string]*gameStore
+
+	// события
+	event *domain.Event
 }
 
-type game struct {
-	connections []*connection
-	state       int
-	round       int
+type gameStore struct {
+	// состояние игры
+	state int
 
-	answers int
+	// счетчик вопросов
+	questionCounter int
+	// счетчик ответов
+	answerCounter int
+	// счетчик раундов
+	roundCounter int
 
-	firstQuestionCounter  int
-	secondQuestionCounter int
-
-	Players []*domain.Player
+	// игроки, соединение - игрок
+	players map[*domain.Connection]*domain.Player
 }
-
-// Хранилище для игр
-var games = map[string]*game{}
-
-const (
-	GameStateSendFirstQuestion = 1
-	GameStateWaitAnswers       = 2
-)
 
 func NewHub() *hub {
 	return &hub{
-		broadcast:  make(chan message),
 		register:   make(chan subscription),
+		broadcast:  make(chan message),
 		unregister: make(chan subscription),
-		rooms:      make(map[string]map[*connection]bool),
+		// игры
+		games: make(map[string]*gameStore),
+		// события
+		event: domain.NewEvent(),
 	}
 }
 
 const (
+	// максимальное кол-во игроков
 	maxConnections = 2
 )
 
 func (h *hub) Run() {
+	// TODO
+	// 1. Сделать не повторяющиеся цвета
+	// 2. Покрыть первичными тестами main.go
 	for {
 		select {
-		// подключилось новое соединение
+		// зарегистрировано новое соединение
 		case s := <-h.register:
-			connections := h.rooms[s.room]
-			if connections == nil {
-				connections = make(map[*connection]bool)
-				h.rooms[s.room] = connections
-			}
-			h.rooms[s.room][s.conn] = true
+			game := h.createOrGetGame(&s)
 
-			// Создание игры
-			// TODO создавать игру раньше
-			currentGame, found := games[s.room]
-			if !found {
-				cons := make([]*connection, 0, len(connections))
-				for c := range connections {
-					cons = append(cons, c)
+			// 1. инициализация игроков
+			msg := h.event.PlayersInfo(game.players).Marshal()
+			h.sendToAll(game.players, s.room, msg)
+
+			// 2. инициализация карты
+			msg = h.event.MapInfo().Marshal()
+			h.sendToOne(game.players, s.conn, s.room, msg)
+
+			// 3. запуск игры
+			if len(game.players) == maxConnections {
+				if len(domain.GlobalQuestions) == game.questionCounter {
+					// TODO временное решение
+					game.questionCounter = 0
 				}
-				game := &game{
-					connections: cons,
-					round:       1,
-				}
-				games[s.room] = game
-				game.Players = append(game.Players, s.player)
-
-				// TODO refactoring
-				playersMessage := &domain.PlayersMessage{
-					Type:    12,
-					Players: game.Players,
-				}
-
-				// 1. Инициализация игроков
-				event, _ := json.Marshal(playersMessage)
-				for c := range connections {
-					select {
-					case c.send <- event:
-					default:
-						close(c.send)
-						delete(connections, c)
-						if len(connections) == 0 {
-							delete(h.rooms, s.room)
-						}
-					}
-				}
-
-				// 2. Инициализация карты
-				map3, _ := json.Marshal(domain.MessageMap)
-				s.conn.send <- map3
-
-			} else {
-				cons := make([]*connection, 0, len(connections))
-				for c := range connections {
-					cons = append(cons, c)
-				}
-				currentGame.connections = cons
-				currentGame.Players = append(currentGame.Players, s.player)
-
-				// TODO refactoring
-				playersMessage := &domain.PlayersMessage{
-					Type:    12,
-					Players: currentGame.Players,
-				}
-
-				// 1. Инициализация игроков
-				event, _ := json.Marshal(playersMessage)
-				for c := range connections {
-					select {
-					case c.send <- event:
-					default:
-						close(c.send)
-						delete(connections, c)
-						if len(connections) == 0 {
-							delete(h.rooms, s.room)
-						}
-					}
-				}
-
-				// 2. Инициализация карты
-				map3, _ := json.Marshal(domain.MessageMap)
-				s.conn.send <- map3
-			}
-
-			// Запуск игры
-			if len(connections) == maxConnections {
-				currentGame.state = GameStateWaitAnswers
-				// TODO refactoring
-				// Из-за того, что увеличиваем счетчик при заходе, поэтому не правильно считаем номер первого вопроса
-				if len(domain.Questions) == currentGame.firstQuestionCounter {
-					currentGame.firstQuestionCounter = 0
-				}
-				question := domain.Questions[currentGame.firstQuestionCounter]
-				question.Answer = nil
-				currentGame.firstQuestionCounter++
-
-				event, _ := json.Marshal(question)
-
-				for c := range connections {
-					select {
-					case c.send <- event:
-					default:
-						close(c.send)
-						delete(connections, c)
-						if len(connections) == 0 {
-							delete(h.rooms, s.room)
-						}
-					}
-				}
-			}
-		case s := <-h.unregister:
-			connections := h.rooms[s.room]
-			if connections != nil {
-				// TODO refactoring
-				// Удаляем игрока после отключения
-				game, found := games[s.room]
-				if found {
-					var playerStore []*domain.Player
-					// TODO Сделать через хэш мапу
-					for _, player := range game.Players {
-						if player.Id != s.player.Id {
-							playerStore = append(playerStore, player)
-						}
-					}
-					game.Players = playerStore
-				}
-
-				if _, ok := connections[s.conn]; ok {
-					delete(connections, s.conn)
-					close(s.conn.send)
-					if len(connections) == 0 {
-						delete(h.rooms, s.room)
-					}
-				}
+				questionInfo := domain.GlobalQuestions[game.questionCounter]
+				// 4. отправка вопроса
+				msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
+				h.sendToAll(game.players, s.room, msg)
 			}
 		case m := <-h.broadcast:
-			connections := h.rooms[m.room]
-			game := games[m.room]
+			game := h.games[m.room]
 
-			var event []byte
+			var msg []byte
 			switch m.request.Type {
-			case 1:
-				// Получение ответа на вопрос
-				if game.state == GameStateWaitAnswers {
-					game.answers++
-					if game.answers == maxConnections {
-						game.answers = 0
+			// Получение ответа на вопрос
+			case domain.EventReceivedAnswer:
+				game.answerCounter++
+				if len(game.players) == maxConnections {
+					game.answerCounter = 0
 
-						if game.round == 4 {
-							finish := &finish{Type: 999}
-							event, _ = json.Marshal(finish)
-						} else {
-							question := domain.Questions[game.firstQuestionCounter]
-							answer := &domain.FirstQuestionAnswer{
-								Type:   5,
-								Answer: domain.Answer{Value: question.Answer.Value},
-							}
-							event, _ = json.Marshal(answer)
-							game.state = GameStateSendFirstQuestion
-						}
+					if game.roundCounter == 4 {
+						msg = h.event.FinishInfo().Marshal()
+					} else {
+						questionInfo := domain.GlobalQuestions[game.questionCounter]
+						msg = h.event.AnswerFirstQuestionInfo(questionInfo.Answer.Value).Marshal()
 					}
 				}
-			case 2:
-				// Запрос следующуего вопроса
-				if game.state == GameStateSendFirstQuestion {
-					question := domain.Questions[game.firstQuestionCounter]
-					question.Answer = nil
-					event, _ = json.Marshal(question)
-
-					game.firstQuestionCounter++
-					game.state = GameStateWaitAnswers
-					game.round++
-				}
-			case 3:
+			// Запрос следующуего вопроса
+			case domain.EventReceivedNextFirstQuestion:
+				questionInfo := domain.GlobalQuestions[game.questionCounter]
+				msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
+				game.roundCounter++
+			case domain.EventReceivedGetMapCell:
 				domain.GlobalMap[m.request.RowIndex][m.request.CellIndex].Owner = "player-2"
-				event, _ = json.Marshal(domain.MessageMap)
+				msg = h.event.MapInfo().Marshal()
 			}
 
-			if event != nil {
-				for c := range connections {
-					select {
-					case c.send <- event:
-					default:
-						close(c.send)
-						delete(connections, c)
-						if len(connections) == 0 {
-							delete(h.rooms, m.room)
-						}
-					}
+			if msg != nil {
+				h.sendToAll(game.players, m.room, msg)
+			}
+		case s := <-h.unregister:
+			game, found := h.games[s.room]
+			if found {
+				delete(game.players, s.conn)
+				close(s.conn.Send)
+				if len(game.players) == 0 {
+					delete(h.games, s.room)
 				}
 			}
 		}
 	}
 }
 
-type finish struct {
-	Type int `json:"type"`
+// createOrGetGame создаёт или получает игру
+func (h *hub) createOrGetGame(s *subscription) *gameStore {
+	game, found := h.games[s.room]
+	if !found {
+		players := make(map[*domain.Connection]*domain.Player, 0)
+		players[s.conn] = s.player
+
+		game = &gameStore{
+			state:   1,
+			players: players,
+		}
+		h.games[s.room] = game
+	} else {
+		game.players[s.conn] = s.player
+	}
+
+	return game
+}
+
+// sendToAll отправляет всем
+func (h *hub) sendToAll(players map[*domain.Connection]*domain.Player, room string, msg []byte) {
+	for c := range players {
+		h.sendToOne(players, c, room, msg)
+	}
+}
+
+// sendToAll отправляет одному
+func (h *hub) sendToOne(players map[*domain.Connection]*domain.Player, c *domain.Connection, room string, msg []byte) {
+	select {
+	case c.Send <- msg:
+	default:
+		close(c.Send)
+		delete(players, c)
+		if len(players) == 0 {
+			delete(h.games, room)
+		}
+	}
 }

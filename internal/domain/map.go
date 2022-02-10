@@ -6,12 +6,6 @@ type Cell struct {
 	Owner    string `json:"owner"`
 }
 
-// Map Карта
-type Map struct {
-	Type int       `json:"type"`
-	Map  [][]*Cell `json:"map"`
-}
-
 var GlobalMap = Map3
 
 var Map5 = [][]*Cell{
@@ -304,10 +298,4 @@ var Map2 = [][]*Cell{
 			Owner:    "empty",
 		},
 	},
-}
-
-// MessageMap Сообщение с картой
-var MessageMap = &Map{
-	Type: 13,
-	Map:  GlobalMap,
 }

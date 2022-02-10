@@ -12,9 +12,6 @@ import (
 )
 
 const (
-	// Time allowed to write a message to the peer.
-	writeWait = 10 * time.Second
-
 	// Time allowed to read the next pong message from the peer.
 	pongWait = 60 * time.Second
 
@@ -24,23 +21,6 @@ const (
 	// Maximum message size allowed from peer.
 	maxMessageSize = 512
 )
-
-// connection is an middleman between the websocket connection and the hub.
-type connection struct {
-	// соединение сокета
-	ws *websocket.Conn
-
-	// Buffered channel of outbound messages.
-	send chan []byte
-}
-
-// NewConnection конструктор соединения
-func NewConnection(ws *websocket.Conn) *connection {
-	return &connection{
-		send: make(chan []byte, 256),
-		ws:   ws,
-	}
-}
 
 // ServeWs обработка подключения к сокету
 func ServeWs(w http.ResponseWriter, r *http.Request, hub *hub, playerName string, roomId string) {
@@ -57,7 +37,7 @@ func ServeWs(w http.ResponseWriter, r *http.Request, hub *hub, playerName string
 	}
 	fmt.Printf("Server got a new connection player: %s room: %s\n", playerName, roomId)
 	p := domain.NewPlayer(playerName)
-	c := NewConnection(ws)
+	c := domain.NewConnection(ws)
 	s := subscription{c, roomId, p}
 	hub.register <- s
 	go s.writePump()
@@ -70,32 +50,26 @@ func (s *subscription) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
-		c.ws.Close()
+		c.Ws.Close()
 	}()
 	for {
 		select {
-		case message, ok := <-c.send:
+		case message, ok := <-c.Send:
 			if !ok {
-				c.write(websocket.CloseMessage, []byte{})
+				c.Write(websocket.CloseMessage, []byte{})
 				return
 			}
 			// Отправка сообщения
-			if err := c.write(websocket.TextMessage, message); err != nil {
+			if err := c.Write(websocket.TextMessage, message); err != nil {
 				return
 			}
 			fmt.Println("Server sent a message: " + string(message))
 		case <-ticker.C:
-			if err := c.write(websocket.PingMessage, []byte{}); err != nil {
+			if err := c.Write(websocket.PingMessage, []byte{}); err != nil {
 				return
 			}
 		}
 	}
-}
-
-// write writes a message with the given message type and payload.
-func (c *connection) write(mt int, payload []byte) error {
-	c.ws.SetWriteDeadline(time.Now().Add(writeWait))
-	return c.ws.WriteMessage(mt, payload)
 }
 
 // readPump читает сообщения и отправляет событие отключения от сокета
@@ -103,13 +77,13 @@ func (s subscription) readPump(hub *hub) {
 	c := s.conn
 	defer func() {
 		hub.unregister <- s
-		c.ws.Close()
+		c.Ws.Close()
 	}()
-	c.ws.SetReadLimit(maxMessageSize)
-	c.ws.SetReadDeadline(time.Now().Add(pongWait))
-	c.ws.SetPongHandler(func(string) error { c.ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	c.Ws.SetReadLimit(maxMessageSize)
+	c.Ws.SetReadDeadline(time.Now().Add(pongWait))
+	c.Ws.SetPongHandler(func(string) error { c.Ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
-		_, msg, err := c.ws.ReadMessage()
+		_, msg, err := c.Ws.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
 				log.Printf("error: %v", err)

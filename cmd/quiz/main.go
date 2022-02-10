@@ -17,6 +17,12 @@ const (
 )
 
 func main() {
+	defer func() {
+		if msg := recover(); msg != nil {
+			fmt.Println("Recovered from panic", msg)
+		}
+	}()
+
 	hub := internal.NewHub()
 	go hub.Run()
 
