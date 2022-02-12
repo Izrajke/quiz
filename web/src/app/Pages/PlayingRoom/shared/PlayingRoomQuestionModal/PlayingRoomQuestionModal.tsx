@@ -11,10 +11,10 @@ import { QuestionFirstType } from './QuestionFirstType';
 import { QuestionSecondType } from './QuestionSecondType';
 
 export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
-  const { app } = useStore();
+  const { room } = useStore();
 
   const CurrentModal = useCallback(() => {
-    switch (app.room.type) {
+    switch (room.type) {
       case SocketResponseType.firstQuestionType:
         return <QuestionFirstType />;
       case SocketResponseType.secondQuestionType:
@@ -22,7 +22,7 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
       default:
         return null;
     }
-  }, [app.room.type]);
+  }, [room.type]);
 
   return <CurrentModal />;
 });

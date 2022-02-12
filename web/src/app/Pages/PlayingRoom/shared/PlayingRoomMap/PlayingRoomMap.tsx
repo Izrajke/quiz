@@ -9,12 +9,12 @@ import { MapComponent } from 'components';
 import classes from './PlayingRoomMap.module.css';
 
 export const PlayingRoomMap: FunctionComponent = observer(() => {
-  const { app } = useStore();
+  const { room } = useStore();
 
   return (
     <div className={classes.wrapper}>
       <MapComponent>
-        {app.room.map.map((row, i) => (
+        {room.map.map((row, i) => (
           <MapComponent.Row rowIndex={i} key={Math.random()}>
             {row.map((cell, j) => (
               <MapComponent.Cell

@@ -17,22 +17,22 @@ import classes from './QuestionFirstType.module.css';
 export type QuestionFirstTypeComponent = FunctionComponent;
 
 export const QuestionFirstType: QuestionFirstTypeComponent = observer(() => {
-  const { app } = useStore();
+  const { app, room } = useStore();
 
   useEffect(() => {
-    app.room.setPlayerAnswer('');
+    room.setPlayerAnswer('');
     //eslint-disable-next-line
-  }, [app.room.options]);
+  }, [room.options]);
 
   /** Обработчик ответа на вопрос */
   const answerHandler = useCallback(
     (answer: SocketAnswer) => () => {
       if (app.socket) {
         app.socketMessage(answer);
-        app.room.setPlayerAnswer(answer.option);
+        room.setPlayerAnswer(answer.option);
       }
     },
-    [app],
+    [app, room],
   );
 
   /** Вычисляет стили для кнопки */
@@ -40,26 +40,26 @@ export const QuestionFirstType: QuestionFirstTypeComponent = observer(() => {
     () => (id: string) =>
       clsx(
         classes.button,
-        app.room.playerAnswer === id && classes.givenAnswer,
-        app.room.answer === id && classes.rightAnswer,
+        room.playerAnswer === id && classes.givenAnswer,
+        room.answer === id && classes.rightAnswer,
       ),
   ).get();
 
-  const isButtonDisabled = computed(() => !!app.room.playerAnswer).get();
+  const isButtonDisabled = computed(() => !!room.playerAnswer).get();
 
   return (
-    <Modal show={app.room.isQuestionModalOpen} className={classes.modal}>
+    <Modal show={room.isQuestionModalOpen} className={classes.modal}>
       <Modal.Header>
         <Typography.Text
           className={classes.question}
           type="text-2"
           color="white"
         >
-          {app.room.title}
+          {room.title}
         </Typography.Text>
       </Modal.Header>
       <Modal.Body className={classes.body}>
-        {Object.keys(app.room.options).map((id, index) => {
+        {Object.keys(room.options).map((id, index) => {
           return (
             <Button
               key={index}
@@ -71,7 +71,7 @@ export const QuestionFirstType: QuestionFirstTypeComponent = observer(() => {
               })}
               disabled={isButtonDisabled}
             >
-              {app.room.options[id]}
+              {room.options[id]}
             </Button>
           );
         })}

@@ -1,1 +1,1 @@
-export * from './RoomState';
+export * from './RoomStore';

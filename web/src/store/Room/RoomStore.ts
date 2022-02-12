@@ -19,7 +19,7 @@ import type { SocketMapData } from 'api';
 /** Тип статуса игры */
 export type Status = 'question';
 
-export class RoomState {
+export class RoomStore {
   /** Root store */
   root: RootStore;
   /** Статические методы для работы с передвижением по карте */

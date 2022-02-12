@@ -1,7 +1,6 @@
 import { makeObservable, flow, observable, action } from 'mobx';
 
 import { RootStore } from '../RootStore';
-import { RoomState } from 'store/Room';
 import { DialogProps } from 'components';
 
 import { withDelay } from 'utils';
@@ -20,8 +19,6 @@ export class AppStore {
   roomId = '4d325b51-8dfe-4be2-ba97-b636ba2243d8';
   /** Сокет */
   socket: WebSocket | undefined;
-  /** Стейт комнаты */
-  room: RoomState;
   /** Массив сообщений сокета */
   socketLog: SocketLog = [];
   /** Модальные окна */
@@ -45,7 +42,6 @@ export class AppStore {
       socketConnection: flow,
     });
     this.root = root;
-    this.room = new RoomState(root);
   }
 
   *socketConnection() {
@@ -60,24 +56,24 @@ export class AppStore {
         switch (data.type) {
           case SocketResponseType.answerFirstQuestionType:
           case SocketResponseType.answerSecondQuestionType:
-            this.room.setAnswer(data);
-            withDelay(this.room.useQuetionModal, answerDelay, [false]);
+            this.root.room.setAnswer(data);
+            withDelay(this.root.room.useQuetionModal, answerDelay, [false]);
             break;
           case SocketResponseType.firstQuestionType:
           case SocketResponseType.secondQuestionType:
-            this.room.setQuestion(data);
-            this.room.resetAnswer();
-            this.room.useQuetionModal(true);
+            this.root.room.setQuestion(data);
+            this.root.room.resetAnswer();
+            this.root.room.useQuetionModal(true);
             break;
           case SocketResponseType.playersInfo:
-            this.room.setPlayers(data);
+            this.root.room.setPlayers(data);
             this.root.player.setPlayerInfo();
             break;
           case SocketResponseType.mapInfo:
-            this.room.setMap(data);
+            this.root.room.setMap(data);
             break;
           case SocketResponseType.endGame:
-            this.room.setType(SocketResponseType.endGame);
+            this.root.room.setType(SocketResponseType.endGame);
             break;
           default:
         }

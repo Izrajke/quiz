@@ -10,12 +10,12 @@ import classes from './QuestionSecondType.module.css';
 
 export const QuestionSecondType: FunctionComponent = observer(() => {
   const [answer, setAnswer] = useState('');
-  const { app } = useStore();
+  const { room } = useStore();
 
   //TODO - Доделать модалку присравнении ответов
   const answerHandler = useCallback(() => {
-    app.room.setPlayerAnswer(answer);
-  }, [app.room, answer]);
+    room.setPlayerAnswer(answer);
+  }, [room, answer]);
 
   const onAnswerChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,20 +24,17 @@ export const QuestionSecondType: FunctionComponent = observer(() => {
     [setAnswer],
   );
 
-  const isDisabled = useMemo(
-    () => !!app.room.playerAnswer,
-    [app.room.playerAnswer],
-  );
+  const isDisabled = useMemo(() => !!room.playerAnswer, [room.playerAnswer]);
 
   return (
-    <Modal show={app.room.isQuestionModalOpen}>
+    <Modal show={room.isQuestionModalOpen}>
       <Modal.Header>
         <Typography.Text
           className={classes.question}
           type="text-2"
           color="white"
         >
-          {app.room.title}
+          {room.title}
         </Typography.Text>
       </Modal.Header>
       <Modal.Body className={classes.body}>

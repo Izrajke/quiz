@@ -34,7 +34,7 @@ export class PlayerStore {
 
   /** Устанавливает id и цвет игрока */
   setPlayerInfo = () => {
-    const { id, color } = this.root.app.room.players.find(
+    const { id, color } = this.root.room.players.find(
       (player) => player.name === this.nickname,
     ) as Player;
     this.id = id;
