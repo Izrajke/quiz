@@ -1,5 +1,9 @@
 /** Вызвать функцию с указанной задержкой */
-export const withDelay = (func: any, delay: number, args?: any[]) => {
+export const withDelay = <T>(
+  func: (...args: T[]) => unknown,
+  delay: number,
+  args?: T[],
+) => {
   setTimeout(() => {
     args ? func(...args) : func();
   }, delay);
