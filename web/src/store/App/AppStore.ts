@@ -6,7 +6,7 @@ import { DialogProps } from 'components';
 
 import { withDelay } from 'utils';
 
-import { SocketResponseType, SocketRequestType } from 'api';
+import { SocketResponseType } from 'api';
 import type { SocketAction, SocketLog, SocketSendingType } from 'api';
 
 const answerDelay = 2000;
@@ -62,7 +62,6 @@ export class AppStore {
           case SocketResponseType.answerSecondQuestionType:
             this.room.setAnswer(data);
             withDelay(this.room.useQuetionModal, answerDelay, [false]);
-            // TODO: После выбора территории автоматически отправить вопрос с сервера?
             break;
           case SocketResponseType.firstQuestionType:
           case SocketResponseType.secondQuestionType:
@@ -76,9 +75,6 @@ export class AppStore {
             break;
           case SocketResponseType.mapInfo:
             this.room.setMap(data);
-            withDelay(this.socketMessage, answerDelay, [
-              { type: SocketRequestType.getQuestion },
-            ]);
             break;
           case SocketResponseType.endGame:
             this.room.setType(SocketResponseType.endGame);

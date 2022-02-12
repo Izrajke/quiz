@@ -6,16 +6,26 @@
   transition: all 0.2s;
 }
 
-/* Type */
+.button:disabled {
+  cursor: auto;
+}
+
+/* regular */
 .regular {
   background: var(--dark-1);
   color: var(--white);
 }
 
-.regular:hover {
+.regular:disabled {
+  background: var(--dark-5);
+  color: var(--gray-1);
+}
+
+.regular:hover:enabled {
   background: var(--dark-6);
 }
 
+/* primary */
 .primary {
   background: var(--player-1);
   color: var(--white);

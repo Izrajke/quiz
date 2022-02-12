@@ -105,7 +105,7 @@ export interface SocketMapData {
 
 /** Интерфейс отправки ответа с клиента */
 export interface SocketAnswer {
-  type: SocketResponseType;
+  type: SocketRequestType;
   option: string;
 }
 

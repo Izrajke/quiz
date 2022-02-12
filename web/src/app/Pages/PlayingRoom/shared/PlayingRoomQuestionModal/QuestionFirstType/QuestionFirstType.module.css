@@ -1,15 +1,11 @@
-.modal {
-  max-width: 1130px;
-  padding: 36px;
-}
-
 .question {
   margin-bottom: 42px;
 }
 
 .body {
   display: grid;
-  gap: 28px;
+  gap: 18px;
+  padding-bottom: 24px;
   grid-template-columns: 540px 540px;
 }
 

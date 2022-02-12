@@ -1,0 +1,6 @@
+.body {
+  display: grid;
+  gap: 18px;
+  padding-bottom: 24px;
+  grid-template-columns: 740px 340px;
+}

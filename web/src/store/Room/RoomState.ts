@@ -53,11 +53,13 @@ export class RoomState {
       title: observable,
       answer: observable,
       players: observable,
+      playerAnswer: observable,
       map: observable,
       isQuestionModalOpen: observable,
       // action
       setQuestion: action,
       setAnswer: action,
+      setPlayerAnswer: action,
       setPlayers: action,
       resetAnswer: action,
       setMap: action,
@@ -74,14 +76,19 @@ export class RoomState {
     this.type = type;
   }
 
+  /** Правильный ответ на вопрос */
   setAnswer(answerData: SocketAnswerData) {
-    const { answer, type } = answerData;
+    const { answer } = answerData;
     this.answer = answer.value;
-    this.type = type;
   }
 
+  /** Сбросить правильный ответ */
   resetAnswer() {
     this.answer = '';
+  }
+
+  setPlayerAnswer(answer = '') {
+    this.playerAnswer = answer;
   }
 
   setPlayers(playersData: SocketPlayersData) {
