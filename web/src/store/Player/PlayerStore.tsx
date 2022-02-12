@@ -2,7 +2,7 @@ import { makeObservable, observable, action } from 'mobx';
 
 import { RootStore } from '../RootStore';
 
-import { PlayerColors, IPlayer } from 'api';
+import { PlayerColors, Player } from 'api';
 
 /** Информация о игроке */
 export class PlayerStore {
@@ -36,7 +36,7 @@ export class PlayerStore {
   setPlayerInfo = () => {
     const { id, color } = this.root.app.room.players.find(
       (player) => player.name === this.nickname,
-    ) as IPlayer;
+    ) as Player;
     this.id = id;
     this.color = color;
   };

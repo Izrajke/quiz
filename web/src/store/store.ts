@@ -6,7 +6,7 @@ import { AppStore } from './App';
 import { RootStore, root } from './RootStore';
 import { PlayerStore } from './Player';
 
-interface IStore {
+interface Store {
   /** Root store */
   root: RootStore;
   /** Приложение */
@@ -15,10 +15,10 @@ interface IStore {
   player: PlayerStore;
 }
 
-export const store: IStore = {
+export const store: Store = {
   root,
   app: root.app,
   player: root.player,
 };
 
-export const useStore = () => useContext(MobXProviderContext) as IStore;
+export const useStore = () => useContext(MobXProviderContext) as Store;

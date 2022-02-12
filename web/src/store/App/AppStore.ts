@@ -6,8 +6,8 @@ import { DialogProps } from 'components';
 
 import { withDelay } from 'utils';
 
-import { TSocketResponseType, TSocketRequestType } from 'api';
-import type { TSocketAction, TSocketLog, TSocketSendingType } from 'api';
+import { SocketResponseType, SocketRequestType } from 'api';
+import type { SocketAction, SocketLog, SocketSendingType } from 'api';
 
 const answerDelay = 2000;
 
@@ -23,7 +23,7 @@ export class AppStore {
   /** Стейт комнаты */
   room: RoomState;
   /** Массив сообщений сокета */
-  socketLog: TSocketLog = [];
+  socketLog: SocketLog = [];
   /** Модальные окна */
   dialogs: DialogProps[] = [];
 
@@ -58,30 +58,30 @@ export class AppStore {
 
         this.socketActionRegister('received', data);
         switch (data.type) {
-          case TSocketResponseType.answerFirstQuestionType:
-          case TSocketResponseType.answerSecondQuestionType:
+          case SocketResponseType.answerFirstQuestionType:
+          case SocketResponseType.answerSecondQuestionType:
             this.room.setAnswer(data);
             withDelay(this.room.useQuetionModal, answerDelay, [false]);
             // TODO: После выбора территории автоматически отправить вопрос с сервера?
             break;
-          case TSocketResponseType.firstQuestionType:
-          case TSocketResponseType.secondQuestionType:
+          case SocketResponseType.firstQuestionType:
+          case SocketResponseType.secondQuestionType:
             this.room.setQuestion(data);
             this.room.resetAnswer();
             this.room.useQuetionModal(true);
             break;
-          case TSocketResponseType.playersInfo:
+          case SocketResponseType.playersInfo:
             this.room.setPlayers(data);
             this.root.player.setPlayerInfo();
             break;
-          case TSocketResponseType.mapInfo:
+          case SocketResponseType.mapInfo:
             this.room.setMap(data);
             withDelay(this.socketMessage, answerDelay, [
-              { type: TSocketRequestType.getQuestion },
+              { type: SocketRequestType.getQuestion },
             ]);
             break;
-          case TSocketResponseType.endGame:
-            this.room.setType(TSocketResponseType.endGame);
+          case SocketResponseType.endGame:
+            this.room.setType(SocketResponseType.endGame);
             break;
           default:
         }
@@ -98,13 +98,13 @@ export class AppStore {
   }
 
   /** Отправить сообщение сокету */
-  socketMessage = (body: any) => {
+  socketMessage = (body: SocketAction) => {
     this.socket && this.socket.send(JSON.stringify(body));
     this.socketActionRegister('sent', body);
   };
 
   /** Добавляет и запоминает сокет-событие */
-  socketActionRegister(type: TSocketSendingType, body: TSocketAction) {
+  socketActionRegister(type: SocketSendingType, body: SocketAction) {
     this.socketLog.push([type, body]);
   }
 

@@ -7,11 +7,11 @@ import { observer } from 'mobx-react-lite';
 
 import classes from './Paper.module.css';
 
-interface IPaperProps {
+interface PaperProps {
   className: string;
 }
 
-export const Paper: FunctionComponent<IPaperProps> = observer(
+export const Paper: FunctionComponent<PaperProps> = observer(
   ({ className, children }) => {
     const styles = useMemo(() => clsx(classes.paper, className), [className]);
     return <div className={styles}>{children}</div>;

@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { Modal, Button, Typography } from 'components';
 
 import { useStore } from 'store';
-import type { ISocketAnswer } from 'api';
+import type { SocketAnswer } from 'api';
 
 import classes from './PlayingRoomQuestionModal.module.css';
 
@@ -20,7 +20,7 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
   }, [app.room.options]);
 
   /** Обработчик ответа на вопрос */
-  const answerHandler = (answer: ISocketAnswer) => () => {
+  const answerHandler = (answer: SocketAnswer) => () => {
     if (app.socket) {
       app.socketMessage(answer);
       app.room.playerAnswer = answer.option;

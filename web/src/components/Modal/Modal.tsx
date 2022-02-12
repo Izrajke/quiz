@@ -3,28 +3,28 @@ import type { FunctionComponent } from 'react';
 import clsx from 'clsx';
 
 import { ModalHeader } from './ModalHeader';
-import type { IModalHeaderComponent } from './ModalHeader';
+import type { IModalHeaderComponent as ModalHeaderComponent } from './ModalHeader';
 import { ModalBody } from './ModalBody';
-import type { IModalBodyComponent } from './ModalBody';
+import type { IModalBodyComponent as ModalBodyComponent } from './ModalBody';
 import { ModalFooter } from './ModalFooter';
 import type { ModalFooterComponent } from './ModalFooter';
 
 import classes from './Modal.module.css';
 
-interface IModal {
+interface ModalProps {
   show: boolean;
   closeModal?: () => void;
   className?: string;
 }
 
-export interface IModalComponent extends FunctionComponent<IModal> {
-  Header: IModalHeaderComponent;
-  Body: IModalBodyComponent;
+export interface ModalComponent extends FunctionComponent<ModalProps> {
+  Header: ModalHeaderComponent;
+  Body: ModalBodyComponent;
   Footer: ModalFooterComponent;
 }
 
 /** Компонент модального окна */
-export const Modal: IModalComponent = ({
+export const Modal: ModalComponent = ({
   show,
   closeModal,
   className,

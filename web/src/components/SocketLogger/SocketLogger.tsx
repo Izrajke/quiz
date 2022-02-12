@@ -7,7 +7,8 @@ import { useStore } from 'store';
 import classes from './SocketLogger.module.css';
 
 export const SocketLogger: FunctionComponent = observer(() => {
-  const [message, setMessage] = useState('');
+  // eslint-disable-next-line
+  const [message, setMessage] = useState<any>('');
   const [isOpen, setIsOpen] = useState(false);
   const { app } = useStore();
 

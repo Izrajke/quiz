@@ -3,12 +3,15 @@ import type { FunctionComponent } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { Typography } from 'components';
-import { IPlayer } from 'api';
+import { Player } from 'api';
 
 import { PlyerCardLine } from './PlyerCardLine';
 import classes from './PlayerCard.module.css';
 
-export const PlayerCard: FunctionComponent<IPlayer> = observer(
+export type PlayerProps = Player;
+
+/** Компонент карточки игрока */
+export const PlayerCard: FunctionComponent<PlayerProps> = observer(
   ({ id, name, points, color }) => {
     return (
       <div id={id} className={classes.wrapper}>

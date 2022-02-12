@@ -1,25 +1,25 @@
 import { FunctionComponent, useMemo } from 'react';
 import clsx from 'clsx';
 
-import type { ITypographyColor } from './Typography';
+import type { TypographyColor } from './Typography';
 
 import classes from './Typography.module.css';
 
-export type TTextType = 'text-0' | 'text-1' | 'text-2' | 'text-3';
-export type TTextWeight = 'weight-bold' | 'weight-regular';
+export type TextType = 'text-0' | 'text-1' | 'text-2' | 'text-3';
+export type TextWeight = 'weight-bold' | 'weight-regular';
 
-export interface ITextProps {
-  color: ITypographyColor;
-  type: TTextType;
+export interface TextProps {
+  color: TypographyColor;
+  type: TextType;
   className?: string;
-  weight?: TTextWeight;
+  weight?: TextWeight;
 }
 
-export interface IText extends FunctionComponent<ITextProps> {
+export interface TextComponent extends FunctionComponent<TextProps> {
   displayName: string;
 }
 
-export const Text: IText = ({
+export const Text: TextComponent = ({
   color,
   className,
   type,

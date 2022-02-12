@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
 
-import { Map } from 'components';
+import { MapComponent } from 'components';
 
 import classes from './PlayingRoomMap.module.css';
 
@@ -13,11 +13,11 @@ export const PlayingRoomMap: FunctionComponent = observer(() => {
 
   return (
     <div className={classes.wrapper}>
-      <Map>
+      <MapComponent>
         {app.room.map.map((row, i) => (
-          <Map.Row rowIndex={i} key={Math.random()}>
+          <MapComponent.Row rowIndex={i} key={Math.random()}>
             {row.map((cell, j) => (
-              <Map.Cell
+              <MapComponent.Cell
                 isExists={cell.isExists}
                 owner={cell.owner}
                 rowIndex={i}
@@ -26,9 +26,9 @@ export const PlayingRoomMap: FunctionComponent = observer(() => {
                 key={Math.random()}
               />
             ))}
-          </Map.Row>
+          </MapComponent.Row>
         ))}
-      </Map>
+      </MapComponent>
     </div>
   );
 });

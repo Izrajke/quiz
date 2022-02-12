@@ -5,12 +5,12 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
-import { TSocketRequestType } from 'api';
+import { SocketRequestType } from 'api';
 import type { CellData } from 'api';
 
 import classes from './Map.module.css';
 
-export interface ICellProps extends CellData {
+export interface CellProps extends CellData {
   className?: string;
   canMove?: boolean;
   /** Индексы матрицы клеток */
@@ -18,12 +18,12 @@ export interface ICellProps extends CellData {
   cellIndex: number;
 }
 
-export interface ICell extends FunctionComponent<ICellProps> {
+export interface CellComponent extends FunctionComponent<CellProps> {
   displayName?: string;
 }
 
 /** Клетка на поле */
-export const Cell: ICell = observer(
+export const Cell: CellComponent = observer(
   ({ className, isExists, owner, rowIndex, cellIndex, canMove }) => {
     const { app, player } = useStore();
 
@@ -43,7 +43,7 @@ export const Cell: ICell = observer(
     /** Отправляем сообщение о получении или о захвате клетки */
     const clickHandle = () => {
       app.socketMessage({
-        type: TSocketRequestType.getCell,
+        type: SocketRequestType.getCell,
         rowIndex: rowIndex,
         cellIndex: cellIndex,
       });

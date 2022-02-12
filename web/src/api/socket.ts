@@ -2,7 +2,7 @@
 /** Типы и интерфейсы сокета */
 
 /** Типы вопросов */
-export enum TSocketResponseType {
+export enum SocketResponseType {
   /** Обычный вопрос с 4-мя вариантами ответа */
   firstQuestionType = 1,
   /** Вопрос без вариантов ответа */
@@ -19,7 +19,7 @@ export enum TSocketResponseType {
   endGame = 999,
 }
 
-export enum TSocketRequestType {
+export enum SocketRequestType {
   /** Отправить ответ */
   sendAnswer = 1,
   /** Получить вопрос */
@@ -34,25 +34,25 @@ export enum TSocketRequestType {
 /** Серверные */
 
 /** Интерфейс объекта вариантов ответ */
-export interface ISocketOptions {
+export interface SocketOptions {
   [key: string]: string;
 }
 
 /** Интерфейс тела вопроса */
-export interface ISocketQuestion {
+export interface SocketQuestion {
   title: string;
-  options: ISocketOptions;
+  options: SocketOptions;
 }
 
 /** Интерфейс вопроса */
-export interface ISocketQuestionData {
-  type: TSocketResponseType;
-  question: ISocketQuestion;
+export interface SocketQuestionData {
+  type: SocketResponseType;
+  question: SocketQuestion;
 }
 
 /** Интерфейс ответа на вопрос */
-export interface ISocketAnswerData {
-  type: TSocketResponseType;
+export interface SocketAnswerData {
+  type: SocketResponseType;
   answer: {
     value: string;
   };
@@ -61,7 +61,7 @@ export interface ISocketAnswerData {
 export type PlayerColors = 'player-1' | 'player-2' | 'player-3';
 
 /** Интерфейс игрока */
-export interface IPlayer {
+export interface Player {
   id: string;
   name: string;
   points: number;
@@ -69,9 +69,9 @@ export interface IPlayer {
 }
 
 /** Информация о игроках */
-export interface ISocketPlayersData {
-  type: TSocketResponseType;
-  players: IPlayer[];
+export interface SocketPlayersData {
+  type: SocketResponseType;
+  players: Player[];
 }
 
 /** - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -96,7 +96,7 @@ export type MapData = RowData[];
 
 /** Информация о карте */
 export interface SocketMapData {
-  type: TSocketResponseType;
+  type: SocketResponseType;
   map: MapData;
 }
 
@@ -104,24 +104,36 @@ export interface SocketMapData {
 /** Клиентские */
 
 /** Интерфейс отправки ответа с клиента */
-export interface ISocketAnswer {
-  type: TSocketResponseType;
+export interface SocketAnswer {
+  type: SocketResponseType;
   option: string;
+}
+
+/** Получить вопрос */
+export interface SocketGetQuestion {
+  type: SocketRequestType;
+}
+
+export interface SocketAttackCell {
+  type: SocketRequestType;
+  rowIndex: number;
+  cellIndex: number;
 }
 
 /** ------------------------------------------------------------ */
 /** Logger */
 
 /** Все возмоные интерфейсы отправки сокетов */
-export type TSocketAction =
-  | ISocketAnswer
-  | ISocketQuestionData
-  | ISocketAnswerData;
+export type SocketAction =
+  | SocketAnswer
+  | SocketAnswerData
+  | SocketGetQuestion
+  | SocketAttackCell;
 
 /** ------------------------------------------------------------ */
 /** Logger */
 
 /** Кто адресат */
-export type TSocketSendingType = 'sent' | 'received';
+export type SocketSendingType = 'sent' | 'received';
 /** Массив произошедших событий в сокете */
-export type TSocketLog = [TSocketSendingType, TSocketAction][];
+export type SocketLog = [SocketSendingType, SocketAction][];

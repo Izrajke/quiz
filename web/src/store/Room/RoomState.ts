@@ -1,23 +1,23 @@
 import { makeObservable, observable, action } from 'mobx';
 import { RootStore } from '../RootStore';
 import type {
-  TSocketResponseType,
-  ISocketOptions,
-  ISocketQuestionData,
-  ISocketAnswerData,
-  ISocketPlayersData,
-  IPlayer,
+  SocketResponseType,
+  SocketOptions,
+  SocketQuestionData,
+  SocketAnswerData,
+  SocketPlayersData,
+  Player,
   MapData,
   PlayerColors,
 } from 'api';
 import { MapMoveControl } from './classes';
 import type { CaptureCheckNames } from './classes';
+import { Map } from './types/Map';
 
-import type { Map } from 'components';
 import type { SocketMapData } from 'api';
 
 /** Тип статуса игры */
-export type TStatus = 'question';
+export type Status = 'question';
 
 export class RoomState {
   /** Root store */
@@ -25,19 +25,19 @@ export class RoomState {
   /** Статические методы для работы с передвижением по карте */
   mapMoveControl = MapMoveControl;
   /** Варианты ответа  */
-  options: ISocketOptions = {};
+  options: SocketOptions = {};
   /** Тип вопроса */
-  type: TSocketResponseType = 999;
+  type: SocketResponseType = 999;
   /** Название вопроса */
   title = '';
   /** Статус игры */
-  status: TStatus = 'question';
+  status: Status = 'question';
   /** Ответ игрока */
   playerAnswer = '';
   /** Ответ на вопрос с сервера */
   answer = '';
   /** Игроки */
-  players: IPlayer[] = [];
+  players: Player[] = [];
   /** Карта */
   map: Map = [];
   /** Модалка вопроса */
@@ -67,14 +67,14 @@ export class RoomState {
   }
 
   /** Распарсить данные вопроса, призодящие с сокета */
-  setQuestion(questionData: ISocketQuestionData) {
+  setQuestion(questionData: SocketQuestionData) {
     const { question, type } = questionData;
     this.options = question.options;
     this.title = question.title;
     this.type = type;
   }
 
-  setAnswer(answerData: ISocketAnswerData) {
+  setAnswer(answerData: SocketAnswerData) {
     const { answer, type } = answerData;
     this.answer = answer.value;
     this.type = type;
@@ -84,12 +84,12 @@ export class RoomState {
     this.answer = '';
   }
 
-  setPlayers(playersData: ISocketPlayersData) {
+  setPlayers(playersData: SocketPlayersData) {
     const { players } = playersData;
     this.players = players;
   }
 
-  setType(type: TSocketResponseType) {
+  setType(type: SocketResponseType) {
     this.type = type;
   }
 

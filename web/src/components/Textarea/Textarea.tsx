@@ -6,11 +6,11 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 import classes from './Textarea.module.css';
 
-interface ITextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   className: string;
 }
 
-export const Textarea: FunctionComponent<ITextareaProps> = observer(
+export const Textarea: FunctionComponent<TextareaProps> = observer(
   ({ className, ...props }) => {
     const styles = useMemo(
       () => clsx(classes.textarea, className),

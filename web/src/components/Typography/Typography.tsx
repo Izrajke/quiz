@@ -1,14 +1,14 @@
 import type { FunctionComponent } from 'react';
-import type { IText } from './Text';
+import type { TextComponent } from './Text';
 import { Text } from './Text';
 
-interface ITypography extends FunctionComponent {
-  Text: IText;
+interface TypographyComponent extends FunctionComponent {
+  Text: TextComponent;
 }
 
-export type ITypographyColor = 'white' | 'white-70' | 'disabled';
+export type TypographyColor = 'white' | 'white-70' | 'disabled';
 
-export const Typography: ITypography = () => null;
+export const Typography: TypographyComponent = () => null;
 
 Typography.Text = Text;
 

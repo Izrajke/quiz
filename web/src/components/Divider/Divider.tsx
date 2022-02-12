@@ -4,11 +4,11 @@ import clsx from 'clsx';
 
 import classes from './Divider.module.css';
 
-interface IDividerProps {
+interface DividerProps {
   className?: string;
 }
 
-export const Divider: FunctionComponent<IDividerProps> = ({ className }) => {
+export const Divider: FunctionComponent<DividerProps> = ({ className }) => {
   const style = useMemo(() => clsx(classes.divider, className), [className]);
   return <div className={style}></div>;
 };

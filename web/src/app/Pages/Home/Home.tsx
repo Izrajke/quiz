@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, FunctionComponent } from 'react';
 
 import { useNavigate } from 'react-router';
 
@@ -29,7 +29,7 @@ interface HomeSettingsModalState {
   saveNickname: () => void;
 }
 
-export const Home = observer(() => {
+export const Home: FunctionComponent = observer(() => {
   const { app, player } = useStore();
   const navigate = useNavigate();
 
