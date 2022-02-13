@@ -6,13 +6,7 @@ type Cell struct {
 	Owner    string `json:"owner"`
 }
 
-// Map Карта
-type Map struct {
-	Type int       `json:"type"`
-	Map  [][]*Cell `json:"map"`
-}
-
-var GlobalMap = Map3
+var GlobalMap = Map2
 
 var Map5 = [][]*Cell{
 	{ // 2
@@ -274,40 +268,34 @@ var Map3 = [][]*Cell{
 }
 
 var Map2 = [][]*Cell{
-	{ // 2
+	{ // 0
+		{ // 0
+			IsExists: false,
+			Owner:    "",
+		},
 		{ // 1
 			IsExists: false,
 			Owner:    "",
 		},
-		{ // 2
-			IsExists: false,
-			Owner:    "",
+	},
+	{ // 1
+		{ // 0
+			IsExists: true,
+			Owner:    "empty",
+		},
+		{ // 1
+			IsExists: true,
+			Owner:    "empty",
 		},
 	},
 	{ // 2
+		{ // 0
+			IsExists: true,
+			Owner:    "empty",
+		},
 		{ // 1
 			IsExists: true,
 			Owner:    "empty",
 		},
-		{ // 2
-			IsExists: true,
-			Owner:    "empty",
-		},
 	},
-	{ // 3
-		{ // 1
-			IsExists: true,
-			Owner:    "empty",
-		},
-		{ // 2
-			IsExists: true,
-			Owner:    "empty",
-		},
-	},
-}
-
-// MessageMap Сообщение с картой
-var MessageMap = &Map{
-	Type: 13,
-	Map:  GlobalMap,
 }
