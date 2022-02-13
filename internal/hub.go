@@ -5,9 +5,11 @@ import (
 )
 
 type message struct {
-	data    []byte
-	room    string
-	request *request
+	data []byte
+	room string
+	// TODO may change for player id
+	playerColor string
+	request     *request
 }
 
 type subscription struct {
@@ -45,9 +47,14 @@ type gameStore struct {
 	answerCounter int
 	// счетчик раундов
 	roundCounter int
+	// кол-во свободных клеток
+	freeCellCounter int
 
 	// игроки, соединение - игрок
 	players map[*domain.Connection]*domain.Player
+
+	// ответы игроков
+	answers map[string]string
 }
 
 func NewHub() *hub {
@@ -68,9 +75,6 @@ const (
 )
 
 func (h *hub) Run() {
-	// TODO
-	// 1. Сделать не повторяющиеся цвета
-	// 2. Покрыть первичными тестами main.go
 	for {
 		select {
 		// зарегистрировано новое соединение
@@ -101,27 +105,53 @@ func (h *hub) Run() {
 
 			var msg []byte
 			switch m.request.Type {
-			// Получение ответа на вопрос
+			// получение ответа на вопрос
 			case domain.EventReceivedAnswer:
 				game.answerCounter++
-				if len(game.players) == maxConnections {
+
+				// сохранение ответа игрока
+				game.answers[m.playerColor] = m.request.Option
+				// ожидание всех ответов
+				if len(game.players) == game.answerCounter {
 					game.answerCounter = 0
 
 					if game.roundCounter == 4 {
 						msg = h.event.FinishInfo().Marshal()
 					} else {
 						questionInfo := domain.GlobalQuestions[game.questionCounter]
-						msg = h.event.AnswerFirstQuestionInfo(questionInfo.Answer.Value).Marshal()
+						correctAnswer := questionInfo.Answer.Value
+						answerMsg := h.event.AnswerFirstQuestionInfo(correctAnswer).Marshal()
+						h.sendToAll(game.players, m.room, answerMsg)
+
+						for playerColor, answer := range game.answers {
+							if answer == correctAnswer {
+								selectCellMsg := h.event.SelectCellInfo(playerColor).Marshal()
+								h.sendToAll(game.players, m.room, selectCellMsg)
+								break
+							}
+						}
+						game.answers = make(map[string]string, 0)
 					}
 				}
-			// Запрос следующуего вопроса
+			// запрос следующуего вопроса
 			case domain.EventReceivedNextFirstQuestion:
 				questionInfo := domain.GlobalQuestions[game.questionCounter]
 				msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
 				game.roundCounter++
 			case domain.EventReceivedGetMapCell:
-				domain.GlobalMap[m.request.RowIndex][m.request.CellIndex].Owner = "player-2"
-				msg = h.event.MapInfo().Marshal()
+				domain.GlobalMap[m.request.RowIndex][m.request.CellIndex].Owner = m.playerColor
+				game.freeCellCounter--
+				mapMsg := h.event.MapInfo().Marshal()
+				h.sendToAll(game.players, m.room, mapMsg)
+				if game.freeCellCounter == 0 {
+					allowAttackMsg := h.event.MapAllowAttackInfo().Marshal()
+					h.sendToAll(game.players, m.room, allowAttackMsg)
+				}
+			case domain.EventMapAttack:
+				// TODO отправлять вопрос
+				domain.GlobalMap[m.request.RowIndex][m.request.CellIndex].Owner = m.playerColor
+				mapMsg := h.event.MapInfo().Marshal()
+				h.sendToAll(game.players, m.room, mapMsg)
 			}
 
 			if msg != nil {
@@ -148,8 +178,13 @@ func (h *hub) createOrGetGame(s *subscription) *gameStore {
 		players[s.conn] = s.player
 
 		game = &gameStore{
-			state:   1,
-			players: players,
+			state:           1,
+			questionCounter: 0,
+			answerCounter:   0,
+			roundCounter:    0,
+			freeCellCounter: 4,
+			players:         players,
+			answers:         make(map[string]string, 0),
 		}
 		h.games[s.room] = game
 	} else {

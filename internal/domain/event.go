@@ -14,6 +14,8 @@ const (
 	EventReceivedNextFirstQuestion = 2
 	// EventReceivedGetMapCell получение ячейки на карте
 	EventReceivedGetMapCell = 3
+	// EventMapAttack нападение на клетку противника
+	EventMapAttack = 4
 
 	// Серверные типы
 
@@ -21,13 +23,20 @@ const (
 	eventFirstQuestion = 1
 	// информация о ответе на вопрос первого типа
 	eventAnswerFirstQuestion = 5
+	// информация о получении клетки
+	eventSelectCell = 7
 	// информация о игроках
 	eventPlayersIntoType = 12
 	// информация о карте
 	eventMap = 13
+	// информация о начале стадии нападений
+	eventMapAllowAttack
 	// информация о конце игры
 	eventFinish = 999
 )
+
+// BaseType идентификатор типа сообщения
+type BaseType int
 
 // Event отправка и получение событий
 type Event struct {
@@ -78,6 +87,21 @@ func (e *Event) AnswerFirstQuestionInfo(answerValue string) *Event {
 	return e
 }
 
+// SelectCellInfo информация о получении клетки
+func (e *Event) SelectCellInfo(color string) *Event {
+	e.message = struct {
+		BaseType `json:"type"`
+		Color    string `json:"color"`
+		Count    int    `json:"count"`
+	}{
+		BaseType: eventSelectCell,
+		Color:    color,
+		Count:    2,
+	}
+
+	return e
+}
+
 // PlayersInfo информация о игроках
 func (e *Event) PlayersInfo(players map[*Connection]*Player) *Event {
 	var playersSlice []*Player
@@ -101,6 +125,17 @@ func (e *Event) MapInfo() *Event {
 	e.message = &EventMapInfo{
 		Type: eventMap,
 		Map:  GlobalMap,
+	}
+
+	return e
+}
+
+// MapAllowAttackInfo информация о начале стадии нападений
+func (e *Event) MapAllowAttackInfo() *Event {
+	e.message = struct {
+		BaseType `json:"type"`
+	}{
+		BaseType: eventMapAllowAttack,
 	}
 
 	return e

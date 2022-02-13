@@ -98,7 +98,7 @@ func (s subscription) readPump(hub *hub) {
 			if request.Type == 1 || request.Type == 2 || request.Type == 3 {
 				fmt.Println("Server received a message: " + string(msg) + " player: " + s.player.Name + " room: " + s.room)
 				m := message{
-					msg, s.room, &request,
+					msg, s.room, s.player.Color, &request,
 				}
 				hub.broadcast <- m
 			} else {

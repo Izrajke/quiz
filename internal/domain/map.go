@@ -6,7 +6,7 @@ type Cell struct {
 	Owner    string `json:"owner"`
 }
 
-var GlobalMap = Map3
+var GlobalMap = Map2
 
 var Map5 = [][]*Cell{
 	{ // 2
@@ -268,32 +268,32 @@ var Map3 = [][]*Cell{
 }
 
 var Map2 = [][]*Cell{
-	{ // 2
+	{ // 0
+		{ // 0
+			IsExists: false,
+			Owner:    "",
+		},
 		{ // 1
 			IsExists: false,
 			Owner:    "",
 		},
-		{ // 2
-			IsExists: false,
-			Owner:    "",
-		},
 	},
-	{ // 2
-		{ // 1
+	{ // 1
+		{ // 0
 			IsExists: true,
 			Owner:    "empty",
 		},
-		{ // 2
+		{ // 1
 			IsExists: true,
 			Owner:    "empty",
 		},
 	},
-	{ // 3
-		{ // 1
+	{ // 2
+		{ // 0
 			IsExists: true,
 			Owner:    "empty",
 		},
-		{ // 2
+		{ // 1
 			IsExists: true,
 			Owner:    "empty",
 		},

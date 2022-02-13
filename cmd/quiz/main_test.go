@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 	"log"
@@ -26,6 +27,7 @@ func TestServer(t *testing.T) {
 		u := url.URL{Scheme: "ws", Host: serverPort, Path: "/ws"}
 
 		requestChs, responseChs := func() ([]chan []byte, []chan []byte) {
+			// ответы от сервера
 			request1Ch := make(chan []byte, 100)
 
 			playersInfo := &domain.EventPlayersInfo{
@@ -74,8 +76,99 @@ func TestServer(t *testing.T) {
 			}
 			msg, _ = json.Marshal(questionInfo)
 			request1Ch <- msg
-			// TODO добавить ответ на вопрос type 5
-			// дальше запрос вопроса
+
+			answerInfo := &domain.FirstQuestionInfo{
+				Type:   5,
+				Answer: &domain.Answer{Value: "1"},
+			}
+			msg, _ = json.Marshal(answerInfo)
+			request1Ch <- msg
+			eventSelectCell := struct {
+				Type  int    `json:"type"`
+				Color string `json:"color"`
+				Count int    `json:"count"`
+			}{
+				Type:  7,
+				Color: "player-1",
+				Count: 2,
+			}
+			msg, _ = json.Marshal(eventSelectCell)
+			request1Ch <- msg
+			mapInfo1 := &domain.EventMapInfo{
+				Type: 13,
+				Map: [][]*domain.Cell{
+					{ // 0
+						{ // 0
+							IsExists: false,
+							Owner:    "",
+						},
+						{ // 1
+							IsExists: false,
+							Owner:    "",
+						},
+					},
+					{ // 1
+						{ // 0
+							IsExists: true,
+							Owner:    "player-1",
+						},
+						{ // 1
+							IsExists: true,
+							Owner:    "empty",
+						},
+					},
+					{ // 2
+						{ // 0
+							IsExists: true,
+							Owner:    "empty",
+						},
+						{ // 1
+							IsExists: true,
+							Owner:    "empty",
+						},
+					},
+				},
+			}
+			msg, _ = json.Marshal(mapInfo1)
+			request1Ch <- msg
+			mapInfo2 := &domain.EventMapInfo{
+				Type: 13,
+				Map: [][]*domain.Cell{
+					{ // 0
+						{ // 0
+							IsExists: false,
+							Owner:    "",
+						},
+						{ // 1
+							IsExists: false,
+							Owner:    "",
+						},
+					},
+					{ // 1
+						{ // 0
+							IsExists: true,
+							Owner:    "player-1",
+						},
+						{ // 1
+							IsExists: true,
+							Owner:    "player-1",
+						},
+					},
+					{ // 2
+						{ // 0
+							IsExists: true,
+							Owner:    "empty",
+						},
+						{ // 1
+							IsExists: true,
+							Owner:    "empty",
+						},
+					},
+				},
+			}
+			msg, _ = json.Marshal(mapInfo2)
+			request1Ch <- msg
+
 			close(request1Ch)
 
 			request2Ch := make(chan []byte, 100)
@@ -85,19 +178,56 @@ func TestServer(t *testing.T) {
 			request2Ch <- msg
 			msg, _ = json.Marshal(questionInfo)
 			request2Ch <- msg
+			msg, _ = json.Marshal(answerInfo)
+			request2Ch <- msg
+			msg, _ = json.Marshal(eventSelectCell)
+			request2Ch <- msg
+			msg, _ = json.Marshal(mapInfo1)
+			request2Ch <- msg
+			msg, _ = json.Marshal(mapInfo2)
+			request2Ch <- msg
 			close(request2Ch)
 
 			requestChs := make([]chan []byte, 0)
 			requestChs = append(requestChs, request1Ch)
 			requestChs = append(requestChs, request2Ch)
 
+			// ответы от клиента
 			response1Ch := make(chan []byte, 100)
 
-			firstQuestionInfo := &domain.FirstQuestionInfo{
-				Type:   1,
-				Answer: &domain.Answer{Value: "1"},
+			firstQuestionInfo := struct {
+				Type   int    `json:"type"`
+				Option string `json:"option"`
+			}{
+				Type:   domain.EventReceivedAnswer,
+				Option: "1",
 			}
+
 			msg, _ = json.Marshal(firstQuestionInfo)
+			response1Ch <- msg
+
+			eventGetCell := struct {
+				Type      int `json:"type"`
+				RowIndex  int `json:"rowIndex"`
+				CellIndex int `json:"cellIndex"`
+			}{
+				Type:      3,
+				RowIndex:  1,
+				CellIndex: 0,
+			}
+			msg, _ = json.Marshal(eventGetCell)
+			response1Ch <- msg
+
+			eventGetCell = struct {
+				Type      int `json:"type"`
+				RowIndex  int `json:"rowIndex"`
+				CellIndex int `json:"cellIndex"`
+			}{
+				Type:      3,
+				RowIndex:  1,
+				CellIndex: 1,
+			}
+			msg, _ = json.Marshal(eventGetCell)
 			response1Ch <- msg
 
 			response2Ch := make(chan []byte, 100)
@@ -117,14 +247,14 @@ func TestServer(t *testing.T) {
 			u.RawQuery = v.Encode()
 
 			wg.Add(1)
-			go connect(t, u.String(), &wg, requestChs[i], responseChs[i])
+			go connect(t, u.String(), &wg, requestChs[i], responseChs[i], i)
 			time.Sleep(time.Second)
 		}
 		wg.Wait()
 	})
 }
 
-func connect(t *testing.T, u string, wg *sync.WaitGroup, requestCh chan []byte, responseCh chan []byte) {
+func connect(t *testing.T, u string, wg *sync.WaitGroup, requestCh chan []byte, responseCh chan []byte, i int) {
 	defer wg.Done()
 
 	c, _, err := websocket.DefaultDialer.Dial(u, nil)
@@ -135,6 +265,7 @@ func connect(t *testing.T, u string, wg *sync.WaitGroup, requestCh chan []byte, 
 
 	done := make(chan struct{})
 	serverCh := make(chan struct{})
+	getCellCh := make(chan struct{})
 
 	go func() {
 		defer close(done)
@@ -151,14 +282,18 @@ func connect(t *testing.T, u string, wg *sync.WaitGroup, requestCh chan []byte, 
 			if msg.Type == 1 {
 				serverCh <- struct{}{}
 			}
+			if msg.Type == 7 {
+				getCellCh <- struct{}{}
+				getCellCh <- struct{}{}
+			}
 
 			if err != nil {
 				log.Println("read:", err)
 				return
 			}
 
-			//fmt.Printf("%d: from server %s\n", i, string(message))
-			//fmt.Printf("%d: from ch %s\n", i, string(scenarioMsg))
+			fmt.Printf("%d: from server %s\n", i, string(message))
+			fmt.Printf("%d: from ch %s\n", i, string(requestMsg))
 			assert.Equal(t, requestMsg, message)
 		}
 	}()
@@ -170,6 +305,23 @@ func connect(t *testing.T, u string, wg *sync.WaitGroup, requestCh chan []byte, 
 			if err != nil {
 				log.Println("write:", err)
 				return
+			}
+		case <-getCellCh:
+			msg := <-responseCh
+			if msg != nil {
+				err := c.WriteMessage(websocket.TextMessage, msg)
+				if err != nil {
+					log.Println("write:", err)
+					return
+				}
+			}
+			msg = <-responseCh
+			if msg != nil {
+				err := c.WriteMessage(websocket.TextMessage, msg)
+				if err != nil {
+					log.Println("write:", err)
+					return
+				}
 			}
 		case <-done:
 			err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
