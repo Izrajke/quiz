@@ -314,10 +314,7 @@ func connect(t *testing.T, u string, wg *sync.WaitGroup, requestCh chan []byte, 
 					log.Println("write:", err)
 					return
 				}
-			}
-			msg = <-responseCh
-			if msg != nil {
-				err := c.WriteMessage(websocket.TextMessage, msg)
+				err = c.WriteMessage(websocket.TextMessage, <-responseCh)
 				if err != nil {
 					log.Println("write:", err)
 					return

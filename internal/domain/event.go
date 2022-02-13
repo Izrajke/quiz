@@ -30,7 +30,7 @@ const (
 	// информация о карте
 	eventMap = 13
 	// информация о начале стадии нападений
-	eventMapAllowAttack
+	eventMapAllowAttack = 15
 	// информация о конце игры
 	eventFinish = 999
 )
