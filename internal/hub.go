@@ -1,7 +1,9 @@
 package internal
 
 import (
+	"math/rand"
 	"quiz/internal/domain"
+	"time"
 )
 
 type message struct {
@@ -49,12 +51,17 @@ type gameStore struct {
 	roundCounter int
 	// кол-во свободных клеток
 	freeCellCounter int
+	// доступное кол-во для выбора клеток
+	selectCellCounter map[string]int
 
 	// игроки, соединение - игрок
 	players map[*domain.Connection]*domain.Player
 
 	// ответы игроков
 	answers map[string]string
+
+	// доступные цвета для игроков
+	colors []string
 }
 
 func NewHub() *hub {
@@ -91,12 +98,8 @@ func (h *hub) Run() {
 
 			// 3. запуск игры
 			if len(game.players) == maxConnections {
-				if len(domain.GlobalQuestions) == game.questionCounter {
-					// TODO временное решение
-					game.questionCounter = 0
-				}
-				questionInfo := domain.GlobalQuestions[game.questionCounter]
 				// 4. отправка вопроса
+				questionInfo := domain.GlobalQuestions[game.questionCounter]
 				msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
 				h.sendToAll(game.players, s.room, msg)
 			}
@@ -117,49 +120,81 @@ func (h *hub) Run() {
 
 					if game.roundCounter == 4 {
 						msg = h.event.FinishInfo().Marshal()
+						h.sendToAll(game.players, m.room, msg)
 					} else {
+						// отправка правильного ответа
 						questionInfo := domain.GlobalQuestions[game.questionCounter]
 						correctAnswer := questionInfo.Answer.Value
 						answerMsg := h.event.AnswerFirstQuestionInfo(correctAnswer).Marshal()
 						h.sendToAll(game.players, m.room, answerMsg)
 
+						var isCorrectAnswer bool
 						for playerColor, answer := range game.answers {
 							if answer == correctAnswer {
+								isCorrectAnswer = true
+								game.selectCellCounter[playerColor] = 2
+
 								selectCellMsg := h.event.SelectCellInfo(playerColor).Marshal()
 								h.sendToAll(game.players, m.room, selectCellMsg)
 								break
 							}
 						}
 						game.answers = make(map[string]string, 0)
+						game.questionCounter++
+
+						if !isCorrectAnswer {
+							// отправка вопроса
+							questionInfo = domain.GlobalQuestions[game.questionCounter]
+							msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
+							h.sendToAll(game.players, m.room, msg)
+							game.roundCounter++
+						}
 					}
 				}
 			// запрос следующуего вопроса
 			case domain.EventReceivedNextFirstQuestion:
-				questionInfo := domain.GlobalQuestions[game.questionCounter]
-				msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
-				game.roundCounter++
+				// TODO deprecated?
+				//questionInfo := domain.GlobalQuestions[game.questionCounter]
+				//msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
+				//h.sendToAll(game.players, m.room, msg)
+				//game.roundCounter++
 			case domain.EventReceivedGetMapCell:
-				domain.GlobalMap[m.request.RowIndex][m.request.CellIndex].Owner = m.playerColor
-				game.freeCellCounter--
-				mapMsg := h.event.MapInfo().Marshal()
-				h.sendToAll(game.players, m.room, mapMsg)
-				if game.freeCellCounter == 0 {
-					allowAttackMsg := h.event.MapAllowAttackInfo().Marshal()
-					h.sendToAll(game.players, m.room, allowAttackMsg)
+				count, found := game.selectCellCounter[m.playerColor]
+				if found {
+					count--
+					game.selectCellCounter[m.playerColor] = count
+					domain.GlobalMap[m.request.RowIndex][m.request.CellIndex].Owner = m.playerColor
+
+					game.freeCellCounter--
+					mapMsg := h.event.MapInfo().Marshal()
+					h.sendToAll(game.players, m.room, mapMsg)
+					if game.freeCellCounter == 0 {
+						// отправляем сообщение о смене этапа игры
+						allowAttackMsg := h.event.MapAllowAttackInfo().Marshal()
+						h.sendToAll(game.players, m.room, allowAttackMsg)
+					}
+
+					if count == 0 {
+						delete(game.selectCellCounter, m.playerColor)
+						// отправка вопроса
+						questionInfo := domain.GlobalQuestions[game.questionCounter]
+						msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
+						h.sendToAll(game.players, m.room, msg)
+					}
 				}
 			case domain.EventMapAttack:
-				// TODO отправлять вопрос
+				// TODO отправлять вопрос и запоминнать клетку и хранить этап игры
 				domain.GlobalMap[m.request.RowIndex][m.request.CellIndex].Owner = m.playerColor
 				mapMsg := h.event.MapInfo().Marshal()
 				h.sendToAll(game.players, m.room, mapMsg)
-			}
-
-			if msg != nil {
-				h.sendToAll(game.players, m.room, msg)
 			}
 		case s := <-h.unregister:
 			game, found := h.games[s.room]
 			if found {
+				colors := []string{s.player.Color}
+				colors = append(colors, game.colors...)
+				game.colors = colors
+
 				delete(game.players, s.conn)
 				close(s.conn.Send)
 				if len(game.players) == 0 {
@@ -174,20 +209,35 @@ func (h *hub) Run() {
 func (h *hub) createOrGetGame(s *subscription) *gameStore {
 	game, found := h.games[s.room]
 	if !found {
+		game = &gameStore{
+			state:             1,
+			questionCounter:   0,
+			answerCounter:     0,
+			roundCounter:      0,
+			freeCellCounter:   4,
+			selectCellCounter: make(map[string]int, 0),
+			players:           nil,
+			answers:           make(map[string]string, 0),
+			colors:            nil,
+		}
+
+		colors := []string{"player-1", "player-2", "player-3"}
+		rand.Seed(time.Now().Unix())
+		rand.Shuffle(len(colors), func(i, j int) {
+			colors[i], colors[j] = colors[j], colors[i]
+		})
+		game.colors = colors
+
+		s.player.Color = game.colors[0]
+		game.colors = game.colors[1:]
 		players := make(map[*domain.Connection]*domain.Player, 0)
 		players[s.conn] = s.player
+		game.players = players
 
-		game = &gameStore{
-			state:           1,
-			questionCounter: 0,
-			answerCounter:   0,
-			roundCounter:    0,
-			freeCellCounter: 4,
-			players:         players,
-			answers:         make(map[string]string, 0),
-		}
 		h.games[s.room] = game
 	} else {
+		s.player.Color = game.colors[0]
+		game.colors = game.colors[1:]
 		game.players[s.conn] = s.player
 	}
 
