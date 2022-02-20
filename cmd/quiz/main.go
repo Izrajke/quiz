@@ -31,6 +31,8 @@ func main() {
 	// Создание комнаты
 	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
 		id := uuid.New()
+		// enable cors
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		if r.Method == http.MethodPost {
 			id := struct {
 				ID uuid.UUID `json:"id"`
