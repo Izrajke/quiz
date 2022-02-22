@@ -20,13 +20,11 @@ export const SocketLogger: FunctionComponent = observer(() => {
     app.socketMessage(message);
   };
 
-  const getQuestionHandler = () => {
-    app.socketMessage({ type: 2 });
-  };
-
   const closeHandler = () => {
     setIsOpen(!isOpen);
   };
+
+  if (!app.socket) return null;
 
   return (
     <div className={classes.wrapper}>
@@ -36,7 +34,7 @@ export const SocketLogger: FunctionComponent = observer(() => {
       {isOpen ? (
         <>
           <div className={classes.loggerContent}>
-            {app.socketLog.map(([sendingType, message], index) => {
+            {app.socket.log.map(([sendingType, message], index) => {
               return (
                 <div className={classes.message} key={index}>
                   <b className={classes[sendingType]}>{sendingType}:</b>{' '}
@@ -53,9 +51,6 @@ export const SocketLogger: FunctionComponent = observer(() => {
           />
           <button onClick={messageHandler} className={classes.button}>
             Отправить событие
-          </button>
-          <button onClick={getQuestionHandler} className={classes.button}>
-            Получить вопрос
           </button>
         </>
       ) : null}
