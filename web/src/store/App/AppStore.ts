@@ -16,7 +16,7 @@ export class AppStore {
   /** Статус инициализации */
   isInit = false;
   /** Ссылка на созданную комнату */
-  roomId = '4d325b51-8dfe-4be2-ba97-b636ba2243d8';
+  roomId = '';
   /** Сокет */
   socket: WebSocket | undefined;
   /** Массив сообщений сокета */
@@ -38,15 +38,16 @@ export class AppStore {
       socketMessage: action,
       setDialog: action,
       removeDialog: action,
+      setRoomId: action,
       // flow
       socketConnection: flow,
     });
     this.root = root;
   }
 
-  *socketConnection() {
+  *socketConnection(id: string) {
     this.socket = yield new WebSocket(
-      `ws://127.0.0.1:8080/ws?room=${this.roomId}&name=${this.root.player.nickname}`,
+      `ws://127.0.0.1:8080/ws?room=${id}&name=${this.root.player.nickname}`,
     );
     if (this.socket) {
       this.socket.onmessage = (evt) => {
@@ -71,6 +72,12 @@ export class AppStore {
             break;
           case SocketResponseType.mapInfo:
             this.root.room.setMap(data);
+            break;
+          case SocketResponseType.allowedToCapture:
+            this.root.room.setCaptureCapability(data);
+            break;
+          case SocketResponseType.attackStage:
+            this.root.room.changeMoveStatus('attack');
             break;
           case SocketResponseType.endGame:
             this.root.room.setType(SocketResponseType.endGame);
@@ -106,5 +113,9 @@ export class AppStore {
 
   removeDialog = () => {
     this.dialogs.shift();
+  };
+
+  setRoomId = (newId: string) => {
+    this.roomId = newId;
   };
 }

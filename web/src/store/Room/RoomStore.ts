@@ -6,10 +6,15 @@ import type {
   SocketQuestionData,
   SocketAnswerData,
   SocketPlayersData,
+  SoсketAllowedToCapture,
   Player,
   MapData,
   PlayerColors,
 } from 'api';
+import { SocketRequestType } from 'api';
+
+import { withDelay } from 'utils';
+
 import { MapMoveControl } from './classes';
 import type { CaptureCheckNames } from './classes';
 import { Map } from './types/Map';
@@ -43,7 +48,11 @@ export class RoomStore {
   /** Модалка вопроса */
   isQuestionModalOpen = false;
   /** Capture статус */
-  moveStatus: CaptureCheckNames = 'attack';
+  moveStatus: CaptureCheckNames = 'freeCapture';
+  /** Может ли игрок передвигаться */
+  canCapture = false;
+  /** Кол-во клеток для захвата */
+  captureCount = 0;
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -56,6 +65,8 @@ export class RoomStore {
       playerAnswer: observable,
       map: observable,
       isQuestionModalOpen: observable,
+      canCapture: observable,
+      captureCount: observable,
       // action
       setQuestion: action,
       setAnswer: action,
@@ -64,6 +75,10 @@ export class RoomStore {
       resetAnswer: action,
       setMap: action,
       useQuetionModal: action,
+      setCaptureCapability: action,
+      calculateCaptureCapability: action,
+      reduceCaptureCount: action,
+      changeMoveStatus: action,
     });
     this.root = root;
   }
@@ -109,6 +124,59 @@ export class RoomStore {
   useQuetionModal = (value: boolean) => {
     this.isQuestionModalOpen = value;
   };
+
+  changeMoveStatus = (newStatus: CaptureCheckNames) => {
+    this.moveStatus = newStatus
+  }
+
+  setCaptureCapability = (data: SoсketAllowedToCapture) => {
+    const { color, count } = data;
+    this.canCapture = color === this.root.player.color;
+    if (this.canCapture) {
+      this.captureCount = count;
+    }
+  };
+
+  calculateCaptureCapability = () => {
+    this.canCapture = !(this.captureCount === 0);
+  };
+
+  reduceCaptureCount = () => {
+    this.captureCount = --this.captureCount;
+    this.calculateCaptureCapability()
+  };
+
+  // TODO Подумать куда унести (отдельный класс для сокета)
+  getCell = (rowIndex: number, cellIndex: number) => {
+    this.root.app.socketMessage({
+      type: SocketRequestType.getCell,
+      rowIndex: rowIndex,
+      cellIndex: cellIndex,
+    });
+    this.reduceCaptureCount()
+    // TODO: pause
+
+    const f = () => {
+      if(!this.canCapture && this.moveStatus !== 'attack') {
+        this.getQuestion()
+      }
+    }
+    withDelay<boolean>(f, 2000, [this.canCapture])
+  };
+
+  // TODO Подумать куда унести (отдельный класс для сокета)
+  attackCell = (rowIndex: number, cellIndex: number) => {
+    this.root.app.socketMessage({
+      type: SocketRequestType.attackCell,
+      rowIndex: rowIndex,
+      cellIndex: cellIndex,
+    });
+  };
+
+  // TODO Подумать куда унести (отдельный класс для сокета)
+  getQuestion = () => {
+    this.root.app.socketMessage({type: 2})
+  }
 
   /** Приведение карты к игровому формату (добавление поля canMove)  */
   mapFormat = (mapData: MapData, player: PlayerColors): Map =>

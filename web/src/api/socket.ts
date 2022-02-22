@@ -11,10 +11,14 @@ export enum SocketResponseType {
   answerFirstQuestionType = 5,
   /** Ответ на вопрос второго типа */
   answerSecondQuestionType = 6,
+  /** Кол-во территории для захвата */
+  allowedToCapture = 7,
   /** Информация о игроках */
   playersInfo = 12,
   /** Информация о карте */
   mapInfo = 13,
+  /** Начало этапа нападения */
+  attackStage = 15,
   /** Конец игры */
   endGame = 999,
 }
@@ -24,7 +28,7 @@ export enum SocketRequestType {
   sendAnswer = 1,
   /** Получить вопрос */
   getQuestion = 2,
-  /** Получить клетку */
+  /** Получить пустую клетку */
   getCell = 3,
   /** Напасть на клетку */
   attackCell = 4,
@@ -32,6 +36,8 @@ export enum SocketRequestType {
 
 /** - - - - - - - - - - - - - - - - - - - - - - - - */
 /** Серверные */
+
+export type PlayerColors = 'player-1' | 'player-2' | 'player-3';
 
 /** Интерфейс объекта вариантов ответ */
 export interface SocketOptions {
@@ -50,6 +56,12 @@ export interface SocketQuestionData {
   question: SocketQuestion;
 }
 
+export interface SoсketAllowedToCapture {
+  type: SocketResponseType;
+  color: PlayerColors;
+  count: number;
+}
+
 /** Интерфейс ответа на вопрос */
 export interface SocketAnswerData {
   type: SocketResponseType;
@@ -58,7 +70,6 @@ export interface SocketAnswerData {
   };
 }
 
-export type PlayerColors = 'player-1' | 'player-2' | 'player-3';
 
 /** Интерфейс игрока */
 export interface Player {

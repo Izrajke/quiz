@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
-import { SocketRequestType } from 'api';
 import type { CellData } from 'api';
 
 import classes from './Map.module.css';
@@ -25,7 +24,7 @@ export interface CellComponent extends FunctionComponent<CellProps> {
 /** Клетка на поле */
 export const Cell: CellComponent = observer(
   ({ className, isExists, owner, rowIndex, cellIndex, canMove }) => {
-    const { app, player } = useStore();
+    const { player, room } = useStore();
 
     const styles = useMemo(
       () =>
@@ -33,23 +32,22 @@ export const Cell: CellComponent = observer(
           className,
           classes.cell,
           isExists && owner && classes[owner],
-          canMove
+          canMove && room.canCapture
             ? `${classes[`canMove-${player.color}`]}  ${classes.pointer}`
             : classes.notAllowed,
         ),
-      [className, isExists, owner, canMove, player.color],
+      [className, isExists, owner, canMove, player.color, room.canCapture],
     );
 
     /** Отправляем сообщение о получении или о захвате клетки */
     const clickHandle = () => {
-      app.socketMessage({
-        type: SocketRequestType.getCell,
-        rowIndex: rowIndex,
-        cellIndex: cellIndex,
-      });
+      if(room.canCapture) {
+        room.moveStatus !== 'attack'
+        ? room.getCell(rowIndex, cellIndex)
+        : room.attackCell(rowIndex, cellIndex);
+      }
     };
 
-    // TODO Завязка на isExists пока не доработана логика нападения на противника
     return (
       <svg width="88" height="100" viewBox="0 0 88 100">
         <path
