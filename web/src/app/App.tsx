@@ -23,7 +23,7 @@ export const App: FunctionComponent = observer(() => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path={`/room/${app.roomId}`} element={<PlayingRoom />} />
+        <Route path={`/room/:id`} element={<PlayingRoom />} />
       </Routes>
       <SocketLogger />
       <Dialog />

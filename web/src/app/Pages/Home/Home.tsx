@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 
 import { useStore } from 'store';
+import { createLobby } from 'api';
 
 import {
   Paper,
@@ -72,8 +73,9 @@ export const Home: FunctionComponent = observer(() => {
     }),
   );
 
-  /** Обработчик нажатия на иконку настроек */
-  const onCreateLobbyClick = () => {
+  const onCreateLobbyClick = async () => {
+    const { id } = await createLobby();
+    app.setRoomId(id);
     navigate(`/room/${app.roomId}`);
   };
 
