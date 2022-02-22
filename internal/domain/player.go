@@ -34,10 +34,6 @@ type Player struct {
 
 // NewPlayer конструктор игрока
 func NewPlayer(name string) *Player {
-	// TODO сделать случайный цвет у игры
-	color := colors[0]
-	colors = colors[1:]
-
 	var id string
 	if Environment != "test" {
 		id = uuid.New().String()
@@ -51,7 +47,6 @@ func NewPlayer(name string) *Player {
 		Id:        id,
 		Name:      name,
 		Points:    defaultPoints,
-		Color:     color,
 		createdAt: createdAt,
 	}
 }
