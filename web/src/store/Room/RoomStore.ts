@@ -6,7 +6,7 @@ import type {
   SocketQuestionData,
   SocketAnswerData,
   SocketPlayersData,
-  SoсketAllowedToCapture,
+  SoсketAllowedToCaptureData,
   Player,
   MapData,
   PlayerColors,
@@ -126,10 +126,10 @@ export class RoomStore {
   };
 
   changeMoveStatus = (newStatus: CaptureCheckNames) => {
-    this.moveStatus = newStatus
-  }
+    this.moveStatus = newStatus;
+  };
 
-  setCaptureCapability = (data: SoсketAllowedToCapture) => {
+  setCaptureCapability = (data: SoсketAllowedToCaptureData) => {
     const { color, count } = data;
     this.canCapture = color === this.root.player.color;
     if (this.canCapture) {
@@ -143,25 +143,24 @@ export class RoomStore {
 
   reduceCaptureCount = () => {
     this.captureCount = --this.captureCount;
-    this.calculateCaptureCapability()
+    this.calculateCaptureCapability();
   };
 
   // TODO Подумать куда унести (отдельный класс для сокета)
   getCell = (rowIndex: number, cellIndex: number) => {
     this.root.app.socketMessage({
       type: SocketRequestType.getCell,
-      rowIndex: rowIndex,
-      cellIndex: cellIndex,
+      rowIndex,
+      cellIndex,
     });
-    this.reduceCaptureCount()
-    // TODO: pause
-
+    this.reduceCaptureCount();
+    // TODO: убрать запросы вопросов???
     const f = () => {
-      if(!this.canCapture && this.moveStatus !== 'attack') {
-        this.getQuestion()
+      if (!this.canCapture && this.moveStatus !== 'attack') {
+        this.getQuestion();
       }
-    }
-    withDelay<boolean>(f, 2000, [this.canCapture])
+    };
+    withDelay<boolean>(f.bind(this), 2000, [this.canCapture]);
   };
 
   // TODO Подумать куда унести (отдельный класс для сокета)
@@ -175,8 +174,8 @@ export class RoomStore {
 
   // TODO Подумать куда унести (отдельный класс для сокета)
   getQuestion = () => {
-    this.root.app.socketMessage({type: 2})
-  }
+    this.root.app.socketMessage({ type: 2 });
+  };
 
   /** Приведение карты к игровому формату (добавление поля canMove)  */
   mapFormat = (mapData: MapData, player: PlayerColors): Map =>

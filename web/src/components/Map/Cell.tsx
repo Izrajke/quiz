@@ -41,10 +41,10 @@ export const Cell: CellComponent = observer(
 
     /** Отправляем сообщение о получении или о захвате клетки */
     const clickHandle = () => {
-      if(room.canCapture) {
+      if (room.canCapture) {
         room.moveStatus !== 'attack'
-        ? room.getCell(rowIndex, cellIndex)
-        : room.attackCell(rowIndex, cellIndex);
+          ? room.getCell(rowIndex, cellIndex)
+          : room.attackCell(rowIndex, cellIndex);
       }
     };
 

@@ -1,14 +1,11 @@
 import { makeObservable, flow, observable, action } from 'mobx';
 
-import { RootStore } from '../RootStore';
-import { DialogProps } from 'components';
+import type { RootStore } from 'store';
+import type { DialogProps } from 'components';
 
-import { withDelay } from 'utils';
+import type { SocketRequest } from 'api';
 
-import { SocketResponseType } from 'api';
-import type { SocketAction, SocketLog, SocketSendingType } from 'api';
-
-const answerDelay = 2000;
+import { Socket } from './classes';
 
 export class AppStore {
   /** Root store */
@@ -18,9 +15,7 @@ export class AppStore {
   /** Ссылка на созданную комнату */
   roomId = '';
   /** Сокет */
-  socket: WebSocket | undefined;
-  /** Массив сообщений сокета */
-  socketLog: SocketLog = [];
+  socket: Socket | undefined;
   /** Модальные окна */
   dialogs: DialogProps[] = [];
 
@@ -30,11 +25,9 @@ export class AppStore {
       isInit: observable,
       roomId: observable,
       socket: observable,
-      socketLog: observable,
       dialogs: observable,
       // action
       init: action,
-      socketActionRegister: action,
       socketMessage: action,
       setDialog: action,
       removeDialog: action,
@@ -46,49 +39,11 @@ export class AppStore {
   }
 
   *socketConnection(id: string) {
-    this.socket = yield new WebSocket(
+    // TODO: Возможно сокетов будет несколько. Их нужно будет тогда разбить roomSocket, homeSocket и т.п
+    this.socket = yield new Socket(
+      this.root,
       `ws://127.0.0.1:8080/ws?room=${id}&name=${this.root.player.nickname}`,
     );
-    if (this.socket) {
-      this.socket.onmessage = (evt) => {
-        const data = JSON.parse(evt.data);
-
-        this.socketActionRegister('received', data);
-        switch (data.type) {
-          case SocketResponseType.answerFirstQuestionType:
-          case SocketResponseType.answerSecondQuestionType:
-            this.root.room.setAnswer(data);
-            withDelay(this.root.room.useQuetionModal, answerDelay, [false]);
-            break;
-          case SocketResponseType.firstQuestionType:
-          case SocketResponseType.secondQuestionType:
-            this.root.room.setQuestion(data);
-            this.root.room.resetAnswer();
-            this.root.room.useQuetionModal(true);
-            break;
-          case SocketResponseType.playersInfo:
-            this.root.room.setPlayers(data);
-            this.root.player.setPlayerInfo();
-            break;
-          case SocketResponseType.mapInfo:
-            this.root.room.setMap(data);
-            break;
-          case SocketResponseType.allowedToCapture:
-            this.root.room.setCaptureCapability(data);
-            break;
-          case SocketResponseType.attackStage:
-            this.root.room.changeMoveStatus('attack');
-            break;
-          case SocketResponseType.endGame:
-            this.root.room.setType(SocketResponseType.endGame);
-            break;
-          default:
-        }
-      };
-      this.socket.onclose = () => {
-        console.log('Сокет закрылся');
-      };
-    }
   }
 
   /** Инициальзация приложения */
@@ -97,15 +52,9 @@ export class AppStore {
   }
 
   /** Отправить сообщение сокету */
-  socketMessage = (body: SocketAction) => {
-    this.socket && this.socket.send(JSON.stringify(body));
-    this.socketActionRegister('sent', body);
+  socketMessage = (body: SocketRequest) => {
+    this.socket && this.socket.send(body);
   };
-
-  /** Добавляет и запоминает сокет-событие */
-  socketActionRegister(type: SocketSendingType, body: SocketAction) {
-    this.socketLog.push([type, body]);
-  }
 
   setDialog(dialog: DialogProps) {
     this.dialogs.push(dialog);

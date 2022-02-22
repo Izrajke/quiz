@@ -56,7 +56,7 @@ export interface SocketQuestionData {
   question: SocketQuestion;
 }
 
-export interface SoсketAllowedToCapture {
+export interface SoсketAllowedToCaptureData {
   type: SocketResponseType;
   color: PlayerColors;
   count: number;
@@ -69,7 +69,6 @@ export interface SocketAnswerData {
     value: string;
   };
 }
-
 
 /** Интерфейс игрока */
 export interface Player {
@@ -132,14 +131,14 @@ export interface SocketAttackCell {
 }
 
 /** ------------------------------------------------------------ */
-/** Logger */
 
-/** Все возмоные интерфейсы отправки сокетов */
-export type SocketAction =
-  | SocketAnswer
-  | SocketAnswerData
-  | SocketGetQuestion
-  | SocketAttackCell;
+export type SocketResponse = SocketAnswerData &
+  SocketPlayersData &
+  SocketQuestionData &
+  SocketMapData &
+  SoсketAllowedToCaptureData;
+
+export type SocketRequest = SocketAnswer | SocketGetQuestion | SocketAttackCell;
 
 /** ------------------------------------------------------------ */
 /** Logger */
@@ -147,4 +146,4 @@ export type SocketAction =
 /** Кто адресат */
 export type SocketSendingType = 'sent' | 'received';
 /** Массив произошедших событий в сокете */
-export type SocketLog = [SocketSendingType, SocketAction][];
+export type SocketLog = [SocketSendingType, SocketRequest | SocketResponse][];
