@@ -168,13 +168,15 @@ func (h *hub) Run() {
 					game.freeCellCounter--
 					mapMsg := h.event.MapInfo().Marshal()
 					h.sendToAll(game.players, m.room, mapMsg)
+					var isAllowAttack bool
 					if game.freeCellCounter == 0 {
+						isAllowAttack = true
 						// отправляем сообщение о смене этапа игры
 						allowAttackMsg := h.event.MapAllowAttackInfo().Marshal()
 						h.sendToAll(game.players, m.room, allowAttackMsg)
 					}
 
-					if count == 0 {
+					if !isAllowAttack && count == 0 {
 						delete(game.selectCellCounter, m.playerColor)
 						// отправка вопроса
 						questionInfo := domain.GlobalQuestions[game.questionCounter]

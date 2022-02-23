@@ -21,6 +21,8 @@ const (
 
 	// информация о вопросе первого типа
 	eventFirstQuestion = 1
+	// информация о вопросе второго типа
+	eventSecondQuestion = 2
 	// информация о ответе на вопрос первого типа
 	eventAnswerFirstQuestion = 5
 	// информация о получении клетки
