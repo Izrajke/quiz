@@ -1,0 +1,26 @@
+.resultBody {
+  display: flex;
+  flex-direction: column;
+  width: 1098px;
+  padding: 38px 24px;
+}
+
+.playerResultContainer {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nickname {
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.barsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  z-index: 2;
+}

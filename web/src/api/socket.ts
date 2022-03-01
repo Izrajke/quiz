@@ -62,12 +62,20 @@ export interface SoсketAllowedToCaptureData {
   count: number;
 }
 
+export interface AnswerOptions {
+  name: string;
+  color: PlayerColors;
+  value: number;
+  time: number;
+}
+
 /** Интерфейс ответа на вопрос */
 export interface SocketAnswerData {
   type: SocketResponseType;
   answer: {
     value: string;
   };
+  options?: AnswerOptions;
 }
 
 /** Интерфейс игрока */

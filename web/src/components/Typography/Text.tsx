@@ -5,7 +5,7 @@ import type { TypographyColor } from './Typography';
 
 import classes from './Typography.module.css';
 
-export type TextType = 'text-0' | 'text-1' | 'text-2' | 'text-3';
+export type TextType = 'caption' | 'text-0' | 'text-1' | 'text-2' | 'text-3';
 export type TextWeight = 'weight-bold' | 'weight-regular';
 
 export interface TextProps {
@@ -23,7 +23,7 @@ export const Text: TextComponent = ({
   color,
   className,
   type,
-  weight = 'text-regular',
+  weight = 'weight-regular',
   children,
 }) => {
   const styles = useMemo(

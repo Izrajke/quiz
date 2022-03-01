@@ -6,8 +6,17 @@
   color: var(--white-70);
 }
 
+.dark-2 {
+  color: var(--dark-2);
+}
+
 .disabled {
   color: var(--gray-1);
+}
+
+.caption {
+  font-size: 18px;
+  line-height: 140%;
 }
 
 .text-0 {

@@ -6,7 +6,7 @@ interface TypographyComponent extends FunctionComponent {
   Text: TextComponent;
 }
 
-export type TypographyColor = 'white' | 'white-70' | 'disabled';
+export type TypographyColor = 'white' | 'white-70' | 'disabled' | 'dark-2';
 
 export const Typography: TypographyComponent = () => null;
 

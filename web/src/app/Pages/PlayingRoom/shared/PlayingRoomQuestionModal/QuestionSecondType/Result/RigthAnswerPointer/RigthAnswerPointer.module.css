@@ -1,0 +1,28 @@
+.rightAnswerContainer {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 11px;
+  gap: 6px;
+  position: relative;
+  left: 24px;
+}
+
+.rightAnswerText {
+  margin-top: 4px;
+}
+
+.pointerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+.line {
+  position: absolute;
+  height: 200px;
+  width: 1px;
+  background: var(--white-50);
+  top: 52px;
+  z-index: 1;
+}

@@ -1,0 +1,31 @@
+.wrapper {
+  width: 874px;
+}
+
+.bar {
+  border-radius: 8px;
+  height: 42px;
+  padding: 6px 14px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.textContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.player-1 {
+  background: var(--player-1);
+}
+
+.player-2 {
+  background: var(--player-2);
+}
+
+.player-3 {
+  background: var(--player-3);
+}

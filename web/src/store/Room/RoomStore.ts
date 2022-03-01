@@ -10,6 +10,7 @@ import type {
   Player,
   MapData,
   PlayerColors,
+  AnswerOptions,
 } from 'api';
 import { SocketRequestType } from 'api';
 
@@ -21,6 +22,21 @@ import { Map } from './types/Map';
 
 import type { SocketMapData } from 'api';
 
+const defaultAnswerOptions: AnswerOptions[] = [
+  {
+    name: 'Василий призрак',
+    color: 'player-1',
+    value: 3500,
+    time: 1000,
+  },
+  {
+    name: 'Gogsh',
+    color: 'player-2',
+    value: 12200,
+    time: 2000,
+  },
+];
+
 /** Тип статуса игры */
 export type Status = 'question';
 
@@ -31,7 +47,7 @@ export class RoomStore {
   mapMoveControl = MapMoveControl;
   /** Варианты ответа  */
   options: SocketOptions = {};
-  /** Тип вопроса */
+  /** Тип сообщения сокета */
   type: SocketResponseType = 999;
   /** Название вопроса */
   title = '';
@@ -40,19 +56,22 @@ export class RoomStore {
   /** Ответ игрока */
   playerAnswer = '';
   /** Ответ на вопрос с сервера */
-  answer = '';
+  answer: string | number = 10000;
   /** Игроки */
   players: Player[] = [];
   /** Карта */
   map: Map = [];
   /** Модалка вопроса */
-  isQuestionModalOpen = false;
+  // TODO: на true
+  isQuestionModalOpen = true;
   /** Capture статус */
   moveStatus: CaptureCheckNames = 'freeCapture';
   /** Может ли игрок передвигаться */
   canCapture = false;
   /** Кол-во клеток для захвата */
   captureCount = 0;
+  /** Ответы игроков вопроса типа 2 */
+  answerOptions: AnswerOptions[] = defaultAnswerOptions;
 
   constructor(root: RootStore) {
     makeObservable(this, {
