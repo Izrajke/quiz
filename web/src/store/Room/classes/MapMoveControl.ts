@@ -3,12 +3,7 @@ import type { MapData, PlayerColors } from 'api';
 import { MapCellCheck } from './MapCellCheck';
 
 /** Функция проверки возможности хода на клетку */
-type CaptureCheck = (
-  mapData: MapData,
-  rowIndex: number,
-  cellIndex: number,
-  player: PlayerColors,
-) => boolean;
+type CaptureCheck = () => boolean;
 
 export interface CaptureChecks {
   /** Захват свободных клеток */
@@ -21,62 +16,62 @@ export interface CaptureChecks {
 
 export type CaptureCheckNames = keyof CaptureChecks;
 
+export interface MapControl {
+  mapData: MapData;
+  rowIndex: number;
+  cellIndex: number;
+  player: PlayerColors;
+}
+
 /** Класс со статическими методами работы с картой */
-export class MapMoveControl {
+export class MapMoveControl implements MapControl {
+  mapData: MapData;
+  rowIndex: number;
+  cellIndex: number;
+  player: PlayerColors;
+
   /** Методы првоерки клетки */
-  static mapCellCheck = MapCellCheck;
+  private mapCellCheck: MapCellCheck;
 
   /** Объект проверок на разные условия */
-  static checks: CaptureChecks = {
-    capture: this.checkCanMoveCapture.bind(MapMoveControl),
-    freeCapture: this.checkCanMoveFreeCapture.bind(MapMoveControl),
-    attack: this.checkCanMoveAttack.bind(MapMoveControl),
+  public checks: CaptureChecks = {
+    capture: this.checkCanMoveCapture.bind(this),
+    freeCapture: this.checkCanMoveFreeCapture.bind(this),
+    attack: this.checkCanMoveAttack.bind(this),
   };
 
-  /** Захват пограничных клеток */
-  static checkCanMoveCapture(
+  constructor(
     mapData: MapData,
     rowIndex: number,
     cellIndex: number,
     player: PlayerColors,
-  ): boolean {
-    const currentCell = mapData[rowIndex][cellIndex];
+  ) {
+    this.mapData = mapData;
+    this.rowIndex = rowIndex;
+    this.cellIndex = cellIndex;
+    this.player = player;
+    this.mapCellCheck = new MapCellCheck(this);
+  }
+
+  /** Захват пограничных клеток */
+  private checkCanMoveCapture(): boolean {
+    const currentCell = this.mapData[this.rowIndex][this.cellIndex];
     return currentCell.owner !== 'empty'
       ? false
-      : this.mapCellCheck.checkBorderCells(
-          mapData,
-          rowIndex,
-          cellIndex,
-          player,
-        );
+      : this.mapCellCheck.checkBorderCells();
   }
 
   /** Захват любой пустой клетки (у игрока еще нет захваченныъ клетов) */
-  static checkCanMoveFreeCapture(
-    mapData: MapData,
-    rowIndex: number,
-    cellIndex: number,
-  ) {
-    const currentCell = mapData[rowIndex][cellIndex];
-    return currentCell.owner !== 'empty' ? false : true;
+  private checkCanMoveFreeCapture() {
+    const currentCell = this.mapData[this.rowIndex][this.cellIndex];
+    return currentCell.owner === 'empty';
   }
 
   /** Атака пограничных клеток */
-  static checkCanMoveAttack(
-    mapData: MapData,
-    rowIndex: number,
-    cellIndex: number,
-    player: PlayerColors,
-  ) {
-    const currentCell = mapData[rowIndex][cellIndex];
-    return currentCell.owner === player
+  private checkCanMoveAttack() {
+    const currentCell = this.mapData[this.rowIndex][this.cellIndex];
+    return currentCell.owner === this.player
       ? false
-      : currentCell.isExists &&
-          this.mapCellCheck.checkBorderCells(
-            mapData,
-            rowIndex,
-            cellIndex,
-            player,
-          );
+      : currentCell.isExists && this.mapCellCheck.checkBorderCells();
   }
 }

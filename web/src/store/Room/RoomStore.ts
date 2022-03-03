@@ -6,7 +6,7 @@ import type {
   SocketQuestionData,
   SocketAnswerData,
   SocketPlayersData,
-  SoсketAllowedToCaptureData,
+  SocketAllowedToCaptureData,
   Player,
   MapData,
   PlayerColors,
@@ -62,7 +62,7 @@ export class RoomStore {
   /** Карта */
   map: Map = [];
   /** Модалка вопроса */
-  // TODO: на true
+  // TODO: на false
   isQuestionModalOpen = true;
   /** Capture статус */
   moveStatus: CaptureCheckNames = 'freeCapture';
@@ -93,7 +93,7 @@ export class RoomStore {
       setPlayers: action,
       resetAnswer: action,
       setMap: action,
-      useQuetionModal: action,
+      useQuestionModal: action,
       setCaptureCapability: action,
       calculateCaptureCapability: action,
       reduceCaptureCount: action,
@@ -140,7 +140,7 @@ export class RoomStore {
       (this.map = this.mapFormat(map, this.root.player.color));
   }
 
-  useQuetionModal = (value: boolean) => {
+  useQuestionModal = (value: boolean) => {
     this.isQuestionModalOpen = value;
   };
 
@@ -148,7 +148,7 @@ export class RoomStore {
     this.moveStatus = newStatus;
   };
 
-  setCaptureCapability = (data: SoсketAllowedToCaptureData) => {
+  setCaptureCapability = (data: SocketAllowedToCaptureData) => {
     const { color, count } = data;
     this.canCapture = color === this.root.player.color;
     if (this.canCapture) {
@@ -199,14 +199,17 @@ export class RoomStore {
   /** Приведение карты к игровому формату (добавление поля canMove)  */
   mapFormat = (mapData: MapData, player: PlayerColors): Map =>
     mapData.map((row, rowIndex) =>
-      row.map((cell, cellIndex) => ({
-        ...cell,
-        canMove: this.mapMoveControl.checks[this.moveStatus](
+      row.map((cell, cellIndex) => {
+        const moveControl = new MapMoveControl(
           mapData,
           rowIndex,
           cellIndex,
           player,
-        ),
-      })),
+        );
+        return {
+          ...cell,
+          canMove: moveControl.checks[this.moveStatus](),
+        };
+      }),
     );
 }

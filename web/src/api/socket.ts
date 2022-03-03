@@ -56,7 +56,7 @@ export interface SocketQuestionData {
   question: SocketQuestion;
 }
 
-export interface SoсketAllowedToCaptureData {
+export interface SocketAllowedToCaptureData {
   type: SocketResponseType;
   color: PlayerColors;
   count: number;
@@ -144,7 +144,7 @@ export type SocketResponse = SocketAnswerData &
   SocketPlayersData &
   SocketQuestionData &
   SocketMapData &
-  SoсketAllowedToCaptureData;
+  SocketAllowedToCaptureData;
 
 export type SocketRequest = SocketAnswer | SocketGetQuestion | SocketAttackCell;
 

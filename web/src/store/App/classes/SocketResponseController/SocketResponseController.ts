@@ -21,13 +21,13 @@ export class SocketResponseController {
       case SocketResponseType.answerFirstQuestionType:
       case SocketResponseType.answerSecondQuestionType:
         this.room.setAnswer(data);
-        withDelay(this.room.useQuetionModal, answerDelay, [false]);
+        withDelay(this.room.useQuestionModal, answerDelay, [false]);
         break;
       case SocketResponseType.firstQuestionType:
       case SocketResponseType.secondQuestionType:
         this.room.setQuestion(data);
         this.room.resetAnswer();
-        this.room.useQuetionModal(true);
+        this.room.useQuestionModal(true);
         break;
       case SocketResponseType.playersInfo:
         this.room.setPlayers(data);

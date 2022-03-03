@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
+import { useMemo } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
-import { Typography, Modal } from 'components';
+import { Modal, Typography } from 'components';
 
 import { AnswerBar } from './AnswerBar';
 import { RigthAnswerPointer } from './RigthAnswerPointer';
@@ -16,7 +16,10 @@ export const Result: FunctionComponent = observer(() => {
   const { room } = useStore();
 
   const maximumPoints = useMemo(
-    () => [...room.answerOptions].sort((a, b) => b.value - a.value)[0].value,
+    () =>
+      room.answerOptions.reduce((acc, curr) =>
+        acc.value > curr.value ? acc : curr,
+      ).value,
     [room.answerOptions],
   );
 

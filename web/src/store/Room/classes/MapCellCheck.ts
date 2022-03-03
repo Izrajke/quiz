@@ -1,53 +1,57 @@
 import type { MapData, PlayerColors } from 'api';
 
-
+import type { MapMoveControl } from './MapMoveControl';
 
 /** Класс со статическими методами проверки клетки на доступность хода */
 export class MapCellCheck {
+  mapData: MapData;
+  rowIndex: number;
+  cellIndex: number;
+  player: PlayerColors;
+
+  constructor(mapMoveControl: MapMoveControl) {
+    this.mapData = mapMoveControl.mapData;
+    this.rowIndex = mapMoveControl.rowIndex;
+    this.cellIndex = mapMoveControl.cellIndex;
+    this.player = mapMoveControl.player;
+  }
+
   /** Проверка клеток */
-  static checkBorderCells(
-    mapData: MapData,
-    rowIndex: number,
-    cellIndex: number,
-    player: PlayerColors,
-  ) {
+  public checkBorderCells() {
     return (
-      this.checkHorizontalCells(mapData, rowIndex, cellIndex, player) ||
-      this.checkVerticalCells(mapData, rowIndex, cellIndex, player, 'top') ||
-      this.checkVerticalCells(mapData, rowIndex, cellIndex, player, 'bottom')
+      this.checkHorizontalCells() ||
+      this.checkVerticalCells('top') ||
+      this.checkVerticalCells('bottom')
     );
   }
 
   /** Проверка клеток по краям  */
-  static checkHorizontalCells = (
-    mapData: MapData,
-    rowIndex: number,
-    cellIndex: number,
-    player: PlayerColors,
-  ) =>
-    mapData[rowIndex][cellIndex - 1]?.owner === player ||
-    mapData[rowIndex][cellIndex + 1]?.owner === player;
+  private checkHorizontalCells() {
+    return (
+      this.mapData[this.rowIndex][this.cellIndex - 1]?.owner === this.player ||
+      this.mapData[this.rowIndex][this.cellIndex + 1]?.owner === this.player
+    );
+  }
 
   /** Проверка клеток по вертикали */
-  static checkVerticalCells(
-    mapData: MapData,
-    rowIndex: number,
-    cellIndex: number,
-    player: PlayerColors,
-    direction: 'top' | 'bottom',
-  ) {
-    const isEvenRow = rowIndex % 2 === 0;
-    const checkingRowIndex = direction === 'top' ? rowIndex - 1 : rowIndex + 1;
-    if (mapData[checkingRowIndex]) {
+  private checkVerticalCells(direction: 'top' | 'bottom') {
+    const isEvenRow = this.rowIndex % 2 === 0;
+    const checkingRowIndex =
+      direction === 'top' ? this.rowIndex - 1 : this.rowIndex + 1;
+
+    if (this.mapData[checkingRowIndex]) {
       if (!isEvenRow) {
         return (
-          mapData[checkingRowIndex][cellIndex - 1]?.owner === player ||
-          mapData[checkingRowIndex][cellIndex]?.owner === player
+          this.mapData[checkingRowIndex][this.cellIndex - 1]?.owner ===
+            this.player ||
+          this.mapData[checkingRowIndex][this.cellIndex]?.owner === this.player
         );
       } else {
         return (
-          mapData[checkingRowIndex][cellIndex]?.owner === player ||
-          mapData[checkingRowIndex][cellIndex + 1]?.owner === player
+          this.mapData[checkingRowIndex][this.cellIndex]?.owner ===
+            this.player ||
+          this.mapData[checkingRowIndex][this.cellIndex + 1]?.owner ===
+            this.player
         );
       }
     } else {
