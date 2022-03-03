@@ -7,7 +7,7 @@ import { useStore } from 'store';
 import { Modal, Typography } from 'components';
 
 import { AnswerBar } from './AnswerBar';
-import { RigthAnswerPointer } from './RigthAnswerPointer';
+import { RightAnswerPointer } from './RigthAnswerPointer';
 
 import classes from './Result.module.css';
 
@@ -26,7 +26,7 @@ export const Result: FunctionComponent = observer(() => {
   return (
     <>
       <Modal.Body className={classes.resultBody}>
-        <RigthAnswerPointer maximumPoints={maximumPoints} />
+        <RightAnswerPointer maximumPoints={maximumPoints} />
         <div className={classes.barsContainer}>
           {room.answerOptions.map((option) => {
             return (

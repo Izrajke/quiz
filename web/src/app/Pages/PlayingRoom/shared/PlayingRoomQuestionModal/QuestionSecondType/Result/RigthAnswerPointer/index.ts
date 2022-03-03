@@ -1,1 +1,1 @@
-export * from './RigthAnswerPointer';
+export * from './RightAnswerPointer';

@@ -1,58 +1,54 @@
-import { useMemo, useRef, useEffect } from 'react';
+import { useMemo } from 'react';
 import type { FunctionComponent, CSSProperties } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { createAnimationStyle } from 'utils';
+import { useAnimation } from 'utils';
 import { useStore } from 'store';
 import { Typography, Icon } from 'components';
 
 import classes from './RigthAnswerPointer.module.css';
 
-interface RigthAnswerPointerProps {
+interface RightAnswerPointerProps {
   maximumPoints: number;
 }
 
-export const RigthAnswerPointer: FunctionComponent<RigthAnswerPointerProps> =
+export const RightAnswerPointer: FunctionComponent<RightAnswerPointerProps> =
   observer(({ maximumPoints }) => {
     const { room } = useStore();
+
+    const leftMargin = useMemo(
+      () => `${874 / (maximumPoints / Number(room.answer))}px`,
+      [maximumPoints, room.answer],
+    );
+
+    const { elementRef, animationStyle } = useAnimation(
+      'RightAnswerPointerMargin',
+      {
+        context: 'margin-left',
+        params: ['0px', leftMargin],
+      },
+    );
+
+    const calculatePointerMargin = useMemo<CSSProperties | undefined>(() => {
+      return typeof room.answer === 'number'
+        ? {
+            marginLeft: leftMargin,
+            ...animationStyle,
+          }
+        : undefined;
+    }, [room.answer, animationStyle, leftMargin]);
 
     const calculateLineHeight = useMemo<CSSProperties>(
       () => ({ height: `${room.answerOptions.length * 50}px` }),
       [room.answerOptions.length],
     );
 
-    const animationName = useMemo(() => 'RigthAnswerPointerMargin', []);
-
-    const calculatePointerMargin = useMemo<CSSProperties | undefined>(() => {
-      return typeof room.answer === 'number'
-        ? {
-            marginLeft: `${874 / (maximumPoints / room.answer)}px`,
-            animation: `${animationName} 3s ease`,
-          }
-        : undefined;
-    }, [room.answer, maximumPoints, animationName]);
-
-    const animation = useMemo(() => {
-      return createAnimationStyle(animationName, 'margin-left', [
-        '0px',
-        `${874 / (maximumPoints / Number(room.answer))}px`,
-      ]);
-    }, [room.answer, maximumPoints, animationName]);
-
-    const rightAnswerContainerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      if (rightAnswerContainerRef) {
-        rightAnswerContainerRef.current?.appendChild(animation);
-      }
-    }, [rightAnswerContainerRef, animation]);
-
     return (
       <div
         className={classes.rightAnswerContainer}
         style={calculatePointerMargin}
-        ref={rightAnswerContainerRef}
+        ref={elementRef}
       >
         <Typography.Text
           className={classes.rightAnswerText}
@@ -72,4 +68,4 @@ export const RigthAnswerPointer: FunctionComponent<RigthAnswerPointerProps> =
     );
   });
 
-RigthAnswerPointer.displayName = 'RigthAnswerPointer';
+RightAnswerPointer.displayName = 'RightAnswerPointer';

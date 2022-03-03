@@ -1,10 +1,10 @@
-import { useMemo, useCallback, useRef, useEffect } from 'react';
+import { useMemo, useCallback } from 'react';
 import type { FunctionComponent, CSSProperties } from 'react';
 
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
-import { createAnimationStyle } from 'utils';
+import { useAnimation } from 'utils';
 import type { PlayerColors } from 'api';
 import { Typography } from 'components';
 import type { TypographyColor } from 'components';
@@ -23,18 +23,15 @@ export const AnswerBar: FunctionComponent<AnswerBarProps> = observer(
   ({ player, points, time, maximumPoints }) => {
     const styles = useMemo(() => clsx(classes.bar, classes[player]), [player]);
 
-    const animationName = useMemo(() => 'AnswerBarWidth', []);
-
-    const calculatePlayerAnswer = useCallback(
-      (playerAnswer: number) => (playerAnswer / maximumPoints) * 100,
-      // eslint-disable-next-line
-      [maximumPoints],
-    );
-
     const calculateAnswerBarWidth = useCallback(
-      (playerAnswer: number) => `${calculatePlayerAnswer(playerAnswer)}%`,
-      [calculatePlayerAnswer],
+      () => `${(points / maximumPoints) * 100}%`,
+      [points, maximumPoints],
     );
+
+    const { elementRef, animationStyle } = useAnimation('AnswerBarWidth', {
+      context: 'width',
+      params: ['0%', `${calculateAnswerBarWidth()}%`],
+    });
 
     const textColor = useCallback<(player: PlayerColors) => TypographyColor>(
       (player) => (player === 'player-1' ? 'white' : 'dark-2'),
@@ -43,30 +40,15 @@ export const AnswerBar: FunctionComponent<AnswerBarProps> = observer(
 
     const style = useMemo<CSSProperties>(
       () => ({
-        width: calculateAnswerBarWidth(points),
-        animation: `${animationName} 3s ease`,
+        width: calculateAnswerBarWidth(),
+        ...animationStyle,
       }),
-      [calculateAnswerBarWidth, points, animationName],
+      [calculateAnswerBarWidth, animationStyle],
     );
-
-    const animation = useMemo(() => {
-      return createAnimationStyle(animationName, 'width', [
-        '0%',
-        `${calculateAnswerBarWidth(points)}px`,
-      ]);
-    }, [animationName, calculateAnswerBarWidth, points]);
-
-    const rightAnswerContainerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      if (rightAnswerContainerRef) {
-        rightAnswerContainerRef.current?.appendChild(animation);
-      }
-    }, [rightAnswerContainerRef, animation]);
 
     return (
       <div className={classes.wrapper}>
-        <div className={styles} style={style} ref={rightAnswerContainerRef}>
+        <div className={styles} style={style} ref={elementRef}>
           <div className={classes.textContainer}>
             <Typography.Text
               className={classes.points}

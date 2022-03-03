@@ -9,16 +9,21 @@ export const withDelay = <T>(
   }, delay);
 };
 
-/** Создает тэг style и прокидывает туда анимацию
- * @name - название анимации
- * @context - css свойство
- * @params - парамерты [от ---> до]
- */
-export const createAnimationStyle = (
-  name: string,
-  context: string,
-  params: [string, string],
-) => {
+export interface CreateAnimationStyleArguments {
+  /** название анимации */
+  name: string;
+  /** css свойство */
+  context: string;
+  /** парамерты анимации [от ---> до] */
+  params: [string, string];
+}
+
+/** Создает тэг style c @keyframes внутри */
+export const createAnimationStyle = ({
+  name,
+  context,
+  params,
+}: CreateAnimationStyleArguments) => {
   const [from, to] = params;
   const style = document.createElement('style');
 
