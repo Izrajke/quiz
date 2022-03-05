@@ -72,7 +72,7 @@ func TestServer(t *testing.T) {
 			questionCounter := 0
 			questionInfo := &domain.FirstQuestionInfo{
 				Type:     1,
-				Question: domain.GlobalQuestions[questionCounter].Question,
+				Question: domain.GlobalFirstQuestions[questionCounter].Question,
 			}
 			msg, _ = json.Marshal(questionInfo)
 			request1Ch <- msg

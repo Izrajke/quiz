@@ -10,8 +10,6 @@ const (
 
 	// EventReceivedAnswer получение ответа на вопрос первого типа
 	EventReceivedAnswer = 1
-	// EventReceivedNextFirstQuestion получение запроса на отправку вопроса первого типа
-	EventReceivedNextFirstQuestion = 2
 	// EventReceivedGetMapCell получение ячейки на карте
 	EventReceivedGetMapCell = 3
 	// EventMapAttack нападение на клетку противника
@@ -25,6 +23,8 @@ const (
 	eventSecondQuestion = 2
 	// информация о ответе на вопрос первого типа
 	eventAnswerFirstQuestion = 5
+	// информация об ответе на вопрос второго типа
+	eventAnswerSecondQuestion = 6
 	// информация о получении клетки
 	eventSelectCell = 7
 	// информация о игроках
@@ -46,9 +46,28 @@ type Event struct {
 }
 
 type FirstQuestionInfo struct {
-	Type     int      `json:"type"`
-	Question Question `json:"question"`
-	Answer   *Answer  `json:"answer,omitempty"`
+	Type     int           `json:"type"`
+	Question FirstQuestion `json:"question"`
+	Answer   *Answer       `json:"answer,omitempty"`
+}
+
+type SecondQuestionInfo struct {
+	Type          int             `json:"type"`
+	Question      SecondQuestion  `json:"question"`
+	PlayerOptions []*PlayerOption `json:"option,omitempty"`
+	Answer        *Answer         `json:"answer,omitempty"`
+}
+
+type PlayerOption struct {
+	Color string  `json:"color"`
+	Name  string  `json:"name"`
+	Value int     `json:"value"`
+	Time  float64 `json:"time"`
+}
+
+type PlayerOptionsInfo struct {
+	Type          int             `json:"type"`
+	PlayerOptions []*PlayerOption `json:"options"`
 }
 
 type EventPlayersInfo struct {
@@ -70,9 +89,19 @@ func NewEvent() *Event {
 }
 
 // FirstQuestionInfo информация о вопросе первого типа
-func (e *Event) FirstQuestionInfo(question Question) *Event {
+func (e *Event) FirstQuestionInfo(question FirstQuestion) *Event {
 	e.message = &FirstQuestionInfo{
 		Type:     eventFirstQuestion,
+		Question: question,
+	}
+
+	return e
+}
+
+// SecondQuestionInfo информация о вопросе второго типа
+func (e *Event) SecondQuestionInfo(question SecondQuestion) *Event {
+	e.message = &SecondQuestionInfo{
+		Type:     eventSecondQuestion,
 		Question: question,
 	}
 
@@ -84,6 +113,17 @@ func (e *Event) AnswerFirstQuestionInfo(answerValue string) *Event {
 	e.message = &FirstQuestionInfo{
 		Type:   eventAnswerFirstQuestion,
 		Answer: &Answer{Value: answerValue},
+	}
+
+	return e
+}
+
+// AnswerSecondQuestionInfo информация о ответе на вопрос второго типа
+func (e *Event) AnswerSecondQuestionInfo(playerOptions []*PlayerOption, answerValue string) *Event {
+	e.message = &SecondQuestionInfo{
+		Type:          eventAnswerSecondQuestion,
+		PlayerOptions: playerOptions,
+		Answer:        &Answer{Value: answerValue},
 	}
 
 	return e

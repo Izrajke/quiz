@@ -3,6 +3,7 @@ package internal
 import (
 	"math/rand"
 	"quiz/internal/domain"
+	"strconv"
 	"time"
 )
 
@@ -12,6 +13,7 @@ type message struct {
 	// TODO may change for player id
 	playerColor string
 	request     *request
+	time        time.Time
 }
 
 type subscription struct {
@@ -57,8 +59,12 @@ type gameStore struct {
 	// игроки, соединение - игрок
 	players map[*domain.Connection]*domain.Player
 
-	// ответы игроков
+	// ответы игроков на первый тип вопроса
 	answers map[string]string
+	// ответы игроков на второй тип вопроса
+	secondAnswers []*domain.PlayerOption
+	// время, когда отправили вопрос второго типа
+	secondQuestionStartedAt time.Time
 
 	// доступные цвета для игроков
 	colors []string
@@ -84,7 +90,7 @@ const (
 func (h *hub) Run() {
 	for {
 		select {
-		// зарегистрировано новое соединение
+		// регистрация нового соединения
 		case s := <-h.register:
 			game := h.createOrGetGame(&s)
 
@@ -99,9 +105,22 @@ func (h *hub) Run() {
 			// 3. запуск игры
 			if len(game.players) == maxConnections {
 				// 4. отправка вопроса
-				questionInfo := domain.GlobalQuestions[game.questionCounter]
-				msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
+				questionInfo := domain.GlobalSecondQuestions[game.questionCounter]
+				msg = h.event.SecondQuestionInfo(questionInfo.Question).Marshal()
 				h.sendToAll(game.players, s.room, msg)
+				// 5. сохранили время отправки
+				game.secondQuestionStartedAt = time.Now()
+				// TODO подумать как сделать лучше
+				// 6. инициализируем структуру для списка ответов на второй вопрос
+				playerOptions := make([]*domain.PlayerOption, len(game.players))
+				for _, player := range game.players {
+					playerOption := &domain.PlayerOption{
+						Color: player.Color,
+						Name:  player.Name,
+					}
+					playerOptions = append(playerOptions, playerOption)
+				}
+				game.secondAnswers = playerOptions
 			}
 		case m := <-h.broadcast:
 			game := h.games[m.room]
@@ -112,9 +131,13 @@ func (h *hub) Run() {
 			case domain.EventReceivedAnswer:
 				game.answerCounter++
 
-				// сохранение ответа игрока
-				game.answers[m.playerColor] = m.request.Option
-				// ожидание всех ответов
+				for _, option := range game.secondAnswers {
+					if m.playerColor == option.Color {
+						value, _ := strconv.Atoi(m.request.Option)
+						option.Value = value
+						option.Time = m.time.Sub(game.secondQuestionStartedAt).Seconds()
+					}
+				}
 				if len(game.players) == game.answerCounter {
 					game.answerCounter = 0
 
@@ -122,42 +145,63 @@ func (h *hub) Run() {
 						msg = h.event.FinishInfo().Marshal()
 						h.sendToAll(game.players, m.room, msg)
 					} else {
-						// отправка правильного ответа
-						questionInfo := domain.GlobalQuestions[game.questionCounter]
+						questionInfo := domain.GlobalSecondQuestions[game.questionCounter]
 						correctAnswer := questionInfo.Answer.Value
-						answerMsg := h.event.AnswerFirstQuestionInfo(correctAnswer).Marshal()
+
+						answerMsg := h.event.AnswerSecondQuestionInfo(game.secondAnswers, correctAnswer).Marshal()
 						h.sendToAll(game.players, m.room, answerMsg)
 
-						var isCorrectAnswer bool
-						for playerColor, answer := range game.answers {
-							if answer == correctAnswer {
-								isCorrectAnswer = true
-								game.selectCellCounter[playerColor] = 2
-
-								selectCellMsg := h.event.SelectCellInfo(playerColor).Marshal()
-								h.sendToAll(game.players, m.room, selectCellMsg)
-								break
-							}
-						}
 						game.answers = make(map[string]string, 0)
 						game.questionCounter++
 
-						if !isCorrectAnswer {
-							// отправка вопроса
-							questionInfo = domain.GlobalQuestions[game.questionCounter]
-							msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
-							h.sendToAll(game.players, m.room, msg)
-							game.roundCounter++
-						}
+						questionInfo = domain.GlobalSecondQuestions[game.questionCounter]
+						msg = h.event.SecondQuestionInfo(questionInfo.Question).Marshal()
+						h.sendToAll(game.players, m.room, msg)
+						game.secondQuestionStartedAt = time.Now()
 					}
 				}
-			// запрос следующуего вопроса
-			case domain.EventReceivedNextFirstQuestion:
-				// TODO deprecated?
-				//questionInfo := domain.GlobalQuestions[game.questionCounter]
-				//msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
-				//h.sendToAll(game.players, m.room, msg)
-				//game.roundCounter++
+
+				//game.answerCounter++
+				//
+				//// сохранение ответа игрока
+				//game.answers[m.playerColor] = m.request.Option
+				//// ожидание всех ответов
+				//if len(game.players) == game.answerCounter {
+				//	game.answerCounter = 0
+				//
+				//	if game.roundCounter == 4 {
+				//		msg = h.event.FinishInfo().Marshal()
+				//		h.sendToAll(game.players, m.room, msg)
+				//	} else {
+				//		// отправка правильного ответа
+				//		questionInfo := domain.GlobalFirstQuestions[game.questionCounter]
+				//		correctAnswer := questionInfo.Answer.Value
+				//		answerMsg := h.event.AnswerFirstQuestionInfo(correctAnswer).Marshal()
+				//		h.sendToAll(game.players, m.room, answerMsg)
+				//
+				//		var isCorrectAnswer bool
+				//		for playerColor, answer := range game.answers {
+				//			if answer == correctAnswer {
+				//				isCorrectAnswer = true
+				//				game.selectCellCounter[playerColor] = 2
+				//
+				//				selectCellMsg := h.event.SelectCellInfo(playerColor).Marshal()
+				//				h.sendToAll(game.players, m.room, selectCellMsg)
+				//				break
+				//			}
+				//		}
+				//		game.answers = make(map[string]string, 0)
+				//		game.questionCounter++
+				//
+				//		if !isCorrectAnswer {
+				//			// отправка вопроса
+				//			questionInfo = domain.GlobalFirstQuestions[game.questionCounter]
+				//			msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
+				//			h.sendToAll(game.players, m.room, msg)
+				//			game.roundCounter++
+				//		}
+				//	}
+				//}
 			case domain.EventReceivedGetMapCell:
 				count, found := game.selectCellCounter[m.playerColor]
 				if found {
@@ -179,7 +223,7 @@ func (h *hub) Run() {
 					if !isAllowAttack && count == 0 {
 						delete(game.selectCellCounter, m.playerColor)
 						// отправка вопроса
-						questionInfo := domain.GlobalQuestions[game.questionCounter]
+						questionInfo := domain.GlobalFirstQuestions[game.questionCounter]
 						msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
 						h.sendToAll(game.players, m.room, msg)
 					}
@@ -220,6 +264,7 @@ func (h *hub) createOrGetGame(s *subscription) *gameStore {
 			selectCellCounter: make(map[string]int, 0),
 			players:           nil,
 			answers:           make(map[string]string, 0),
+			secondAnswers:     []*domain.PlayerOption{},
 			colors:            nil,
 		}
 

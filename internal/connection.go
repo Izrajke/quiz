@@ -95,10 +95,15 @@ func (s subscription) readPump(hub *hub) {
 		if err := json.Unmarshal(msg, &request); err != nil {
 			log.Printf("Failed to decode json: %v", err)
 		} else {
-			if request.Type == 1 || request.Type == 2 || request.Type == 3 {
+			if request.Type == 1 || request.Type == 3 || request.Type == 4 {
 				fmt.Println("Server received a message: " + string(msg) + " player: " + s.player.Name + " room: " + s.room)
+
 				m := message{
-					msg, s.room, s.player.Color, &request,
+					data:        msg,
+					room:        s.room,
+					playerColor: s.player.Color,
+					request:     &request,
+					time:        time.Now(),
 				}
 				hub.broadcast <- m
 			} else {
@@ -109,7 +114,6 @@ func (s subscription) readPump(hub *hub) {
 }
 
 // Type 1 - ответ на вопрос
-// Type 2 - запрос следующего вопроса
 // Type 3 - получение территории
 type request struct {
 	Type      int    `json:"type"`
