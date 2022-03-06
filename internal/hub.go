@@ -112,15 +112,14 @@ func (h *hub) Run() {
 				game.secondQuestionStartedAt = time.Now()
 				// TODO подумать как сделать лучше
 				// 6. инициализируем структуру для списка ответов на второй вопрос
-				playerOptions := make([]*domain.PlayerOption, len(game.players))
+				game.secondAnswers = []*domain.PlayerOption{}
 				for _, player := range game.players {
 					playerOption := &domain.PlayerOption{
 						Color: player.Color,
 						Name:  player.Name,
 					}
-					playerOptions = append(playerOptions, playerOption)
+					game.secondAnswers = append(game.secondAnswers, playerOption)
 				}
-				game.secondAnswers = playerOptions
 			}
 		case m := <-h.broadcast:
 			game := h.games[m.room]
