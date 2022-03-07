@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"math"
 	"math/rand"
 	"quiz/internal/domain"
 	"strconv"
@@ -134,7 +135,8 @@ func (h *hub) Run() {
 					if m.playerColor == option.Color {
 						value, _ := strconv.Atoi(m.request.Option)
 						option.Value = value
-						option.Time = m.time.Sub(game.secondQuestionStartedAt).Seconds()
+						answerSeconds := m.time.Sub(game.secondQuestionStartedAt).Seconds()
+						option.Time = math.Round(answerSeconds*100) / 100
 					}
 				}
 				if len(game.players) == game.answerCounter {

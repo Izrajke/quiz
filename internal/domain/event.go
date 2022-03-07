@@ -54,7 +54,7 @@ type FirstQuestionInfo struct {
 type SecondQuestionInfo struct {
 	Type          int             `json:"type"`
 	Question      SecondQuestion  `json:"question"`
-	PlayerOptions []*PlayerOption `json:"option,omitempty"`
+	PlayerOptions []*PlayerOption `json:"options,omitempty"`
 	Answer        *Answer         `json:"answer,omitempty"`
 }
 
