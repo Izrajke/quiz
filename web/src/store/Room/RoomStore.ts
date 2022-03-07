@@ -1,41 +1,24 @@
-import { makeObservable, observable, action } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { RootStore } from '../RootStore';
 import type {
-  SocketResponseType,
-  SocketOptions,
-  SocketQuestionData,
-  SocketAnswerData,
-  SocketPlayersData,
-  SocketAllowedToCaptureData,
-  Player,
-  MapData,
-  PlayerColors,
   AnswerOptions,
+  MapData,
+  Player,
+  PlayerColors,
+  SocketAllowedToCaptureData,
+  SocketAnswerData,
+  SocketMapData,
+  SocketOptions,
+  SocketPlayersData,
+  SocketQuestionData,
 } from 'api';
-import { SocketRequestType } from 'api';
+import { SocketRequestType, SocketResponseType } from 'api';
 
 import { withDelay } from 'utils';
 
-import { MapMoveControl } from './classes';
 import type { CaptureCheckNames } from './classes';
+import { MapMoveControl } from './classes';
 import { Map } from './types/Map';
-
-import type { SocketMapData } from 'api';
-
-const defaultAnswerOptions: AnswerOptions[] = [
-  {
-    name: 'Василий призрак',
-    color: 'player-1',
-    value: 3500,
-    time: 1000,
-  },
-  {
-    name: 'Gogsh',
-    color: 'player-2',
-    value: 12200,
-    time: 2000,
-  },
-];
 
 /** Тип статуса игры */
 export type Status = 'question';
@@ -43,8 +26,6 @@ export type Status = 'question';
 export class RoomStore {
   /** Root store */
   root: RootStore;
-  /** Статические методы для работы с передвижением по карте */
-  mapMoveControl = MapMoveControl;
   /** Варианты ответа  */
   options: SocketOptions = {};
   /** Тип сообщения сокета */
@@ -56,14 +37,13 @@ export class RoomStore {
   /** Ответ игрока */
   playerAnswer = '';
   /** Ответ на вопрос с сервера */
-  answer: string | number = 10000;
+  answer: string | number = '';
   /** Игроки */
   players: Player[] = [];
   /** Карта */
   map: Map = [];
   /** Модалка вопроса */
-  // TODO: на false
-  isQuestionModalOpen = true;
+  isQuestionModalOpen = false;
   /** Capture статус */
   moveStatus: CaptureCheckNames = 'freeCapture';
   /** Может ли игрок передвигаться */
@@ -71,7 +51,7 @@ export class RoomStore {
   /** Кол-во клеток для захвата */
   captureCount = 0;
   /** Ответы игроков вопроса типа 2 */
-  answerOptions: AnswerOptions[] = defaultAnswerOptions;
+  answerOptions: AnswerOptions[] = [];
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -112,8 +92,11 @@ export class RoomStore {
 
   /** Правильный ответ на вопрос */
   setAnswer(answerData: SocketAnswerData) {
-    const { answer } = answerData;
+    const { options, answer, type } = answerData;
     this.answer = answer.value;
+    if (type === SocketResponseType.answerSecondQuestionType && options) {
+      this.answerOptions = options;
+    }
   }
 
   /** Сбросить правильный ответ */

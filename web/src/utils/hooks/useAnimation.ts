@@ -1,5 +1,5 @@
 import { useEffect, useRef, useMemo } from 'react';
-import type { CSSProperties, LegacyRef } from 'react';
+import type { CSSProperties, RefObject } from 'react';
 
 import { createAnimationStyle } from '../utils';
 import type { CreateAnimationStyleArguments } from '../utils';
@@ -11,7 +11,7 @@ type UseAnimation = (
     'context' | 'params'
   >,
 ) => {
-  elementRef: LegacyRef<HTMLDivElement>;
+  elementRef: RefObject<HTMLDivElement>;
   animationStyle: CSSProperties;
 };
 

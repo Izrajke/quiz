@@ -5,17 +5,18 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from 'store';
 import { Modal } from 'components';
 
-// import { Question } from './Question';
+import { Question } from './Question';
 import { Result } from './Result';
+import { Waiting } from './Waiting';
 
 export const QuestionSecondType: FunctionComponent = observer(() => {
   const { room } = useStore();
 
   return (
     <Modal show={room.isQuestionModalOpen}>
-      {/* <Question /> */}
-      {/* TODO: дописать */}
-      <Result />
+      {!room.playerAnswer && <Question />}
+      {room.playerAnswer && !room.answer && <Waiting />}
+      {room.answer && <Result />}
     </Modal>
   );
 });

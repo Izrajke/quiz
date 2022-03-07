@@ -6,8 +6,9 @@ import { observer } from 'mobx-react-lite';
 
 import { useAnimation } from 'utils';
 import type { PlayerColors } from 'api';
-import { Typography } from 'components';
 import type { TypographyColor } from 'components';
+
+import { AnswerText } from './AnswerText';
 
 import classes from './AnswerBar.module.css';
 
@@ -23,9 +24,14 @@ export const AnswerBar: FunctionComponent<AnswerBarProps> = observer(
   ({ player, points, time, maximumPoints }) => {
     const styles = useMemo(() => clsx(classes.bar, classes[player]), [player]);
 
-    const calculateAnswerBarWidth = useCallback(
-      () => `${(points / maximumPoints) * 100}%`,
+    const percentageOfMaximum = useMemo(
+      () => (points / maximumPoints) * 100,
       [points, maximumPoints],
+    );
+
+    const calculateAnswerBarWidth = useCallback(
+      () => `${percentageOfMaximum}%`,
+      [percentageOfMaximum],
     );
 
     const { elementRef, animationStyle } = useAnimation('AnswerBarWidth', {
@@ -50,19 +56,23 @@ export const AnswerBar: FunctionComponent<AnswerBarProps> = observer(
       <div className={classes.wrapper}>
         <div className={styles} style={style} ref={elementRef}>
           <div className={classes.textContainer}>
-            <Typography.Text
-              className={classes.points}
-              type="text-0"
-              color={textColor(player)}
-              weight="weight-bold"
-            >
-              {points}
-            </Typography.Text>
-            <Typography.Text type="caption" color={textColor(player)}>
-              {`${time} c.`}
-            </Typography.Text>
+            {percentageOfMaximum >= 20 && (
+              <AnswerText
+                color={textColor(player)}
+                time={time}
+                points={points}
+              />
+            )}
           </div>
         </div>
+        {percentageOfMaximum < 20 && (
+          <AnswerText
+            color={'white'}
+            time={time}
+            points={points}
+            position={'outside'}
+          />
+        )}
       </div>
     );
   },

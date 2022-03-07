@@ -7,14 +7,19 @@ import { useStore } from 'store';
 import { Modal, Typography, Input, Button } from 'components';
 
 import classes from './Question.module.css';
+import { SocketRequestType } from 'api';
 
 export const Question: FunctionComponent = observer(() => {
   const [answer, setAnswer] = useState('');
-  const { room } = useStore();
+  const { room, app } = useStore();
 
-  //TODO - Доделать модалку присравнении ответов
   const answerHandler = useCallback(() => {
     room.setPlayerAnswer(answer);
+    app.socketMessage({
+      type: SocketRequestType.sendAnswer,
+      option: answer,
+    });
+    // eslint-disable-next-line
   }, [room, answer]);
 
   const onAnswerChange = useCallback(

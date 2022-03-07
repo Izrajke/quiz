@@ -75,7 +75,7 @@ export interface SocketAnswerData {
   answer: {
     value: string;
   };
-  options?: AnswerOptions;
+  options?: AnswerOptions[];
 }
 
 /** Интерфейс игрока */

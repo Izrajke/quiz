@@ -1,0 +1,14 @@
+.root {
+  height: 221px;
+  width: 1098px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.answerContainer {
+  display: flex;
+  gap: 6px;
+}

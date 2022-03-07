@@ -21,13 +21,20 @@ export class SocketResponseController {
       case SocketResponseType.answerFirstQuestionType:
       case SocketResponseType.answerSecondQuestionType:
         this.room.setAnswer(data);
-        withDelay(this.room.useQuestionModal, answerDelay, [false]);
+        // TODO: раскоментить нижнюю
+        // withDelay(this.room.useQuestionModal, answerDelay, [false]);
         break;
       case SocketResponseType.firstQuestionType:
       case SocketResponseType.secondQuestionType:
-        this.room.setQuestion(data);
-        this.room.resetAnswer();
-        this.room.useQuestionModal(true);
+        // TODO: Убрать проверку
+        if (!this.room.answer) {
+          // TODO: Перенести это говно на бэк
+          withDelay(this.room.setQuestion.bind(this.room), answerDelay, [data]);
+          withDelay(this.room.resetAnswer.bind(this.room), answerDelay);
+          withDelay(this.room.useQuestionModal.bind(this.room), answerDelay, [
+            true,
+          ]);
+        }
         break;
       case SocketResponseType.playersInfo:
         this.room.setPlayers(data);

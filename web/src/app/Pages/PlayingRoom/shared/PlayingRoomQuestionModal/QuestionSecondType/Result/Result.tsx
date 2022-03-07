@@ -15,13 +15,16 @@ import classes from './Result.module.css';
 export const Result: FunctionComponent = observer(() => {
   const { room } = useStore();
 
-  const maximumPoints = useMemo(
-    () =>
-      room.answerOptions.reduce((acc, curr) =>
-        acc.value > curr.value ? acc : curr,
-      ).value,
-    [room.answerOptions],
-  );
+  const maximumPoints = useMemo(() => {
+    const maxFromAnswers = room.answerOptions.reduce(
+      (acc, curr) => (acc.value > curr.value ? acc : curr),
+      { value: 0 },
+    ).value;
+
+    return maxFromAnswers > Number(room.answer)
+      ? maxFromAnswers
+      : Number(room.answer);
+  }, [room.answerOptions, room.answer]);
 
   return (
     <>

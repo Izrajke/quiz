@@ -14,29 +14,40 @@
   color: var(--gray-1);
 }
 
+.opacity-50 {
+  opacity: 50%;
+}
+
+.lh {
+  line-height: 140%;
+}
+
 .caption {
   font-size: 18px;
-  line-height: 140%;
+}
+
+.caption-1 {
+  font-size: 16px;
+}
+
+.caption-2 {
+  font-size: 14px;
 }
 
 .text-0 {
   font-size: 20px;
-  line-height: 140%;
 }
 
 .text-1 {
   font-size: 22px;
-  line-height: 140%;
 }
 
 .text-2 {
   font-size: 26px;
-  line-height: 140%;
 }
 
 .text-3 {
   font-size: 34px;
-  line-height: 140%;
 }
 
 .weight-regular {

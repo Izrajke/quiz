@@ -11,8 +11,6 @@ import {
   PlayingRoomPlayersContainer,
 } from './shared';
 
-import { QuestionSecondType } from './shared/PlayingRoomQuestionModal/QuestionSecondType';
-
 export const PlayingRoom = observer(() => {
   const { app } = useStore();
   const { id } = useParams();
@@ -29,8 +27,6 @@ export const PlayingRoom = observer(() => {
       <PlayingRoomMap />
       <PlayingRoomQuestionModal />
       <PlayingRoomPlayersContainer />
-      {/* TODO: убрать */}
-      <QuestionSecondType />
     </>
   );
 });

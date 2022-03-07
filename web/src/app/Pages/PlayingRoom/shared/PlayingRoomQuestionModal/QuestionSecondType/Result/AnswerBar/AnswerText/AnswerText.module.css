@@ -1,0 +1,20 @@
+.textContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.inside {
+  min-width: 160px;
+  margin-right: 14px;
+}
+
+.outside {
+  width: auto;
+  padding-bottom: 6px;
+}
+
+.time {
+  margin-bottom: 2px;
+}
