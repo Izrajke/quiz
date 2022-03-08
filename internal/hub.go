@@ -1,9 +1,12 @@
 package internal
 
 import (
+	"context"
+	"fmt"
 	"math"
 	"math/rand"
 	"quiz/internal/domain"
+	"quiz/internal/taskpool"
 	"strconv"
 	"time"
 )
@@ -40,6 +43,9 @@ type hub struct {
 
 	// события
 	event *domain.Event
+
+	ctx      context.Context
+	taskPool *taskpool.Pool
 }
 
 type gameStore struct {
@@ -71,7 +77,7 @@ type gameStore struct {
 	colors []string
 }
 
-func NewHub() *hub {
+func NewHub(ctx context.Context, taskPool *taskpool.Pool) *hub {
 	return &hub{
 		register:   make(chan subscription),
 		broadcast:  make(chan message),
@@ -79,7 +85,9 @@ func NewHub() *hub {
 		// игры
 		games: make(map[string]*gameStore),
 		// события
-		event: domain.NewEvent(),
+		event:    domain.NewEvent(),
+		ctx:      ctx,
+		taskPool: taskPool,
 	}
 }
 
@@ -155,10 +163,16 @@ func (h *hub) Run() {
 						game.answers = make(map[string]string, 0)
 						game.questionCounter++
 
-						questionInfo = domain.GlobalSecondQuestions[game.questionCounter]
-						msg = h.event.SecondQuestionInfo(questionInfo.Question).Marshal()
-						h.sendToAll(game.players, m.room, msg)
-						game.secondQuestionStartedAt = time.Now()
+						err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
+							time.Sleep(5 * time.Second)
+							questionInfo = domain.GlobalSecondQuestions[game.questionCounter]
+							msg = h.event.SecondQuestionInfo(questionInfo.Question).Marshal()
+							h.sendToAll(game.players, m.room, msg)
+							game.secondQuestionStartedAt = time.Now()
+						}))
+						if err != nil {
+							fmt.Println("task pool fatal")
+						}
 					}
 				}
 

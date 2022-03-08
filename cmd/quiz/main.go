@@ -1,15 +1,19 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
 	"quiz/internal"
+	"quiz/internal/taskpool"
 	"strconv"
+	"sync"
 )
 
 const (
@@ -23,7 +27,13 @@ func main() {
 		}
 	}()
 
-	hub := internal.NewHub()
+	ctx := context.Background()
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+
+	taskPool := taskpool.NewPool(ctx, logger)
+
+	hub := internal.NewHub(ctx, taskPool)
 	go hub.Run()
 
 	fmt.Println("Starting server...")
@@ -71,8 +81,19 @@ func main() {
 
 		internal.ServeWs(w, r, hub, playerName, roomId)
 	})
-	err := http.ListenAndServe(serverPort, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+
+	wg := sync.WaitGroup{}
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		err := http.ListenAndServe(serverPort, nil)
+		if err != nil {
+			log.Fatal("ListenAndServe: ", err)
+		}
+	}()
+
+	wg.Wait()
+	taskPool.Wait()
+	logger.Info("Application has been shutdown gracefully")
 }
