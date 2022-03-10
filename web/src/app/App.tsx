@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
 import type { FunctionComponent } from 'react';
 
+import { Provider } from 'mobx-react';
 import { observer } from 'mobx-react-lite';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -8,25 +8,21 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home, PlayingRoom } from './Pages';
 import { SocketLogger, Dialog } from 'components';
 
-import { useStore } from '../store';
+import { store } from '../store';
 
 import './App.css';
 
 export const App: FunctionComponent = observer(() => {
-  const { app } = useStore();
-
-  useEffect(() => {
-    app.init();
-  }, [app]);
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path={`/room/:id`} element={<PlayingRoom />} />
-      </Routes>
-      <SocketLogger />
-      <Dialog />
-    </BrowserRouter>
+    <Provider {...store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path={`/room/:id`} element={<PlayingRoom />} />
+        </Routes>
+        <SocketLogger />
+        <Dialog />
+      </BrowserRouter>
+    </Provider>
   );
 });
