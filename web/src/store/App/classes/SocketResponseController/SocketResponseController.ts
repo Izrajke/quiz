@@ -1,6 +1,5 @@
 import { SocketResponse, SocketResponseType } from 'api';
-import { withDelay } from 'utils';
-import { answerDelay } from 'const';
+// import { answerDelay } from 'const';
 
 import type { Socket } from '../index';
 import type { RoomStore, PlayerStore } from 'store';
@@ -26,15 +25,9 @@ export class SocketResponseController {
         break;
       case SocketResponseType.firstQuestionType:
       case SocketResponseType.secondQuestionType:
-        // TODO: Убрать проверку
-        if (!this.room.answer) {
-          // TODO: Перенести это говно на бэк
-          withDelay(this.room.setQuestion.bind(this.room), answerDelay, [data]);
-          withDelay(this.room.resetAnswer.bind(this.room), answerDelay);
-          withDelay(this.room.useQuestionModal.bind(this.room), answerDelay, [
-            true,
-          ]);
-        }
+        this.room.setQuestion(data);
+        this.room.resetAnswer();
+        this.room.useQuestionModal(true);
         break;
       case SocketResponseType.playersInfo:
         this.room.setPlayers(data);
