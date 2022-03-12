@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`INTEGRATION: PlayingRoomQuestionModal Компонент второго типа переходит в режим ожидания 1`] = `
+<div
+  class="answerContainer"
+  data-testid="WaitingAnswerTextContainer"
+>
+  <div
+    class="white-70 caption-1 weight-regular opacity-100 lh"
+  >
+    Ваш ответ:
+  </div>
+  <div
+    class="white caption-1 weight-bold opacity-100 lh"
+  >
+    20
+  </div>
+</div>
+`;
+
+exports[`INTEGRATION: PlayingRoomQuestionModal Компонент второго типа показывает результаты 1`] = `
+Array [
+  <div
+    class="bar player-2"
+    data-testid="AnswerBar"
+    style="width: 21%; animation: AnswerBarWidth 3s ease;"
+  >
+    <div
+      class="textContainer"
+    >
+      <div
+        class="textContainer inside"
+      >
+        <div
+          class="dark-2 text-0 weight-bold opacity-100 lh points"
+        >
+          21
+        </div>
+        <div
+          class="dark-2 caption-2 weight-regular opacity-50 lh time"
+        >
+          14 c
+        </div>
+      </div>
+    </div>
+  </div>,
+  <div
+    class="bar player-1"
+    data-testid="AnswerBar"
+    style="width: 1%; animation: AnswerBarWidth 3s ease;"
+  >
+    <div
+      class="textContainer"
+    />
+  </div>,
+]
+`;
+
+exports[`INTEGRATION: PlayingRoomQuestionModal Компонент второго типа рендерится 1`] = `
+<div
+  class="white text-2 weight-regular opacity-100 lh question"
+>
+  Заголовок вопроса
+</div>
+`;
+
+exports[`INTEGRATION: PlayingRoomQuestionModal Компонент второго типа рендерится 2`] = `
+<input
+  class="input"
+  placeholder="Ваш ответ"
+/>
+`;
+
+exports[`INTEGRATION: PlayingRoomQuestionModal Компонент второго типа рендерится 3`] = `
+<button
+  class="button regular normal"
+>
+  Отправить
+</button>
+`;
+
+exports[`INTEGRATION: PlayingRoomQuestionModal Компонент первого типа рендерится 1`] = `
+Array [
+  <button
+    class="button regular normal button"
+  >
+    Вариант 1
+  </button>,
+  <button
+    class="button regular normal button"
+  >
+    Вариант 2
+  </button>,
+  <button
+    class="button regular normal button"
+  >
+    Вариант 3
+  </button>,
+  <button
+    class="button regular normal button"
+  >
+    Вариант 4
+  </button>,
+]
+`;

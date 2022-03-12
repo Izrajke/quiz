@@ -14,11 +14,13 @@ export const Question: FunctionComponent = observer(() => {
   const { room, app } = useStore();
 
   const answerHandler = useCallback(() => {
-    room.setPlayerAnswer(answer);
-    app.socketMessage({
-      type: SocketRequestType.sendAnswer,
-      option: answer,
-    });
+    if (answer) {
+      room.setPlayerAnswer(answer);
+      app.socketMessage({
+        type: SocketRequestType.sendAnswer,
+        option: answer,
+      });
+    }
     // eslint-disable-next-line
   }, [room, answer]);
 

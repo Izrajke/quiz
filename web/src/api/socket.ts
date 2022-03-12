@@ -47,7 +47,7 @@ export interface SocketOptions {
 /** Интерфейс тела вопроса */
 export interface SocketQuestion {
   title: string;
-  options: SocketOptions;
+  options?: SocketOptions;
 }
 
 /** Интерфейс вопроса */

@@ -85,7 +85,7 @@ export class RoomStore {
   /** Распарсить данные вопроса, призодящие с сокета */
   setQuestion(questionData: SocketQuestionData) {
     const { question, type } = questionData;
-    this.options = question.options;
+    this.options = question.options || {};
     this.title = question.title;
     this.type = type;
   }
@@ -102,6 +102,7 @@ export class RoomStore {
   /** Сбросить правильный ответ */
   resetAnswer() {
     this.answer = '';
+    this.playerAnswer = '';
   }
 
   setPlayerAnswer(answer = '') {

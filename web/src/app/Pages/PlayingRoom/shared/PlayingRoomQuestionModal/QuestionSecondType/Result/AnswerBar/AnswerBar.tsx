@@ -54,7 +54,12 @@ export const AnswerBar: FunctionComponent<AnswerBarProps> = observer(
 
     return (
       <div className={classes.wrapper}>
-        <div className={styles} style={style} ref={elementRef}>
+        <div
+          className={styles}
+          style={style}
+          ref={elementRef}
+          data-testid="AnswerBar"
+        >
           <div className={classes.textContainer}>
             {percentageOfMaximum >= 20 && (
               <AnswerText

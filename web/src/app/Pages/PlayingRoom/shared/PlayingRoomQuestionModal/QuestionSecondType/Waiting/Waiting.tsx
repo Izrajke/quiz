@@ -12,7 +12,10 @@ export const Waiting: FunctionComponent = () => {
       <Typography.Text type="text-1" color="white">
         Ожидание ответа остальных игроков...
       </Typography.Text>
-      <div className={classes.answerContainer}>
+      <div
+        className={classes.answerContainer}
+        data-testid="WaitingAnswerTextContainer"
+      >
         <Typography.Text type="caption-1" color="white-70">
           Ваш ответ:
         </Typography.Text>
