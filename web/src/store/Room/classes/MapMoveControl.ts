@@ -56,22 +56,28 @@ export class MapMoveControl implements MapControl {
   /** Захват пограничных клеток */
   private checkCanMoveCapture(): boolean {
     const currentCell = this.mapData[this.rowIndex][this.cellIndex];
-    return currentCell.owner !== 'empty'
-      ? false
-      : this.mapCellCheck.checkBorderCells();
+    if (currentCell.isExists) {
+      return currentCell.owner !== 'empty'
+        ? false
+        : this.mapCellCheck.checkBorderCells();
+    }
+    return false;
   }
 
   /** Захват любой пустой клетки (у игрока еще нет захваченныъ клетов) */
   private checkCanMoveFreeCapture() {
     const currentCell = this.mapData[this.rowIndex][this.cellIndex];
-    return currentCell.owner === 'empty';
+    return currentCell.isExists ? currentCell.owner === 'empty' : false;
   }
 
   /** Атака пограничных клеток */
   private checkCanMoveAttack() {
     const currentCell = this.mapData[this.rowIndex][this.cellIndex];
-    return currentCell.owner === this.player
-      ? false
-      : currentCell.isExists && this.mapCellCheck.checkBorderCells();
+    if (currentCell.isExists) {
+      return currentCell.owner === this.player
+        ? false
+        : currentCell.isExists && this.mapCellCheck.checkBorderCells();
+    }
+    return false;
   }
 }
