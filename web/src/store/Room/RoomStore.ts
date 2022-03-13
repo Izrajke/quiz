@@ -2,6 +2,7 @@ import { action, makeObservable, observable } from 'mobx';
 import { RootStore } from '../RootStore';
 import type {
   AnswerOptions,
+  TurnQueueData,
   MapData,
   Player,
   PlayerColors,
@@ -11,6 +12,7 @@ import type {
   SocketOptions,
   SocketPlayersData,
   SocketQuestionData,
+  CurrentTurnData,
 } from 'api';
 import { SocketRequestType, SocketResponseType } from 'api';
 
@@ -52,6 +54,10 @@ export class RoomStore {
   captureCount = 0;
   /** Ответы игроков вопроса типа 2 */
   answerOptions: AnswerOptions[] = [];
+  /** Очередь ходов */
+  turnQueue?: number | PlayerColors[];
+  /** Текущий ход */
+  currentTurn = 0;
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -66,6 +72,8 @@ export class RoomStore {
       isQuestionModalOpen: observable,
       canCapture: observable,
       captureCount: observable,
+      turnQueue: observable,
+      currentTurn: observable,
       // action
       setQuestion: action,
       setAnswer: action,
@@ -77,9 +85,21 @@ export class RoomStore {
       setCaptureCapability: action,
       calculateCaptureCapability: action,
       reduceCaptureCount: action,
-      changeMoveStatus: action,
+      setMoveStatus: action,
+      setTurnQueue: action,
+      setCurrentTurn: action,
     });
     this.root = root;
+  }
+
+  setTurnQueue(data: TurnQueueData) {
+    const { type, turns } = data;
+    this.type = type;
+    this.turnQueue = turns;
+  }
+
+  setCurrentTurn(data: CurrentTurnData) {
+    this.currentTurn = data.number;
   }
 
   /** Распарсить данные вопроса, призодящие с сокета */
@@ -128,7 +148,7 @@ export class RoomStore {
     this.isQuestionModalOpen = value;
   };
 
-  changeMoveStatus = (newStatus: CaptureCheckNames) => {
+  setMoveStatus = (newStatus: CaptureCheckNames) => {
     this.moveStatus = newStatus;
   };
 

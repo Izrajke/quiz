@@ -1,0 +1,42 @@
+.wrapper {
+  height: 74px;
+  display: flex;
+  align-items: center;
+  padding: 0 26px;
+  gap: 28px;
+  border-radius: 6px;
+  background: var(--dark-3);
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.turnBar {
+  height: 32px;
+  width: 6px;
+  border-radius: 6px;
+}
+
+.turnBarActive {
+  height: 48px;
+  width: 8px;
+}
+
+.player-1 {
+  background: var(--player-1);
+}
+
+.player-2 {
+  background: var(--player-2);
+}
+
+.player-3 {
+  background: var(--player-3);
+}
+
+.turnBarPast {
+  background: var(--white-50);
+}

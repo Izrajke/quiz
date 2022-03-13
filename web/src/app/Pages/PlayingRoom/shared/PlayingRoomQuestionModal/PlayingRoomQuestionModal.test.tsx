@@ -8,8 +8,7 @@ import { SocketResponseType } from 'api';
 import type { SocketAnswerData } from 'api';
 
 describe('INTEGRATION: PlayingRoomQuestionModal', () => {
-  const mockStore = { ...store };
-  const { room } = mockStore;
+  const { room } = store;
 
   afterEach(() => {
     room.useQuestionModal(false);
@@ -20,7 +19,7 @@ describe('INTEGRATION: PlayingRoomQuestionModal', () => {
   });
 
   const component = (
-    <Provider {...mockStore}>
+    <Provider {...store}>
       <PlayingRoomQuestionModal />
     </Provider>
   );

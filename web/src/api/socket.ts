@@ -13,6 +13,12 @@ export enum SocketResponseType {
   answerSecondQuestionType = 6,
   /** Кол-во территории для захвата */
   allowedToCapture = 7,
+  /** Очередь ходов при "захвате" */
+  captureTurnQueue = 8,
+  /** Очередь ходов при "атаке" */
+  attackTurnQueue = 9,
+  /** Индекс текущего хода */
+  currentTurnIndex = 10,
   /** Информация о игроках */
   playersInfo = 12,
   /** Информация о карте */
@@ -67,6 +73,18 @@ export interface AnswerOptions {
   color: PlayerColors;
   value: number;
   time: number;
+}
+
+/** Порядок ходов стадии "freeCapture/capture" */
+export interface TurnQueueData {
+  type: SocketResponseType;
+  turns: number | PlayerColors[];
+}
+
+/** Текущий номер хода */
+export interface CurrentTurnData {
+  type: SocketResponseType;
+  number: number;
 }
 
 /** Интерфейс ответа на вопрос */
@@ -144,7 +162,9 @@ export type SocketResponse = SocketAnswerData &
   SocketPlayersData &
   SocketQuestionData &
   SocketMapData &
-  SocketAllowedToCaptureData;
+  SocketAllowedToCaptureData &
+  TurnQueueData &
+  CurrentTurnData;
 
 export type SocketRequest = SocketAnswer | SocketGetQuestion | SocketAttackCell;
 

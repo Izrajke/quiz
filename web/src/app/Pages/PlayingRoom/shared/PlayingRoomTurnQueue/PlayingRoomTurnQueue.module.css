@@ -1,0 +1,6 @@
+.root {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 2000;
+}

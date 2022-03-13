@@ -9,6 +9,7 @@ import {
   PlayingRoomMap,
   PlayingRoomQuestionModal,
   PlayingRoomPlayersContainer,
+  PlayingRoomTurnQueue,
 } from './shared';
 
 export const PlayingRoom = observer(() => {
@@ -24,6 +25,7 @@ export const PlayingRoom = observer(() => {
 
   return (
     <>
+      <PlayingRoomTurnQueue />
       <PlayingRoomMap />
       <PlayingRoomQuestionModal />
       <PlayingRoomPlayersContainer />

@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`INTEGRATION: PlayingRoomTurnQueue Компонент в конексте attack рендерится корректно 1`] = `
+Array [
+  <div
+    class="step"
+    data-testid="StepContainer"
+  >
+    <div
+      class="turnBar player-1 turnBarPast"
+      data-testid="TurnBar"
+    />
+    <div
+      class="turnBar player-2 turnBarPast"
+      data-testid="TurnBar"
+    />
+    <div
+      class="turnBar player-3 turnBarActive"
+      data-testid="TurnBar"
+    />
+  </div>,
+  <div
+    class="step"
+    data-testid="StepContainer"
+  >
+    <div
+      class="turnBar player-1"
+      data-testid="TurnBar"
+    />
+    <div
+      class="turnBar player-3"
+      data-testid="TurnBar"
+    />
+    <div
+      class="turnBar player-2"
+      data-testid="TurnBar"
+    />
+  </div>,
+]
+`;
+
+exports[`INTEGRATION: PlayingRoomTurnQueue Компонент в конексте attack рендерится корректно 2`] = `
+Array [
+  <div
+    class="turnBar player-1 turnBarPast"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar player-2 turnBarPast"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar player-3 turnBarActive"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar player-1"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar player-3"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar player-2"
+    data-testid="TurnBar"
+  />,
+]
+`;
+
+exports[`INTEGRATION: PlayingRoomTurnQueue Компонент в контексте capture/freeCapture рендерится корректно 1`] = `
+Array [
+  <div
+    class="turnBar turnBarPast"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar turnBarPast"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar turnBarActive"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar turnBarFuture"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar turnBarFuture"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar turnBarFuture"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar turnBarFuture"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar turnBarFuture"
+    data-testid="TurnBar"
+  />,
+  <div
+    class="turnBar turnBarFuture"
+    data-testid="TurnBar"
+  />,
+]
+`;

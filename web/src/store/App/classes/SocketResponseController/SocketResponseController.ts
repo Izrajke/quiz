@@ -1,8 +1,7 @@
 import { SocketResponse, SocketResponseType } from 'api';
 // import { answerDelay } from 'const';
-
 import type { Socket } from '../index';
-import type { RoomStore, PlayerStore } from 'store';
+import type { PlayerStore, RoomStore } from 'store';
 
 export class SocketResponseController {
   socket: Socket;
@@ -17,17 +16,17 @@ export class SocketResponseController {
 
   control(data: SocketResponse) {
     switch (data.type) {
-      case SocketResponseType.answerFirstQuestionType:
-      case SocketResponseType.answerSecondQuestionType:
-        this.room.setAnswer(data);
-        // TODO: раскоментить нижнюю
-        // withDelay(this.room.useQuestionModal, answerDelay, [false]);
-        break;
       case SocketResponseType.firstQuestionType:
       case SocketResponseType.secondQuestionType:
         this.room.setQuestion(data);
         this.room.resetAnswer();
         this.room.useQuestionModal(true);
+        break;
+      case SocketResponseType.answerFirstQuestionType:
+      case SocketResponseType.answerSecondQuestionType:
+        this.room.setAnswer(data);
+        // TODO: раскоментить нижнюю
+        // withDelay(this.room.useQuestionModal, answerDelay, [false]);
         break;
       case SocketResponseType.playersInfo:
         this.room.setPlayers(data);
@@ -36,11 +35,18 @@ export class SocketResponseController {
       case SocketResponseType.mapInfo:
         this.room.setMap(data);
         break;
+      case SocketResponseType.captureTurnQueue:
+      case SocketResponseType.attackTurnQueue:
+        this.room.setTurnQueue(data);
+        break;
+      case SocketResponseType.currentTurnIndex:
+        this.room.setTurnQueue(data);
+        break;
       case SocketResponseType.allowedToCapture:
         this.room.setCaptureCapability(data);
         break;
       case SocketResponseType.attackStage:
-        this.room.changeMoveStatus('attack');
+        this.room.setMoveStatus('attack');
         break;
       case SocketResponseType.endGame:
         this.room.setType(SocketResponseType.endGame);

@@ -1,0 +1,27 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+  padding: 0 26px;
+  border-radius: 6px;
+  background: var(--dark-3);
+}
+
+.turnBar {
+  height: 8px;
+  width: 68px;
+  border-radius: 6px;
+}
+
+.turnBarPast {
+  background: var(--white-50);
+}
+
+.turnBarActive {
+  background: var(--white);
+}
+
+.turnBarFuture {
+  background: var(--dark-4);
+}
