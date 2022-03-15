@@ -40,7 +40,7 @@ export class SocketResponseController {
         this.room.setTurnQueue(data);
         break;
       case SocketResponseType.currentTurnIndex:
-        this.room.setTurnQueue(data);
+        this.room.setCurrentTurn(data);
         break;
       case SocketResponseType.allowedToCapture:
         this.room.setCaptureCapability(data);
