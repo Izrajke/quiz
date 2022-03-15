@@ -135,8 +135,13 @@ func (e *Event) AnswerSecondQuestionInfo(playerOptions []*PlayerOption, answerVa
 	return e
 }
 
+type PlayerSelectSell struct {
+	Color string `json:"color"`
+	Count int    `json:"count"`
+}
+
 // SelectCellInfo информация о получении клетки
-func (e *Event) SelectCellInfo(color string) *Event {
+func (e *Event) SelectCellInfo(color string, count int) *Event {
 	e.message = struct {
 		BaseType `json:"type"`
 		Color    string `json:"color"`
@@ -144,7 +149,7 @@ func (e *Event) SelectCellInfo(color string) *Event {
 	}{
 		BaseType: eventSelectCell,
 		Color:    color,
-		Count:    2,
+		Count:    count,
 	}
 
 	return e
@@ -157,20 +162,20 @@ func (e *Event) CaptureTurnInfo() *Event {
 		Turns    int `json:"turns"`
 	}{
 		BaseType: eventCaptureTurnInfo,
-		Turns:    9,
+		Turns:    4,
 	}
 
 	return e
 }
 
 // CurrentTurnInfo информация о текущем ходе
-func (e *Event) CurrentTurnInfo() *Event {
+func (e *Event) CurrentTurnInfo(round int) *Event {
 	e.message = struct {
 		BaseType `json:"type"`
 		Number   int `json:"number"`
 	}{
 		BaseType: eventCurrentTurnInfo,
-		Number:   3,
+		Number:   round,
 	}
 
 	return e
