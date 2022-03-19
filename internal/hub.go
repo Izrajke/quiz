@@ -51,6 +51,8 @@ type hub struct {
 type gameStore struct {
 	// состояние игры
 	state int
+	// флаг начала этапа нападения
+	isAttack bool
 
 	// счетчик вопросов
 	questionCounter int
@@ -102,25 +104,27 @@ func (h *hub) Run() {
 		// регистрация нового соединения
 		case s := <-h.register:
 			game := h.createOrGetGame(&s)
-
 			// 1. инициализация игроков
 			msg := h.event.PlayersInfo(game.players).Marshal()
 			h.sendToAll(game.players, s.room, msg)
-
 			// 2. инициализация карты
 			msg = h.event.MapInfo().Marshal()
 			h.sendToOne(game.players, s.conn, s.room, msg)
-
 			// 3. запуск игры
 			if len(game.players) == maxConnections {
-				// 4. отправка вопроса
+				// 4. кол-во ходов для захвата
+				msg = h.event.CaptureTurnInfo().Marshal()
+				h.sendToAll(game.players, s.room, msg)
+				// 5. текущий ход
+				msg = h.event.CurrentTurnInfo(1).Marshal()
+				h.sendToAll(game.players, s.room, msg)
+				// 6. отправка вопроса
 				questionInfo := domain.GlobalSecondQuestions[game.questionCounter]
 				msg = h.event.SecondQuestionInfo(questionInfo.Question).Marshal()
 				h.sendToAll(game.players, s.room, msg)
-				// 5. сохранили время отправки
+				// 7. сохранили время отправки
 				game.secondQuestionStartedAt = time.Now()
-				// TODO подумать как сделать лучше
-				// 6. инициализируем структуру для списка ответов на второй вопрос
+				// 8. инициализируем структуру для списка ответов на второй вопрос
 				game.secondAnswers = []*domain.PlayerOption{}
 				for _, player := range game.players {
 					playerOption := &domain.PlayerOption{
@@ -130,6 +134,7 @@ func (h *hub) Run() {
 					game.secondAnswers = append(game.secondAnswers, playerOption)
 				}
 			}
+		// получение сообщения от клиента
 		case m := <-h.broadcast:
 			game := h.games[m.room]
 
@@ -139,41 +144,61 @@ func (h *hub) Run() {
 			case domain.EventReceivedAnswer:
 				game.answerCounter++
 
-				for _, option := range game.secondAnswers {
-					if m.playerColor == option.Color {
-						value, _ := strconv.Atoi(m.request.Option)
-						option.Value = value
-						answerSeconds := m.time.Sub(game.secondQuestionStartedAt).Seconds()
-						option.Time = math.Round(answerSeconds*100) / 100
+				// 1. если этап захвата клеток
+				if !game.isAttack {
+					// 2. считаем ответ игроков
+					for _, option := range game.secondAnswers {
+						if m.playerColor == option.Color {
+							value, _ := strconv.Atoi(m.request.Option)
+							option.Value = value
+							answerSeconds := m.time.Sub(game.secondQuestionStartedAt).Seconds()
+							option.Time = math.Round(answerSeconds*100) / 100
+						}
 					}
-				}
-				if len(game.players) == game.answerCounter {
-					game.answerCounter = 0
+					if len(game.players) == game.answerCounter {
+						game.answerCounter = 0
 
-					if game.roundCounter == 4 {
-						msg = h.event.FinishInfo().Marshal()
-						h.sendToAll(game.players, m.room, msg)
-					} else {
 						questionInfo := domain.GlobalSecondQuestions[game.questionCounter]
 						correctAnswer := questionInfo.Answer.Value
-
+						// 3. отправляем правильный ответ
 						answerMsg := h.event.AnswerSecondQuestionInfo(game.secondAnswers, correctAnswer).Marshal()
 						h.sendToAll(game.players, m.room, answerMsg)
+
+						countSelectCell := len(game.players)
+						for _, option := range game.secondAnswers {
+							game.selectCellCounter[option.Color] = countSelectCell
+							countSelectCell--
+						}
+						if len(game.selectCellCounter) > 0 {
+							for color, count := range game.selectCellCounter {
+								err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
+									time.Sleep(5 * time.Second)
+									selectCellMsg := h.event.SelectCellInfo(color, count).Marshal()
+									h.sendToAll(game.players, m.room, selectCellMsg)
+								}))
+								if err != nil {
+									fmt.Println("task pool fatal")
+								}
+								break
+							}
+						}
 
 						game.answers = make(map[string]string, 0)
 						game.questionCounter++
 
-						err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
-							time.Sleep(5 * time.Second)
-							questionInfo = domain.GlobalSecondQuestions[game.questionCounter]
-							msg = h.event.SecondQuestionInfo(questionInfo.Question).Marshal()
-							h.sendToAll(game.players, m.room, msg)
-							game.secondQuestionStartedAt = time.Now()
-						}))
-						if err != nil {
-							fmt.Println("task pool fatal")
-						}
+						//err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
+						//	time.Sleep(5 * time.Second)
+						//	questionInfo = domain.GlobalSecondQuestions[game.questionCounter]
+						//	msg = h.event.SecondQuestionInfo(questionInfo.Question).Marshal()
+						//	h.sendToAll(game.players, m.room, msg)
+						//	game.secondQuestionStartedAt = time.Now()
+						//}))
+						//if err != nil {
+						//	fmt.Println("task pool fatal")
+						//}
 					}
+				} else {
+
 				}
 
 				//game.answerCounter++
@@ -227,6 +252,7 @@ func (h *hub) Run() {
 					game.freeCellCounter--
 					mapMsg := h.event.MapInfo().Marshal()
 					h.sendToAll(game.players, m.room, mapMsg)
+
 					var isAllowAttack bool
 					if game.freeCellCounter == 0 {
 						isAllowAttack = true
@@ -237,10 +263,18 @@ func (h *hub) Run() {
 
 					if !isAllowAttack && count == 0 {
 						delete(game.selectCellCounter, m.playerColor)
-						// отправка вопроса
-						questionInfo := domain.GlobalFirstQuestions[game.questionCounter]
-						msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
-						h.sendToAll(game.players, m.room, msg)
+						if len(game.selectCellCounter) > 0 {
+							for color, selectCount := range game.selectCellCounter {
+								selectCellMsg := h.event.SelectCellInfo(color, selectCount).Marshal()
+								h.sendToAll(game.players, m.room, selectCellMsg)
+								break
+							}
+						} else {
+							// отправка вопроса
+							questionInfo := domain.GlobalFirstQuestions[game.questionCounter]
+							msg = h.event.FirstQuestionInfo(questionInfo.Question).Marshal()
+							h.sendToAll(game.players, m.room, msg)
+						}
 					}
 				}
 			case domain.EventMapAttack:
@@ -271,16 +305,18 @@ func (h *hub) createOrGetGame(s *subscription) *gameStore {
 	game, found := h.games[s.room]
 	if !found {
 		game = &gameStore{
-			state:             1,
-			questionCounter:   0,
-			answerCounter:     0,
-			roundCounter:      0,
-			freeCellCounter:   4,
-			selectCellCounter: make(map[string]int, 0),
-			players:           nil,
-			answers:           make(map[string]string, 0),
-			secondAnswers:     []*domain.PlayerOption{},
-			colors:            nil,
+			state:                   1,
+			isAttack:                false,
+			questionCounter:         0,
+			answerCounter:           0,
+			roundCounter:            0,
+			freeCellCounter:         18,
+			selectCellCounter:       make(map[string]int, 0),
+			players:                 nil,
+			answers:                 make(map[string]string, 0),
+			secondAnswers:           make([]*domain.PlayerOption, 0),
+			secondQuestionStartedAt: time.Time{},
+			colors:                  nil,
 		}
 
 		colors := []string{"player-1", "player-2", "player-3"}
