@@ -34,7 +34,7 @@ export const Cell: CellComponent = observer(
           isExists && owner && classes[owner],
           canMove && room.canCapture
             ? `${classes[`canMove-${player.color}`]}  ${classes.pointer}`
-            : classes.notAllowed,
+            : (owner !== 'empty' || !isExists) && classes.notAllowed,
         ),
       [className, isExists, owner, canMove, player.color, room.canCapture],
     );

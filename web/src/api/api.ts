@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify';
+
 export const BACKEND_URL = 'http://localhost:8080';
 
 export interface ApiParams {
@@ -17,13 +19,11 @@ export const api = async ({ input, init }: ApiParams) => {
     });
 
     if (response.ok) {
-      const data = await response['json']();
-
-      return data;
+      return await response['json']();
     } else {
-      throw Error('error');
+      toast.error(String(`${response.status} - ${response.statusText}`));
     }
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    toast.error(String(error.message));
   }
 };

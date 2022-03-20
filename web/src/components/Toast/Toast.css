@@ -1,6 +1,6 @@
 :root {
   --toastify-color-dark: var(--dark-3);
-
+  --toastify-color-error: var(--player-2-hover);
   --toastify-font-family: var(--font-regular);
 }
 
