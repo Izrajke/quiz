@@ -1,4 +1,4 @@
-package domain
+package game
 
 import (
 	"github.com/google/uuid"
@@ -29,7 +29,7 @@ type Player struct {
 	Name      string `json:"name"`
 	Points    int    `json:"points"`
 	Color     string `json:"color"`
-	createdAt int64
+	CreatedAt int64
 }
 
 // NewPlayer конструктор игрока
@@ -47,6 +47,6 @@ func NewPlayer(name string) *Player {
 		Id:        id,
 		Name:      name,
 		Points:    defaultPoints,
-		createdAt: createdAt,
+		CreatedAt: createdAt,
 	}
 }

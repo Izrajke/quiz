@@ -1,14 +1,11 @@
-package internal
+package game
 
 import (
 	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
-	"quiz/internal/domain"
-	"time"
-
 	"github.com/gorilla/websocket"
+	"log"
+	"time"
 )
 
 const (
@@ -22,31 +19,15 @@ const (
 	maxMessageSize = 512
 )
 
-// ServeWs обработка подключения к сокету
-func ServeWs(w http.ResponseWriter, r *http.Request, hub *hub, playerName string, roomId string) {
-	var upgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-	}
-	// проверка исходного запроса
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	ws, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err.Error())
-		return
-	}
-	fmt.Printf("Server got a new connection player: %s room: %s\n", playerName, roomId)
-	p := domain.NewPlayer(playerName)
-	c := domain.NewConnection(ws)
-	s := subscription{c, roomId, p}
-	hub.register <- s
-	go s.writePump()
-	go s.readPump(hub)
+type Subscription struct {
+	Conn   *Connection
+	Room   string
+	Player *Player
 }
 
-// writePump отправляет сообщения в сокет и пингует его
-func (s *subscription) writePump() {
-	c := s.conn
+// WritePump отправляет сообщения в сокет и пингует его
+func (s *Subscription) WritePump() {
+	c := s.Conn
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
@@ -72,11 +53,11 @@ func (s *subscription) writePump() {
 	}
 }
 
-// readPump читает сообщения и отправляет событие отключения от сокета
-func (s subscription) readPump(hub *hub) {
-	c := s.conn
+// ReadPump читает сообщения и отправляет событие отключения от сокета
+func (s Subscription) ReadPump(hub *Hub) {
+	c := s.Conn
 	defer func() {
-		hub.unregister <- s
+		hub.Unregister <- s
 		c.Ws.Close()
 	}()
 	c.Ws.SetReadLimit(maxMessageSize)
@@ -95,17 +76,17 @@ func (s subscription) readPump(hub *hub) {
 		if err := json.Unmarshal(msg, &request); err != nil {
 			log.Printf("Failed to decode json: %v", err)
 		} else {
-			if request.Type == 1 || request.Type == 3 || request.Type == 4 {
-				fmt.Println("Server received a message: " + string(msg) + " player: " + s.player.Name + " room: " + s.room)
+			if request.Type == 1 || request.Type == 3 {
+				fmt.Println("Server received a message: " + string(msg) + " player: " + s.Player.Name + " room: " + s.Room)
 
-				m := message{
+				m := Message{
 					data:        msg,
-					room:        s.room,
-					playerColor: s.player.Color,
-					request:     &request,
-					time:        time.Now(),
+					Room:        s.Room,
+					PlayerColor: s.Player.Color,
+					Request:     &request,
+					Time:        time.Now(),
 				}
-				hub.broadcast <- m
+				hub.Broadcast <- m
 			} else {
 				log.Printf("Request of unknown type: %d", request.Type)
 			}
@@ -113,8 +94,17 @@ func (s subscription) readPump(hub *hub) {
 	}
 }
 
+type Message struct {
+	data []byte
+	Room string
+	// TODO may change for player id
+	PlayerColor string
+	Request     *request
+	Time        time.Time
+}
+
 // Type 1 - ответ на вопрос
-// Type 3 - получение территории
+// Type 3 - получение или атака клетки
 type request struct {
 	Type      int    `json:"type"`
 	Option    string `json:"option,omitempty"`
