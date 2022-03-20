@@ -1,4 +1,4 @@
-package domain
+package game
 
 // Cell Ячейка
 type Cell struct {

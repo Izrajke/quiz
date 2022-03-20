@@ -1,19 +1,15 @@
-package domain
+package game
+
+type Answer struct {
+	Value string `json:"value"`
+}
 
 type FirstQuestion struct {
 	Title   string            `json:"title"`
 	Options map[string]string `json:"options"`
 }
 
-type Answer struct {
-	Value string `json:"value"`
-}
-
-type SecondQuestion struct {
-	Title string `json:"title"`
-}
-
-var GlobalFirstQuestions = []FirstQuestionInfo{
+var GlobalFirstQuestions = []FirstQuestionData{
 	{
 		Question: FirstQuestion{
 			Title:   "Вопрос 1",
@@ -44,7 +40,11 @@ var GlobalFirstQuestions = []FirstQuestionInfo{
 	},
 }
 
-var GlobalSecondQuestions = []SecondQuestionInfo{
+type SecondQuestion struct {
+	Title string `json:"title"`
+}
+
+var GlobalSecondQuestions = []SecondQuestionData{
 	{
 		Question: SecondQuestion{
 			Title: "Вопрос 100 + 1",
@@ -65,8 +65,14 @@ var GlobalSecondQuestions = []SecondQuestionInfo{
 	},
 	{
 		Question: SecondQuestion{
-			Title: "Вопрос 5 - 10",
+			Title: "Вопрос 10 - 5",
 		},
-		Answer: &Answer{Value: "-5"},
+		Answer: &Answer{Value: "5"},
+	},
+	{
+		Question: SecondQuestion{
+			Title: "тест",
+		},
+		Answer: &Answer{Value: "1111"},
 	},
 }

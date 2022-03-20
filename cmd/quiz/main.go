@@ -10,7 +10,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"quiz/internal"
+	"quiz/internal/game"
 	"quiz/internal/taskpool"
 	"strconv"
 	"sync"
@@ -33,8 +33,8 @@ func main() {
 
 	taskPool := taskpool.NewPool(ctx, logger)
 
-	hub := internal.NewHub(ctx, taskPool)
-	go hub.Run()
+	h := game.NewHub(ctx, taskPool)
+	go h.Run()
 
 	fmt.Println("Starting server...")
 
@@ -79,7 +79,7 @@ func main() {
 			return
 		}
 
-		internal.ServeWs(w, r, hub, playerName, roomId)
+		game.ServeWs(w, r, h, playerName, roomId)
 	})
 
 	wg := sync.WaitGroup{}
