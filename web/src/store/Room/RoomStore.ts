@@ -51,7 +51,7 @@ export class RoomStore {
   /** Ответы игроков вопроса типа 2 */
   answerOptions: AnswerOptions[] = [];
   /** Очередь ходов */
-  turnQueue?: number | PlayerColors[];
+  turnQueue: number | PlayerColors[] = 0;
   /** Текущий ход */
   currentTurn = 0;
   /** Кто делает ход (текущий активный игрок) */
@@ -110,6 +110,7 @@ export class RoomStore {
     this.options = question.options || {};
     this.title = question.title;
     this.type = type;
+    this.toastController.dismissToast();
   }
 
   /** Правильный ответ на вопрос */
@@ -160,6 +161,7 @@ export class RoomStore {
     if (this.canCapture) {
       this.captureCount = count;
     }
+    this.toastController.dismissToast();
     this.toastController.whoIsCaptureNowToast(color);
   };
 
