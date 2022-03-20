@@ -1,0 +1,17 @@
+:root {
+  --toastify-color-dark: var(--dark-3);
+
+  --toastify-font-family: var(--font-regular);
+}
+
+.toastify-progress-player-1 {
+  --toastify-color-progress-dark: var(--player-1);
+}
+
+.toastify-progress-player-2 {
+  --toastify-color-progress-dark: var(--player-2);
+}
+
+.toastify-progress-player-3 {
+  --toastify-color-progress-dark: var(--player-3);
+}

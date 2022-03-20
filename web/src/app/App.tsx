@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { Home, PlayingRoom } from './Pages';
-import { SocketLogger, Dialog } from 'components';
+import { SocketLogger, Dialog, Toast } from 'components';
 
 import { store } from '../store';
 
@@ -23,6 +23,7 @@ export const App: FunctionComponent = observer(() => {
         <SocketLogger />
         <Dialog />
       </BrowserRouter>
+      <Toast />
     </Provider>
   );
 });
