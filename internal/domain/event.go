@@ -27,6 +27,12 @@ const (
 	eventAnswerSecondQuestion = 6
 	// информация о получении клетки
 	eventSelectCell = 7
+	// информация о ходах игроков на стадии захвата
+	eventCaptureTurnInfo = 8
+	// информация о ходах игроков на стадии атаки
+	eventAttackTurnInfo = 9
+	// информация о текущем ходе
+	eventCurrentTurnInfo = 10
 	// информация о игроках
 	eventPlayersIntoType = 12
 	// информация о карте
@@ -139,6 +145,32 @@ func (e *Event) SelectCellInfo(color string) *Event {
 		BaseType: eventSelectCell,
 		Color:    color,
 		Count:    2,
+	}
+
+	return e
+}
+
+// CaptureTurnInfo информация о ходах игроков на стадии захвата
+func (e *Event) CaptureTurnInfo() *Event {
+	e.message = struct {
+		BaseType `json:"type"`
+		Turns    int `json:"turns"`
+	}{
+		BaseType: eventCaptureTurnInfo,
+		Turns:    9,
+	}
+
+	return e
+}
+
+// CurrentTurnInfo информация о текущем ходе
+func (e *Event) CurrentTurnInfo() *Event {
+	e.message = struct {
+		BaseType `json:"type"`
+		Number   int `json:"number"`
+	}{
+		BaseType: eventCurrentTurnInfo,
+		Number:   3,
 	}
 
 	return e

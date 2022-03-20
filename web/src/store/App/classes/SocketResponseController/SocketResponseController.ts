@@ -1,5 +1,4 @@
 import { SocketResponse, SocketResponseType } from 'api';
-// import { answerDelay } from 'const';
 import type { Socket } from '../index';
 import type { PlayerStore, RoomStore } from 'store';
 
@@ -25,8 +24,6 @@ export class SocketResponseController {
       case SocketResponseType.answerFirstQuestionType:
       case SocketResponseType.answerSecondQuestionType:
         this.room.setAnswer(data);
-        // TODO: раскоментить нижнюю
-        // withDelay(this.room.useQuestionModal, answerDelay, [false]);
         break;
       case SocketResponseType.playersInfo:
         this.room.setPlayers(data);
@@ -40,9 +37,10 @@ export class SocketResponseController {
         this.room.setTurnQueue(data);
         break;
       case SocketResponseType.currentTurnIndex:
-        this.room.setCurrentTurn(data);
+        this.room.setTurnQueue(data);
         break;
       case SocketResponseType.allowedToCapture:
+        this.room.useQuestionModal(false);
         this.room.setCaptureCapability(data);
         break;
       case SocketResponseType.attackStage:

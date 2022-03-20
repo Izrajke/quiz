@@ -39,10 +39,14 @@ export class AppStore {
   }
 
   *socketConnection(id: string) {
+    const searchParams = new URLSearchParams({
+      room: id,
+      name: this.root.player.nickname,
+    }).toString();
     // TODO: Возможно сокетов будет несколько. Их нужно будет тогда разбить roomSocket, homeSocket и т.п
     this.socket = yield new Socket(
       this.root,
-      `ws://127.0.0.1:8080/ws?room=${id}&name=${this.root.player.nickname}`,
+      `ws://127.0.0.1:8080/ws?${searchParams}`,
     );
   }
 

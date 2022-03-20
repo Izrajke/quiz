@@ -106,21 +106,26 @@ func (h *hub) Run() {
 			// 1. инициализация игроков
 			msg := h.event.PlayersInfo(game.players).Marshal()
 			h.sendToAll(game.players, s.room, msg)
-
 			// 2. инициализация карты
 			msg = h.event.MapInfo().Marshal()
 			h.sendToOne(game.players, s.conn, s.room, msg)
 
 			// 3. запуск игры
 			if len(game.players) == maxConnections {
-				// 4. отправка вопроса
+				// 4. кол-во ходов для захвата
+				msg = h.event.CaptureTurnInfo().Marshal()
+				h.sendToAll(game.players, s.room, msg)
+				// 5. текущий ход
+				msg = h.event.CurrentTurnInfo().Marshal()
+				h.sendToAll(game.players, s.room, msg)
+				// 6. отправка вопроса
 				questionInfo := domain.GlobalSecondQuestions[game.questionCounter]
 				msg = h.event.SecondQuestionInfo(questionInfo.Question).Marshal()
 				h.sendToAll(game.players, s.room, msg)
-				// 5. сохранили время отправки
+				// 7. сохранили время отправки
 				game.secondQuestionStartedAt = time.Now()
 				// TODO подумать как сделать лучше
-				// 6. инициализируем структуру для списка ответов на второй вопрос
+				// 8. инициализируем структуру для списка ответов на второй вопрос
 				game.secondAnswers = []*domain.PlayerOption{}
 				for _, player := range game.players {
 					playerOption := &domain.PlayerOption{

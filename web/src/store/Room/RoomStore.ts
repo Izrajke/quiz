@@ -1,4 +1,5 @@
 import { action, makeObservable, observable } from 'mobx';
+
 import { RootStore } from '../RootStore';
 import type {
   AnswerOptions,
@@ -19,11 +20,8 @@ import { SocketRequestType, SocketResponseType } from 'api';
 import { withDelay } from 'utils';
 
 import type { CaptureCheckNames } from './classes';
-import { MapMoveControl } from './classes';
-import { Map } from './types/Map';
-
-/** Тип статуса игры */
-export type Status = 'question';
+import { MapMoveControl, RoomToastController } from './classes';
+import type { Map } from './types/Map';
 
 export class RoomStore {
   /** Root store */
@@ -34,8 +32,6 @@ export class RoomStore {
   type: SocketResponseType = 999;
   /** Название вопроса */
   title = '';
-  /** Статус игры */
-  status: Status = 'question';
   /** Ответ игрока */
   playerAnswer = '';
   /** Ответ на вопрос с сервера */
@@ -48,7 +44,7 @@ export class RoomStore {
   isQuestionModalOpen = false;
   /** Capture статус */
   moveStatus: CaptureCheckNames = 'freeCapture';
-  /** Может ли игрок передвигаться */
+  /** Может ли игрок захватывать */
   canCapture = false;
   /** Кол-во клеток для захвата */
   captureCount = 0;
@@ -58,6 +54,10 @@ export class RoomStore {
   turnQueue?: number | PlayerColors[];
   /** Текущий ход */
   currentTurn = 0;
+  /** Кто делает ход (текущий активный игрок) */
+  whoseTurn: PlayerColors[] = [];
+  /** Контроллер уведомлений */
+  toastController: RoomToastController;
 
   constructor(root: RootStore) {
     makeObservable(this, {
@@ -74,6 +74,7 @@ export class RoomStore {
       captureCount: observable,
       turnQueue: observable,
       currentTurn: observable,
+      whoseTurn: observable,
       // action
       setQuestion: action,
       setAnswer: action,
@@ -90,6 +91,7 @@ export class RoomStore {
       setCurrentTurn: action,
     });
     this.root = root;
+    this.toastController = new RoomToastController(this);
   }
 
   setTurnQueue(data: TurnQueueData) {
@@ -158,6 +160,7 @@ export class RoomStore {
     if (this.canCapture) {
       this.captureCount = count;
     }
+    this.toastController.whoIsCaptureNowToast(color);
   };
 
   calculateCaptureCapability = () => {
