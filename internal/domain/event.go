@@ -181,32 +181,6 @@ func (e *Event) CurrentTurnInfo(round int) *Event {
 	return e
 }
 
-// CaptureTurnInfo информация о ходах игроков на стадии захвата
-func (e *Event) CaptureTurnInfo() *Event {
-	e.message = struct {
-		BaseType `json:"type"`
-		Turns    int `json:"turns"`
-	}{
-		BaseType: eventCaptureTurnInfo,
-		Turns:    9,
-	}
-
-	return e
-}
-
-// CurrentTurnInfo информация о текущем ходе
-func (e *Event) CurrentTurnInfo() *Event {
-	e.message = struct {
-		BaseType `json:"type"`
-		Number   int `json:"number"`
-	}{
-		BaseType: eventCurrentTurnInfo,
-		Number:   3,
-	}
-
-	return e
-}
-
 // PlayersInfo информация о игроках
 func (e *Event) PlayersInfo(players map[*Connection]*Player) *Event {
 	var playersSlice []*Player
