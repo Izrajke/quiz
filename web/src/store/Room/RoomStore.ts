@@ -17,8 +17,6 @@ import type {
 } from 'api';
 import { SocketRequestType, SocketResponseType } from 'api';
 
-import { withDelay } from 'utils';
-
 import type { CaptureCheckNames } from './classes';
 import { MapMoveControl, RoomToastController } from './classes';
 import type { Map } from './types/Map';
@@ -182,13 +180,6 @@ export class RoomStore {
       cellIndex,
     });
     this.reduceCaptureCount();
-    // TODO: убрать запросы вопросов???
-    const f = () => {
-      if (!this.canCapture && this.moveStatus !== 'attack') {
-        this.getQuestion();
-      }
-    };
-    withDelay<boolean>(f.bind(this), 2000, [this.canCapture]);
   };
 
   // TODO Подумать куда унести (отдельный класс для сокета)
@@ -198,11 +189,6 @@ export class RoomStore {
       rowIndex: rowIndex,
       cellIndex: cellIndex,
     });
-  };
-
-  // TODO Подумать куда унести (отдельный класс для сокета)
-  getQuestion = () => {
-    this.root.app.socketMessage({ type: 2 });
   };
 
   /** Приведение карты к игровому формату (добавление поля canMove)  */

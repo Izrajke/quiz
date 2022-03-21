@@ -33,8 +33,11 @@ export class SocketResponseController {
         this.room.setMap(data);
         break;
       case SocketResponseType.captureTurnQueue:
+        this.room.setTurnQueue(data);
+        break;
       case SocketResponseType.attackTurnQueue:
         this.room.setTurnQueue(data);
+        // this.room.setMoveStatus('attack');
         break;
       case SocketResponseType.currentTurnIndex:
         this.room.setCurrentTurn(data);

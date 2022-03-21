@@ -23,7 +23,7 @@ export const api = async ({ input, init }: ApiParams) => {
     } else {
       toast.error(String(`${response.status} - ${response.statusText}`));
     }
-  } catch (error: any) {
-    toast.error(String(error.message));
+  } catch (error) {
+    toast.error('Проблема при подключении к серверу');
   }
 };

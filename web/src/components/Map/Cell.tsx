@@ -28,14 +28,16 @@ export const Cell: CellComponent = observer(
 
     const styles = useMemo(
       () =>
-        clsx(
-          className,
-          classes.cell,
-          isExists && owner && classes[owner],
-          canMove && room.canCapture
-            ? `${classes[`canMove-${player.color}`]}  ${classes.pointer}`
-            : (owner !== 'empty' || !isExists) && classes.notAllowed,
-        ),
+        !isExists
+          ? clsx(className, classes.cell)
+          : clsx(
+              className,
+              classes.cell,
+              owner && classes[owner],
+              canMove && room.canCapture
+                ? `${classes[`canMove-${player.color}`]}  ${classes.pointer}`
+                : owner !== 'empty' && classes.notAllowed,
+            ),
       [className, isExists, owner, canMove, player.color, room.canCapture],
     );
 
