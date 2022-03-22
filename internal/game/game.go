@@ -60,7 +60,7 @@ func CreateOrGetGame(games map[string]*Game, s *Subscription) *Game {
 			SelectCellCount:         make(map[string]int, 0),
 			Colors:                  nil,
 			IsAttack:                false,
-			FreeCellCounter:         12,
+			FreeCellCounter:         6,
 		}
 
 		colors := []string{"player-1", "player-2", "player-3"}

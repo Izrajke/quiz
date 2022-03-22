@@ -35,8 +35,6 @@ const (
 	eventInitPlayersType = 12
 	// сборка карты
 	eventBuildMapType = 13
-	// начало стадии нападения
-	eventAllowAttackType = 15
 	// конец игры
 	eventFinish = 999
 )
@@ -233,11 +231,15 @@ func (e *Event) SelectCell(color string, count int) *Event {
 }
 
 // AllowAttack начало стадии нападения
-func (e *Event) AllowAttack() *Event {
+func (e *Event) AllowAttack(color string) *Event {
 	e.message = struct {
 		BaseType `json:"type"`
+		Color    string `json:"color"`
+		Count    int    `json:"count"`
 	}{
-		BaseType: eventAllowAttackType,
+		BaseType: eventSelectCellType,
+		Color:    color,
+		Count:    1,
 	}
 
 	return e

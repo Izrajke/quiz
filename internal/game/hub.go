@@ -147,7 +147,7 @@ func (h *Hub) Run() {
 							} else {
 								err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
 									// отправка вопроса
-									time.Sleep(5 * time.Second)
+									time.Sleep(1 * time.Second)
 									h.event.FirstQuestion(GlobalFirstQuestions[g.FirstQuestionCount].Question).SendToAll(g.Players, m.Room, h.games)
 								}))
 								if err != nil {
@@ -171,8 +171,6 @@ func (h *Hub) Run() {
 							h.event.BuildMap().SendToAll(g.Players, m.Room, h.games)
 
 							if g.FreeCellCounter == 0 {
-								// 3. смена этапа игры
-								h.event.AllowAttack().SendToAll(g.Players, m.Room, h.games)
 								g.IsAttack = true
 
 								colors := make([]string, 0)
@@ -186,10 +184,12 @@ func (h *Hub) Run() {
 									value := colors[rnd]
 									moves = append(moves, value)
 								}
-								// 4. текущий ход
+								// 3. текущий ход
 								h.event.CurrentMove(g.FirstQuestionCount+1).SendToAll(g.Players, m.Room, h.games)
-								// 5. порядок ходов для стадии атаки
+								// 4. порядок ходов для стадии атаки
 								h.event.NumberOfMovesForAttack(moves).SendToAll(g.Players, m.Room, h.games)
+								// 5. смена этапа игры
+								h.event.AllowAttack(colors[0]).SendToAll(g.Players, m.Room, h.games)
 							} else {
 								if count == 0 {
 									delete(g.SelectCellCount, m.PlayerColor)
@@ -203,7 +203,7 @@ func (h *Hub) Run() {
 								}
 								if len(g.SelectCellCount) == 0 {
 									err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
-										time.Sleep(5 * time.Second)
+										time.Sleep(1 * time.Second)
 										// 5. текущий ход
 										h.event.CurrentMove(g.RoundCount).SendToAll(g.Players, m.Room, h.games)
 										// 6. отправка вопроса
