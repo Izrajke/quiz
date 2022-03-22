@@ -3,7 +3,7 @@ import { action, makeObservable, observable } from 'mobx';
 import { RootStore } from '../RootStore';
 import type {
   AnswerOptions,
-  TurnQueueData,
+  CurrentTurnData,
   MapData,
   Player,
   PlayerColors,
@@ -13,7 +13,7 @@ import type {
   SocketOptions,
   SocketPlayersData,
   SocketQuestionData,
-  CurrentTurnData,
+  TurnQueueData,
 } from 'api';
 import { SocketRequestType, SocketResponseType } from 'api';
 
@@ -96,6 +96,14 @@ export class RoomStore {
     const { type, turns } = data;
     this.type = type;
     this.turnQueue = turns;
+
+    if (this.type === SocketResponseType.attackTurnQueue) {
+      this.setMoveStatus('attack');
+      this.map = this.mapFormat(
+        this.map,
+        this.root.player.color as PlayerColors,
+      );
+    }
   }
 
   setCurrentTurn(data: CurrentTurnData) {
@@ -141,8 +149,7 @@ export class RoomStore {
 
   setMap(mapData: SocketMapData) {
     const { map } = mapData;
-    this.root.player.color &&
-      (this.map = this.mapFormat(map, this.root.player.color));
+    this.map = this.mapFormat(map, this.root.player.color as PlayerColors);
   }
 
   useQuestionModal = (value: boolean) => {
@@ -159,6 +166,7 @@ export class RoomStore {
     if (this.canCapture) {
       this.captureCount = count;
     }
+
     this.toastController.dismissToast();
     this.toastController.whoIsCaptureNowToast(color);
   };
@@ -172,7 +180,6 @@ export class RoomStore {
     this.calculateCaptureCapability();
   };
 
-  // TODO Подумать куда унести (отдельный класс для сокета)
   getCell = (rowIndex: number, cellIndex: number) => {
     this.root.app.socketMessage({
       type: SocketRequestType.getCell,
@@ -182,7 +189,6 @@ export class RoomStore {
     this.reduceCaptureCount();
   };
 
-  // TODO Подумать куда унести (отдельный класс для сокета)
   attackCell = (rowIndex: number, cellIndex: number) => {
     this.root.app.socketMessage({
       type: SocketRequestType.attackCell,

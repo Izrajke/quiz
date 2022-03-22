@@ -36,8 +36,8 @@ export class SocketResponseController {
         this.room.setTurnQueue(data);
         break;
       case SocketResponseType.attackTurnQueue:
+        this.room.setMoveStatus('attack');
         this.room.setTurnQueue(data);
-        // this.room.setMoveStatus('attack');
         break;
       case SocketResponseType.currentTurnIndex:
         this.room.setCurrentTurn(data);
