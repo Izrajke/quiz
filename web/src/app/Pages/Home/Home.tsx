@@ -1,11 +1,8 @@
 import type { ChangeEvent, FunctionComponent } from 'react';
 
-import { useNavigate } from 'react-router';
-
 import { observer, useLocalObservable } from 'mobx-react-lite';
 
 import { useStore } from 'store';
-import { createLobby } from 'api';
 
 import {
   Paper,
@@ -16,6 +13,8 @@ import {
   Icon,
   Input,
 } from 'components';
+
+import { HomeCreateRoomModal } from './HomeCreateRoomModal';
 
 import classes from './Home.module.css';
 
@@ -28,59 +27,62 @@ interface HomeSettingsModalState {
   onChangeNickname: (e: ChangeEvent<HTMLInputElement>) => void;
   /** Сохранить никнем в сторе */
   saveNickname: () => void;
+  /** Открыто ли модальное окно создания лобби */
+  isCreateLobbyModalOpen: boolean;
+  /** Открыть или закрыть модальное окно создания лобби */
+  setCreateLobbyModal: () => void;
 }
 
 export const Home: FunctionComponent = observer(() => {
   const { app, player } = useStore();
-  const navigate = useNavigate();
 
-  const { onSettingsClick } = useLocalObservable<HomeSettingsModalState>(
-    () => ({
-      nickname: player.nickname,
-      onChangeNickname(e) {
-        this.nickname = e.target.value;
-      },
-      saveNickname() {
-        player.setNickname(this.nickname);
-      },
-      onSettingsClick() {
-        app.setDialog({
-          header: (
-            <Typography.Text color="white" type="text-2" weight="weight-bold">
-              Настройки
-            </Typography.Text>
-          ),
-          body: (
-            <Input
-              placeholder="123"
-              defaultValue={this.nickname}
-              onChange={this.onChangeNickname}
-              label="Никнейм"
-            />
-          ),
-          dialogButtons: [
-            {
-              type: 'primary',
-              onClick: this.saveNickname,
-              size: 'normal',
-              text: 'Сохранить',
-              className: classes.dialogButton,
-              clickType: 'submit',
-            },
-          ],
-        });
-      },
-    }),
-  );
-
-  const onCreateLobbyClick = async () => {
-    const { id } = await createLobby();
-    app.setRoomId(id);
-    navigate(`/room/${app.roomId}`);
-  };
+  const state = useLocalObservable<HomeSettingsModalState>(() => ({
+    nickname: player.nickname,
+    isCreateLobbyModalOpen: false,
+    setCreateLobbyModal() {
+      this.isCreateLobbyModalOpen = !this.isCreateLobbyModalOpen;
+    },
+    onChangeNickname(e) {
+      this.nickname = e.target.value;
+    },
+    saveNickname() {
+      player.setNickname(this.nickname);
+    },
+    onSettingsClick() {
+      app.setDialog({
+        header: (
+          <Typography.Text color="white" type="text-0" weight="weight-bold">
+            Настройки
+          </Typography.Text>
+        ),
+        body: (
+          <Input
+            placeholder="123"
+            defaultValue={this.nickname}
+            onChange={this.onChangeNickname}
+            label="Никнейм"
+          />
+        ),
+        dialogButtons: [
+          {
+            type: 'primary',
+            onClick: this.saveNickname,
+            size: 'normal',
+            text: 'Сохранить',
+            className: classes.dialogButton,
+            clickType: 'submit',
+          },
+        ],
+      });
+    },
+  }));
 
   return (
     <div className={classes.wrapper}>
+      <HomeCreateRoomModal
+        open={state.isCreateLobbyModalOpen}
+        setOpen={state.setCreateLobbyModal}
+      />
       <header className={classes.header}>
         <Typography.Text color="white" type="text-0">
           О игре
@@ -96,7 +98,7 @@ export const Home: FunctionComponent = observer(() => {
           className={classes.icon}
           type="cog"
           size={16}
-          onClick={onSettingsClick}
+          onClick={state.onSettingsClick}
         />
       </header>
       <div className={classes.body}>
@@ -113,7 +115,7 @@ export const Home: FunctionComponent = observer(() => {
           <Button
             className={classes.createLobbybutton}
             type="primary"
-            onClick={onCreateLobbyClick}
+            onClick={state.setCreateLobbyModal}
           >
             Создать лобби
           </Button>

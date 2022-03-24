@@ -33,11 +33,11 @@ export const Modal: ModalComponent = ({
   return show ? (
     <div
       className={clsx(classes.backdrop, !show && classes.notVisible)}
-      onClick={closeModal}
+      onMouseDown={closeModal}
     >
       <div
         className={clsx(classes.wrapper, className)}
-        onClick={(e) => {
+        onMouseDown={(e) => {
           e.stopPropagation();
         }}
       >

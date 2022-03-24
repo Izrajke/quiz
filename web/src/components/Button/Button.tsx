@@ -6,14 +6,14 @@ import { observer } from 'mobx-react-lite';
 
 import classes from './Button.module.css';
 
-type ButtonType = 'regular' | 'primary';
+type ButtonType = 'regular' | 'primary' | 'default';
 type ButtonSize = 'normal' | 'large' | 'small';
 
 export interface ButtonProps {
   /** Тип кнопки */
   type: ButtonType;
   /** Обработчик нажатия */
-  onClick: () => void;
+  onClick?: () => void;
   /** Стили */
   className?: string;
   /** Размер */

@@ -1,0 +1,34 @@
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.labelsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.inputsContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.inputsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.password {
+  margin-top: 16px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.createButton {
+  width: 100%;
+}

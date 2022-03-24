@@ -2,12 +2,22 @@
   cursor: pointer;
   border-radius: 8px;
   border: none;
-  padding: 10px;
+  padding: 10px 24px;
   transition: all 0.2s;
 }
 
 .button:disabled {
   cursor: auto;
+}
+
+/** default */
+.default {
+  background: none;
+  color: var(--white);
+}
+
+.default:hover {
+  background: var(--dark-6);
 }
 
 /* regular */
@@ -37,7 +47,7 @@
 
 /* Size */
 .normal {
-  font-size: 22px;
+  font-size: 20px;
   line-height: 140%;
 }
 

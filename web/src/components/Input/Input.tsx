@@ -3,6 +3,9 @@ import type {
   DetailedHTMLProps,
   HTMLAttributes,
 } from 'react';
+import { useMemo } from 'react';
+
+import clsx from 'clsx';
 
 import { observer } from 'mobx-react-lite';
 
@@ -13,13 +16,16 @@ export interface InputProps
     HTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
+  className?: string;
   label?: string;
 }
 
 export const Input: FunctionComponent<InputProps> = observer(
-  ({ label, ...props }) => {
+  ({ label, className, ...props }) => {
+    const styles = useMemo(() => clsx(classes.wrapper, className), [className]);
+
     return (
-      <label className={classes.wrapper}>
+      <label className={styles}>
         {label}
         <input className={classes.input} {...props} />
       </label>

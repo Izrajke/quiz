@@ -29,17 +29,17 @@ export const Dialog: FunctionComponent = observer(() => {
 
   /** Устанавливает поведение кнопки в зависимости от её роли */
   const getButtonClickHandler =
-    (onClick: () => void, clickType?: ClickTypes) => () => {
+    (onClick?: () => void, clickType?: ClickTypes) => () => {
       switch (clickType) {
         case 'submit':
-          onClick();
+          onClick && onClick();
           app.removeDialog();
           break;
         case 'cancel':
           app.removeDialog();
           break;
         default:
-          onClick();
+          onClick && onClick();
           break;
       }
     };
