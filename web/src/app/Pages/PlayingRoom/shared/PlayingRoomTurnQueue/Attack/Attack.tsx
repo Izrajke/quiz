@@ -11,12 +11,16 @@ import classes from './Attack.module.css';
 export const Attack: FunctionComponent = observer(() => {
   const { room } = useStore();
   const renderArray = useMemo(() => {
-    const turnQueue = [...(room.turnQueue as PlayerColors[])];
-    const stepsCount =
-      turnQueue.length / (room.players.length ? room.players.length : 1);
-    return Array(stepsCount)
-      .fill([])
-      .map(() => [...turnQueue.splice(0, room.players.length)]);
+    if (typeof room.turnQueue === 'object') {
+      const turnQueue = [...(room.turnQueue as PlayerColors[])];
+      const stepsCount =
+        turnQueue.length / (room.players.length ? room.players.length : 1);
+      return Array(stepsCount)
+        .fill([])
+        .map(() => [...turnQueue.splice(0, room.players.length)]);
+    } else {
+      return [];
+    }
   }, [room.turnQueue, room.players]);
 
   const calculateTurnBarStyle = useCallback(

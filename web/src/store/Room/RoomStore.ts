@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 import { RootStore } from '../RootStore';
 import type {
@@ -36,8 +36,25 @@ export class RoomStore {
   answer: string | number = '';
   /** Игроки */
   players: Player[] = [];
-  /** Карта */
-  map: Map = [];
+  /** Данные о карте с сервера */
+  mapData: MapData = [];
+  /** Отформатированная карта */
+  get map(): Map {
+    return this.mapData.map((row, rowIndex) =>
+      row.map((cell, cellIndex) => {
+        const moveControl = new MapMoveControl(
+          this.mapData,
+          rowIndex,
+          cellIndex,
+          this.root.player.color as PlayerColors,
+        );
+        return {
+          ...cell,
+          canMove: moveControl.checks[this.moveStatus](),
+        };
+      }),
+    );
+  }
   /** Модалка вопроса */
   isQuestionModalOpen = false;
   /** Capture статус */
@@ -66,13 +83,16 @@ export class RoomStore {
       answer: observable,
       players: observable,
       playerAnswer: observable,
-      map: observable,
       isQuestionModalOpen: observable,
       canCapture: observable,
       captureCount: observable,
       turnQueue: observable,
       currentTurn: observable,
       whoseTurn: observable,
+      mapData: observable,
+      moveStatus: observable,
+      // computed
+      map: computed,
       // action
       setQuestion: action,
       setAnswer: action,
@@ -99,10 +119,6 @@ export class RoomStore {
 
     if (this.type === SocketResponseType.attackTurnQueue) {
       this.setMoveStatus('attack');
-      this.map = this.mapFormat(
-        this.map,
-        this.root.player.color as PlayerColors,
-      );
     }
   }
 
@@ -149,7 +165,7 @@ export class RoomStore {
 
   setMap(mapData: SocketMapData) {
     const { map } = mapData;
-    this.map = this.mapFormat(map, this.root.player.color as PlayerColors);
+    this.mapData = map;
   }
 
   useQuestionModal = (value: boolean) => {
@@ -196,21 +212,4 @@ export class RoomStore {
       cellIndex: cellIndex,
     });
   };
-
-  /** Приведение карты к игровому формату (добавление поля canMove)  */
-  mapFormat = (mapData: MapData, player: PlayerColors): Map =>
-    mapData.map((row, rowIndex) =>
-      row.map((cell, cellIndex) => {
-        const moveControl = new MapMoveControl(
-          mapData,
-          rowIndex,
-          cellIndex,
-          player,
-        );
-        return {
-          ...cell,
-          canMove: moveControl.checks[this.moveStatus](),
-        };
-      }),
-    );
 }
