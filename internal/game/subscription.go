@@ -76,7 +76,7 @@ func (s Subscription) ReadPump(hub *Hub) {
 		if err := json.Unmarshal(msg, &request); err != nil {
 			log.Printf("Failed to decode json: %v", err)
 		} else {
-			if request.Type == 1 || request.Type == 3 {
+			if request.Type == 1 || request.Type == 3 || request.Type == 4 {
 				fmt.Println("Server received a message: " + string(msg) + " player: " + s.Player.Name + " room: " + s.Room)
 
 				m := Message{
@@ -104,7 +104,8 @@ type Message struct {
 }
 
 // Type 1 - ответ на вопрос
-// Type 3 - получение или атака клетки
+// Type 3 - получение клетки
+// Type 4 - атака клетки
 type request struct {
 	Type      int    `json:"type"`
 	Option    string `json:"option,omitempty"`

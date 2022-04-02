@@ -211,18 +211,18 @@ var Map2Test = [][]*Cell{
 			Owner:    "empty",
 		},
 	},
-	{ // 2
-		{ // 1
-			IsExists: true,
-			Owner:    "empty",
-		},
-		{ // 2
-			IsExists: true,
-			Owner:    "empty",
-		},
-		{ // 3
-			IsExists: true,
-			Owner:    "empty",
-		},
-	},
+	//{ // 2
+	//	{ // 1
+	//		IsExists: true,
+	//		Owner:    "empty",
+	//	},
+	//	{ // 2
+	//		IsExists: true,
+	//		Owner:    "empty",
+	//	},
+	//	{ // 3
+	//		IsExists: true,
+	//		Owner:    "empty",
+	//	},
+	//},
 }
