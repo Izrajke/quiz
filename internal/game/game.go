@@ -34,6 +34,8 @@ type Game struct {
 	SecondQuestionStartedAt time.Time
 	// доступное кол-во для выбора клеток
 	SelectCellCount map[string]int
+	// порядок ходов игроков для нападения
+	PlayerMoves []string
 	// доступные цвета для игроков
 	Colors []string
 	// флаг начала этапа нападения
@@ -58,9 +60,10 @@ func CreateOrGetGame(games map[string]*Game, s *Subscription) *Game {
 			SecondAnswers:           make([]*PlayerOption, 0),
 			SecondQuestionStartedAt: time.Time{},
 			SelectCellCount:         make(map[string]int, 0),
+			PlayerMoves:             make([]string, 0),
 			Colors:                  nil,
 			IsAttack:                false,
-			FreeCellCounter:         6,
+			FreeCellCounter:         3,
 		}
 
 		colors := []string{"player-1", "player-2", "player-3"}

@@ -10,8 +10,10 @@ const (
 
 	// EventAnswerType ответ на вопрос
 	EventAnswerType = 1
-	// EventGetOrAttackCellType получение или нападение на ячейку на карте
-	EventGetOrAttackCellType = 3
+	// EventGetCellType получение клетки на карте
+	EventGetCellType = 3
+	// EventAttackCellType атака клетки на карте
+	EventAttackCellType = 4
 
 	// Серверные типы
 
@@ -225,21 +227,6 @@ func (e *Event) SelectCell(color string, count int) *Event {
 		BaseType: eventSelectCellType,
 		Color:    color,
 		Count:    count,
-	}
-
-	return e
-}
-
-// AllowAttack начало стадии нападения
-func (e *Event) AllowAttack(color string) *Event {
-	e.message = struct {
-		BaseType `json:"type"`
-		Color    string `json:"color"`
-		Count    int    `json:"count"`
-	}{
-		BaseType: eventSelectCellType,
-		Color:    color,
-		Count:    1,
 	}
 
 	return e

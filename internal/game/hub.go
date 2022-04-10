@@ -142,13 +142,12 @@ func (h *Hub) Run() {
 							g.FirstQuestionCount++
 							g.RoundCount++
 
-							if g.RoundCount == 4 {
+							if g.RoundCount == 6 {
 								h.event.Finish().SendToAll(g.Players, m.Room, h.games)
 							} else {
 								err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
-									// отправка вопроса
-									time.Sleep(1 * time.Second)
-									h.event.FirstQuestion(GlobalFirstQuestions[g.FirstQuestionCount].Question).SendToAll(g.Players, m.Room, h.games)
+									time.Sleep(5 * time.Second)
+									h.event.SelectCell(g.PlayerMoves[g.FirstQuestionCount], 1).SendToAll(g.Players, m.Room, h.games)
 								}))
 								if err != nil {
 									fmt.Println("task pool fatal")
@@ -156,7 +155,7 @@ func (h *Hub) Run() {
 							}
 						}
 					}
-				case EventGetOrAttackCellType:
+				case EventGetCellType:
 					if !g.IsAttack {
 						count, found := g.SelectCellCount[m.PlayerColor]
 						if found {
@@ -179,17 +178,22 @@ func (h *Hub) Run() {
 								}
 								moves := make([]string, 0)
 								rand.Seed(time.Now().Unix())
-								for i := 0; i < 10; i++ {
-									rnd := rand.Intn(len(colors))
-									value := colors[rnd]
-									moves = append(moves, value)
+								for i := 0; i < 5; i++ {
+									rand.Shuffle(len(colors), func(i, j int) {
+										colors[i], colors[j] = colors[j], colors[i]
+									})
+									for _, color := range colors {
+										moves = append(moves, color)
+									}
 								}
-								// 3. текущий ход
+								// 3. сохраняем порядок ходов для нападения
+								g.PlayerMoves = moves
+								// 4. текущий ход
 								h.event.CurrentMove(g.FirstQuestionCount+1).SendToAll(g.Players, m.Room, h.games)
-								// 4. порядок ходов для стадии атаки
+								// 5. порядок ходов для стадии атаки
 								h.event.NumberOfMovesForAttack(moves).SendToAll(g.Players, m.Room, h.games)
-								// 5. смена этапа игры
-								h.event.AllowAttack(colors[0]).SendToAll(g.Players, m.Room, h.games)
+								// 6. отправляем одному игроку, что ему нужно выбрать клетки
+								h.event.SelectCell(g.PlayerMoves[g.FirstQuestionCount], 1).SendToAll(g.Players, m.Room, h.games)
 							} else {
 								if count == 0 {
 									delete(g.SelectCellCount, m.PlayerColor)
@@ -215,7 +219,9 @@ func (h *Hub) Run() {
 								}
 							}
 						}
-					} else {
+					}
+				case EventAttackCellType:
+					if g.IsAttack {
 						h.event.FirstQuestion(GlobalFirstQuestions[g.FirstQuestionCount].Question).SendToAll(g.Players, m.Room, h.games)
 					}
 				}
