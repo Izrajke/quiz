@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { Home, PlayingRoom } from './Pages';
+import { Home, PlayingRoom, CreatePack } from './Pages';
 import { SocketLogger, Dialog, Toast } from 'components';
 
 import { store } from '../store';
@@ -19,6 +19,7 @@ export const App: FunctionComponent = observer(() => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path={`/room/:id`} element={<PlayingRoom />} />
+          <Route path={`/createPack`} element={<CreatePack />} />
         </Routes>
         <SocketLogger />
         <Dialog />
