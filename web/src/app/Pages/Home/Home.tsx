@@ -12,6 +12,7 @@ import {
   Typography,
   Icon,
   Input,
+  Navigation,
 } from 'components';
 
 import { HomeCreateRoomModal } from './HomeCreateRoomModal';
@@ -84,9 +85,7 @@ export const Home: FunctionComponent = observer(() => {
         setOpen={state.setCreateLobbyModal}
       />
       <header className={classes.header}>
-        <Typography.Text color="white" type="text-0">
-          О игре
-        </Typography.Text>
+        <Navigation />
         <Typography.Text
           color="white"
           type="text-0"
