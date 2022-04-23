@@ -1,27 +1,48 @@
+import { memo } from 'react';
 import type { FunctionComponent } from 'react';
 
-import { Link } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
-import { Typography } from 'components';
+import { NavigationItem } from './NavigationItem';
 
 import classes from './Navigation.module.css';
 
-export const Navigation: FunctionComponent = observer(() => {
-  return (
-    <div className={classes.navigation}>
-      <Link to={'createPack'}>
-        <Typography.Text color="white" type="text-0">
-          Создать пак
-        </Typography.Text>
-      </Link>
-      <Link to={'/'}>
-        <Typography.Text color="white" type="text-0">
-          Об игре
-        </Typography.Text>
-      </Link>
-    </div>
-  );
-});
+export enum NavigationPathways {
+  home = '/',
+  createPack = '/createPack',
+  aboutGame = '/aboutGame',
+}
+
+interface NavigationRoute {
+  name: string;
+  path: NavigationPathways;
+}
+
+const routes: NavigationRoute[] = [
+  {
+    name: 'Главная',
+    path: NavigationPathways.home,
+  },
+  {
+    name: 'Создать пак',
+    path: NavigationPathways.createPack,
+  },
+  {
+    name: 'Об игре',
+    path: NavigationPathways.aboutGame,
+  },
+];
+
+export const Navigation: FunctionComponent = memo(
+  observer(() => {
+    return (
+      <div className={classes.navigation}>
+        {routes.map((route) => (
+          <NavigationItem key={route.name} {...route} />
+        ))}
+      </div>
+    );
+  }),
+);
 
 Navigation.displayName = 'Navigation';

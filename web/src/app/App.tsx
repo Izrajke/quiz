@@ -18,8 +18,8 @@ export const App: FunctionComponent = observer(() => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path={`/room/:id`} element={<PlayingRoom />} />
-          <Route path={`/createPack`} element={<CreatePack />} />
+          <Route path="/room/:id" element={<PlayingRoom />} />
+          <Route path="/createPack" element={<CreatePack />} />
         </Routes>
         <SocketLogger />
         <Dialog />
