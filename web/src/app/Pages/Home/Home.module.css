@@ -1,28 +1,9 @@
 .wrapper {
-  margin-top: 6vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 20px;
-}
-
-/* Хедер */
-.header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  width: calc(30vw + 45vw + 32px);
-  height: 40px;
-}
-
-.nickname {
-  margin-left: auto;
-}
-
-.icon {
-  cursor: pointer;
 }
 
 .body {
@@ -74,8 +55,4 @@
 .createLobbybutton {
   width: 100%;
   margin-top: auto;
-}
-
-.dialogButton {
-  width: 100%;
 }
