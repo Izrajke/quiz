@@ -2,98 +2,105 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"log"
-	"math/rand"
-	"net/http"
-	"net/url"
+	"os"
+	"os/signal"
 	"quiz/internal/game"
-	"quiz/internal/taskpool"
+	httpserver "quiz/internal/http"
+	"quiz/internal/workerpool"
 	"strconv"
 	"sync"
+	"syscall"
 )
 
-const (
-	serverPort = ":8080"
-)
+type config struct {
+	httpListenPort string
+	enablePprof    bool
+}
 
 func main() {
+	// TODO 1. Добавить тесты для client websocket
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal(fmt.Sprintf("failed to loading .env file: %s", err.Error()))
+	}
+
+	cfg, err := newConfig()
+	if err != nil {
+		log.Fatal(fmt.Sprintf("failed to create new config: %s", err.Error()))
+	}
+
+	logger, err := newLogger()
+	if err != nil {
+		log.Fatal(fmt.Sprintf("failed to create new logger: %s", err.Error()))
+	}
+
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
+	defer cancel()
+	go func() {
+		<-ctx.Done()
+		logger.Info("received exit signal")
+	}()
+
 	defer func() {
 		if msg := recover(); msg != nil {
-			fmt.Println("Recovered from panic", msg)
+			logger.Error("recovered from panic", zap.Error(fmt.Errorf("%s", msg)))
 		}
 	}()
 
-	ctx := context.Background()
-	logger, _ := zap.NewProduction()
-	defer logger.Sync()
-
-	taskPool := taskpool.NewPool(ctx, logger)
-
-	h := game.NewHub(ctx, taskPool)
-	go h.Run()
-
-	fmt.Println("Starting server...")
-
-	// Создание комнаты
-	http.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
-		id := uuid.New()
-		// enable cors
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set(
-			"Access-Control-Allow-Headers",
-			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization",
-		)
-		if r.Method == "OPTIONS" {
-			return
-		}
-		if r.Method == http.MethodPost {
-			id := struct {
-				ID uuid.UUID `json:"id"`
-			}{ID: id}
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(id)
-			return
-		}
-	})
-	// Подключение к сокету
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		params, _ := url.ParseQuery(r.URL.RawQuery)
-		// Получаем имя игрока
-		playerName := "Аноним " + strconv.Itoa(rand.Intn(99))
-		if len(params["name"]) > 0 {
-			playerName = params["name"][0]
-		}
-		// Получаем id комнаты
-		var roomId string
-		if len(params["room"]) > 0 {
-			roomId = params["room"][0]
-		}
-		if roomId == "" {
-			fmt.Println("Failed to get room id")
-			return
-		}
-
-		game.ServeWs(w, r, h, playerName, roomId)
-	})
+	workerPool := workerpool.NewPool(ctx, logger)
+	hub := game.NewHub(ctx, workerPool)
+	go hub.Run()
 
 	wg := sync.WaitGroup{}
-
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		err := http.ListenAndServe(serverPort, nil)
+		logger.Info("starting service Http server", zap.String("port", cfg.httpListenPort))
+		errCh := httpserver.NewServer(hub, logger).ListenAndServe(ctx, cfg.httpListenPort, cfg.enablePprof)
+		err = <-errCh
+		cancel()
 		if err != nil {
-			log.Fatal("ListenAndServe: ", err)
+			logger.Error("error on listen and serve api Http server", zap.Error(err))
 		}
 	}()
 
 	wg.Wait()
-	taskPool.Wait()
-	logger.Info("Application has been shutdown gracefully")
+	workerPool.Wait()
+	logger.Info("application has been shutdown gracefully")
+}
+
+func newConfig() (*config, error) {
+	httpListenPort, found := os.LookupEnv("CL_HTTP_LISTEN")
+	if !found {
+		return nil, errors.New("CL_HTTP_LISTEN environment variable not found")
+	}
+	enablePprof, found := os.LookupEnv("CL_ENABLE_PPROF")
+	if !found {
+		return nil, errors.New("CL_ENABLE_PPROF environment variable not found")
+	}
+	enablePprofValue, err := strconv.ParseBool(enablePprof)
+	if err != nil {
+		return nil, errors.New("can't parse CL_ENABLE_PPROF")
+	}
+
+	return &config{
+		httpListenPort: httpListenPort,
+		enablePprof:    enablePprofValue,
+	}, nil
+}
+
+func newLogger() (*zap.Logger, error) {
+	opts := zap.NewProductionConfig()
+	opts.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+	opts.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	opts.Encoding = "console"
+	opts.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+
+	return opts.Build()
 }

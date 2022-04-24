@@ -2,9 +2,9 @@ package game
 
 import (
 	"fmt"
-	"github.com/gorilla/websocket"
+	"github.com/fasthttp/websocket"
+	"github.com/valyala/fasthttp"
 	"log"
-	"net/http"
 	"time"
 )
 
@@ -23,37 +23,33 @@ type Connection struct {
 }
 
 // NewConnection конструктор соединения
-func NewConnection(ws *websocket.Conn) *Connection {
+func NewConnection(conn *websocket.Conn) *Connection {
 	return &Connection{
 		Send: make(chan []byte, 256),
-		Ws:   ws,
+		Ws:   conn,
 	}
 }
 
-// Write writes a message with the given message type and payload.
-func (c *Connection) Write(mt int, payload []byte) error {
-	c.Ws.SetWriteDeadline(time.Now().Add(writeWait))
-	return c.Ws.WriteMessage(mt, payload)
-}
-
 // ServeWs обработка подключения к сокету
-func ServeWs(w http.ResponseWriter, r *http.Request, hub *Hub, playerName string, roomId string) {
-	var upgrader = websocket.Upgrader{
+func ServeWs(ctx *fasthttp.RequestCtx, hub *Hub, playerName string, roomId string) {
+	var upgrader = websocket.FastHTTPUpgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 	}
 	// проверка исходного запроса
-	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
-	ws, err := upgrader.Upgrade(w, r, nil)
+	upgrader.CheckOrigin = func(ctx *fasthttp.RequestCtx) bool { return true }
+	err := upgrader.Upgrade(ctx, func(conn *websocket.Conn) {
+		fmt.Printf("Server got a new connection player: %s room: %s\n", playerName, roomId)
+		p := NewPlayer(playerName)
+		c := NewConnection(conn)
+		s := Subscription{Conn: c, Room: roomId, Player: p}
+		hub.Register <- s
+		go s.WritePump()
+		s.ReadPump(hub)
+	})
 	if err != nil {
+		// TODO logger
 		log.Println(err.Error())
 		return
 	}
-	fmt.Printf("Server got a new connection player: %s room: %s\n", playerName, roomId)
-	p := NewPlayer(playerName)
-	c := NewConnection(ws)
-	s := Subscription{Conn: c, Room: roomId, Player: p}
-	hub.Register <- s
-	go s.WritePump()
-	go s.ReadPump(hub)
 }
