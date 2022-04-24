@@ -19,7 +19,7 @@ export interface CheckboxProps
 }
 
 export const Checkbox: FunctionComponent<CheckboxProps> = observer(
-  ({ className, checked = false, ...props }) => {
+  ({ className, checked = false, onChange, ...props }) => {
     const styles = useMemo(
       () => clsx(classes.checkBox, className),
       [className],
@@ -30,6 +30,7 @@ export const Checkbox: FunctionComponent<CheckboxProps> = observer(
         <input
           type="checkbox"
           checked={checked}
+          onChange={onChange}
           className={classes.checkInput}
           {...props}
         />

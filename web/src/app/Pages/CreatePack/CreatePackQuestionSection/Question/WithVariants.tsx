@@ -35,7 +35,7 @@ export const WithVariants: WithVariantsComponent = observer(({ state }) => {
             />
             <Checkbox
               checked={option.isChecked}
-              onClick={option.onCheck}
+              onChange={option.onCheck}
               className={classes.checkbox}
             />
           </div>
