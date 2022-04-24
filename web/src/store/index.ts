@@ -3,3 +3,4 @@ export * from './Room';
 export * from './Player';
 export * from './App';
 export * from './RootStore';
+export * from './Dictionaries';

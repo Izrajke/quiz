@@ -6,6 +6,7 @@ import { AppStore } from './App';
 import { RootStore, root } from './RootStore';
 import { PlayerStore } from './Player';
 import { RoomStore } from './Room';
+import { DictionariesStore } from './Dictionaries';
 
 interface Store {
   /** Root store */
@@ -16,6 +17,8 @@ interface Store {
   player: PlayerStore;
   /** Комната */
   room: RoomStore;
+  /** Словари */
+  dictionaries: DictionariesStore;
 }
 
 export const store: Store = {
@@ -23,6 +26,7 @@ export const store: Store = {
   app: root.app,
   player: root.player,
   room: root.room,
+  dictionaries: root.dictionaries,
 };
 
 export const useStore = () => useContext(MobXProviderContext) as Store;

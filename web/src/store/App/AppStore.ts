@@ -52,6 +52,7 @@ export class AppStore {
 
   /** Инициальзация приложения */
   init() {
+    this.root.dictionaries.load();
     this.isInit = true;
   }
 
