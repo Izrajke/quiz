@@ -28,8 +28,6 @@ export class DictionariesStore {
       dictionaries.map((dictionary) => loadDictionary(dictionary)),
     ).catch(() => []);
 
-    console.log(result);
-
     for (let i = 0; i < result.length; i++) {
       switch (dictionaries[i]) {
         case DICTIONARIES.packTypes: {
