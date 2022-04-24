@@ -14,3 +14,4 @@ export * from './Select';
 export * from './Navigation';
 export * from './Header';
 export * from './RSelect';
+export * from './Checkbox';

@@ -1,0 +1,36 @@
+.label {
+  padding-bottom: 20px;
+}
+
+.checkInput {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.checkIcon {
+  margin-top: 4px;
+  margin-right: 4px;
+}
+
+.checkBox {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  background: var(--dark-4);
+  border-radius: 6px;
+}
+
+.checkInput:checked + .checkBox {
+  background: var(--player-1);
+}
+
+/*TODO*/
+
+/*.checkInput:focus + .checkBox {*/
+/*  background: var(--player-1);*/
+/*}*/
+
+/*.checkInput:focus:checked + .checkBox {*/
+/*  background: var(--player-1);*/
+/*}*/
