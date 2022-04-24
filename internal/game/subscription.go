@@ -3,7 +3,7 @@ package game
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
+	"github.com/fasthttp/websocket"
 	"log"
 	"time"
 )
@@ -36,17 +36,19 @@ func (s *Subscription) WritePump() {
 	for {
 		select {
 		case message, ok := <-c.Send:
+			c.Ws.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
-				c.Write(websocket.CloseMessage, []byte{})
+				c.Ws.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
+
 			// Отправка сообщения
-			if err := c.Write(websocket.TextMessage, message); err != nil {
+			if err := c.Ws.WriteMessage(websocket.TextMessage, message); err != nil {
 				return
 			}
 			fmt.Println("Server sent a message: " + string(message))
 		case <-ticker.C:
-			if err := c.Write(websocket.PingMessage, []byte{}); err != nil {
+			if err := c.Ws.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				return
 			}
 		}

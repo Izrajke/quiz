@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
-	"quiz/internal/taskpool"
+	"quiz/internal/workerpool"
 	"strconv"
 	"time"
 )
@@ -26,10 +26,10 @@ type Hub struct {
 	// события
 	event *Event
 	// воркер пул
-	taskPool *taskpool.Pool
+	workerPool *workerpool.Pool
 }
 
-func NewHub(ctx context.Context, taskPool *taskpool.Pool) *Hub {
+func NewHub(ctx context.Context, workerPool *workerpool.Pool) *Hub {
 	return &Hub{
 		ctx:        ctx,
 		Register:   make(chan Subscription),
@@ -37,7 +37,7 @@ func NewHub(ctx context.Context, taskPool *taskpool.Pool) *Hub {
 		Unregister: make(chan Subscription),
 		games:      make(map[string]*Game),
 		event:      NewEvent(),
-		taskPool:   taskPool,
+		workerPool: workerPool,
 	}
 }
 
@@ -107,7 +107,7 @@ func (h *Hub) Run() {
 							}
 							// 6. отправляем одному игроку, что ему нужно выбрать клетки
 							for color, count := range g.SelectCellCount {
-								err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
+								err := h.workerPool.AddTask(workerpool.NewTask(func(context.Context) {
 									time.Sleep(5 * time.Second)
 									h.event.SelectCell(color, count).SendToAll(g.Players, m.Room, h.games)
 								}))
@@ -145,7 +145,7 @@ func (h *Hub) Run() {
 							if g.RoundCount == 6 {
 								h.event.Finish().SendToAll(g.Players, m.Room, h.games)
 							} else {
-								err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
+								err := h.workerPool.AddTask(workerpool.NewTask(func(context.Context) {
 									time.Sleep(5 * time.Second)
 									h.event.SelectCell(g.PlayerMoves[g.FirstQuestionCount], 1).SendToAll(g.Players, m.Room, h.games)
 								}))
@@ -206,7 +206,7 @@ func (h *Hub) Run() {
 									}
 								}
 								if len(g.SelectCellCount) == 0 {
-									err := h.taskPool.AddTask(taskpool.NewTask(func(context.Context) {
+									err := h.workerPool.AddTask(workerpool.NewTask(func(context.Context) {
 										time.Sleep(1 * time.Second)
 										// 5. текущий ход
 										h.event.CurrentMove(g.RoundCount).SendToAll(g.Players, m.Room, h.games)

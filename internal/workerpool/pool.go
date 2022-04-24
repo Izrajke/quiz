@@ -1,4 +1,4 @@
-package taskpool
+package workerpool
 
 import (
 	"context"
