@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite';
 import classes from './Paper.module.css';
 
 interface PaperProps {
-  className: string;
+  className?: string;
 }
 
 export const Paper: FunctionComponent<PaperProps> = observer(
