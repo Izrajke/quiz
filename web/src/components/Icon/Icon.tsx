@@ -10,12 +10,14 @@ import clsx from 'clsx';
 
 import { ReactComponent as Cog } from './svg/Cog.svg';
 import { ReactComponent as Pointer } from './svg/Pointer.svg';
+import { ReactComponent as Check } from './svg/Check.svg';
 
 import classes from './Icon.module.css';
 
 const icons = {
   cog: Cog,
   pointer: Pointer,
+  check: Check,
 };
 
 export type IconTypes = keyof typeof icons;
