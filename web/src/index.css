@@ -39,4 +39,5 @@
 body {
   background-color: var(--dark-1);
   font-family: var(--font-regular);
+  color: var(--white);
 }

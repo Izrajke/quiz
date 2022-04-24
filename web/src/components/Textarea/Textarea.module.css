@@ -17,3 +17,10 @@
 .textarea::placeholder {
   color: var(--white-50);
 }
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--white-50);
+}

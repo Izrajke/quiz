@@ -1,9 +1,18 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  color: var(--white-50);
+  gap: 8px;
+}
+
 .select {
   background: var(--dark-4);
   border-radius: 8px;
   color: var(--white);
   font-size: 22px;
   padding: 6px 12px;
+  cursor: pointer;
+  height: 48px;
 
   -webkit-box-shadow: none;
   -moz-box-shadow: none;

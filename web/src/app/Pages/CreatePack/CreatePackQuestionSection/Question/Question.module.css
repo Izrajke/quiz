@@ -1,0 +1,36 @@
+.wrapper {
+  height: 520px;
+}
+
+.numericWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.withVariantsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: right;
+}
+
+.variantsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.variantInput {
+  width: calc(100% - 40px);
+}
+
+.variant {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+}
+
+.checkbox {
+  margin-bottom: 10px;
+}

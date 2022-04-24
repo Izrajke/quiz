@@ -16,21 +16,32 @@ export interface SelectProps
   > {
   options: string[] | number[];
   className?: string;
+  wrapperClassName?: string;
+  label?: string;
 }
 
 export const Select: FunctionComponent<SelectProps> = ({
   options,
   className,
+  wrapperClassName,
+  label,
   ...props
 }) => {
   const style = useMemo(() => clsx(classes.select, className), [className]);
+  const wrapperStyle = useMemo(
+    () => clsx(classes.root, wrapperClassName),
+    [wrapperClassName],
+  );
 
   return (
-    <select {...props} className={style}>
-      {options.map((option) => (
-        <option key={option}>{option}</option>
-      ))}
-    </select>
+    <div className={wrapperStyle}>
+      {label}
+      <select {...props} className={style}>
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+    </div>
   );
 };
 
