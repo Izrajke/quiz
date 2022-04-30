@@ -11,6 +11,7 @@ export enum NavigationPathways {
   home = '/',
   createPack = '/createPack',
   aboutGame = '/aboutGame',
+  library = '/library',
 }
 
 interface NavigationRoute {
@@ -30,6 +31,10 @@ const routes: NavigationRoute[] = [
   {
     name: 'Об игре',
     path: NavigationPathways.aboutGame,
+  },
+  {
+    name: 'Библиотека паков',
+    path: NavigationPathways.library,
   },
 ];
 
