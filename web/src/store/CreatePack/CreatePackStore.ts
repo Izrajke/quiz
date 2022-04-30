@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { makeObservable, observable, action } from 'mobx';
+import { makeObservable, observable, action, computed, flow } from 'mobx';
 
 import { NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK } from 'const';
 import type { Option } from 'components';
@@ -58,6 +58,8 @@ export class CreatePackStore {
       setName: action,
       setType: action,
       init: action,
+      // flow
+      create: flow.bound,
     });
     this.root = root;
   }
@@ -84,4 +86,8 @@ export class CreatePackStore {
   setType = (type: Option | null) => {
     this.type = type;
   };
+
+  // TODO: Создание пака
+  // eslint-disable-next-line
+  *create() {}
 }

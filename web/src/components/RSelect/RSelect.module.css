@@ -22,6 +22,7 @@
 .select :global(.select__menu) {
   background: var(--dark-4);
   color: var(--white);
+  z-index: 20;
 }
 
 .select :global(.select__option) {

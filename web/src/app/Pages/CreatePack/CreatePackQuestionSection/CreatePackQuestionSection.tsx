@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { Paper, Typography } from 'components';
 import { useStore } from 'store';
 
+import { ControlButtons } from './ControlButtons';
 import { Question, QuestionTypes } from './Question';
 import { QuestionCounter } from './QuestionCounter';
 
@@ -51,7 +52,7 @@ export const CreatePackQuestionSection: FunctionComponent = observer(() => {
           ))}
         </div>
       </div>
-      {/* Buttons*/}
+      <ControlButtons />
     </Paper>
   );
 });

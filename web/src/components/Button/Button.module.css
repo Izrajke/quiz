@@ -45,6 +45,15 @@
   background: var(--player-1-hover);
 }
 
+.primary:disabled {
+  opacity: 50%;
+}
+
+.primary:disabled:hover {
+  background: var(--player-1);
+  opacity: 50%;
+}
+
 /* Size */
 .normal {
   font-size: 20px;
