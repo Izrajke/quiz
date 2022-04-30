@@ -15,3 +15,4 @@ export * from './Navigation';
 export * from './Header';
 export * from './RSelect';
 export * from './Checkbox';
+export * from './Tooltip';
