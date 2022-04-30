@@ -1,5 +1,6 @@
 @import './fonts/fonts.css';
-@import './reset.css';
+@import 'styles/reset.css';
+@import './styles/scrollbar.css';
 
 :root {
   /* тёмный */
