@@ -11,6 +11,7 @@ import clsx from 'clsx';
 import { ReactComponent as Cog } from './svg/Cog.svg';
 import { ReactComponent as Pointer } from './svg/Pointer.svg';
 import { ReactComponent as Check } from './svg/Check.svg';
+import { ReactComponent as Info } from './svg/Info.svg';
 
 import classes from './Icon.module.css';
 
@@ -18,11 +19,12 @@ const icons = {
   cog: Cog,
   pointer: Pointer,
   check: Check,
+  info: Info,
 };
 
 export type IconTypes = keyof typeof icons;
 
-export type IconColors = 'white';
+export type IconColors = 'white' | 'white-50';
 
 export interface IconProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {

@@ -6,3 +6,7 @@
 .white {
   fill: var(--white);
 }
+
+.white-50 {
+  fill: var(--white-50);
+}
