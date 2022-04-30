@@ -1,0 +1,22 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  height: 40px;
+  padding: 20px 0 20px 0;
+  margin-bottom: 6px;
+  background: var(--dark-2);
+  z-index: 2;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+  justify-content: flex-end;
+}

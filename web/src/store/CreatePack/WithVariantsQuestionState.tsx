@@ -51,10 +51,7 @@ export class WithVariantsQuestionState {
     return !!(
       this.question &&
       this.correctAnswer &&
-      this.options.reduce((acc, option) => {
-        acc += option.answer;
-        return acc;
-      }, '')
+      !this.options.filter((option) => option.answer === '').length
     );
   }
 

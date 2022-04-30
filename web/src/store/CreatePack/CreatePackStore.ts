@@ -17,8 +17,38 @@ export class CreatePackStore {
   numericQuestions: NumericQuestionState[] = [];
   withVariantsQuestions: WithVariantsQuestionState[] = [];
 
+  get numericFilledQuestions() {
+    return this.numericQuestions.reduce((acc, item) => {
+      acc += item.isFilled ? 1 : 0;
+      return acc;
+    }, 0);
+  }
+
+  get withVariantsFilledQuestions() {
+    return this.withVariantsQuestions.reduce((acc, item) => {
+      acc += item.isFilled ? 1 : 0;
+      return acc;
+    }, 0);
+  }
+
+  /** Заполнены ли все вопросы */
+  get isAllFilled() {
+    if (!this.numericQuestions.length || !this.withVariantsQuestions.length) {
+      return false;
+    }
+
+    return (
+      this.numericFilledQuestions === this.numericQuestions.length &&
+      this.withVariantsFilledQuestions === this.withVariantsQuestions.length
+    );
+  }
+
   constructor(root: RootStore) {
     makeObservable(this, {
+      // computed
+      numericFilledQuestions: computed,
+      withVariantsFilledQuestions: computed,
+      isAllFilled: computed,
       // observable
       name: observable,
       type: observable,
