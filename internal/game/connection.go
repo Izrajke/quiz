@@ -1,10 +1,9 @@
 package game
 
 import (
-	"fmt"
 	"github.com/fasthttp/websocket"
 	"github.com/valyala/fasthttp"
-	"log"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -31,7 +30,7 @@ func NewConnection(conn *websocket.Conn) *Connection {
 }
 
 // ServeWs обработка подключения к сокету
-func ServeWs(ctx *fasthttp.RequestCtx, hub *Hub, playerName string, roomId string) {
+func ServeWs(ctx *fasthttp.RequestCtx, hub *Hub, logger *zap.Logger, playerName string, roomId string) {
 	var upgrader = websocket.FastHTTPUpgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
@@ -39,17 +38,19 @@ func ServeWs(ctx *fasthttp.RequestCtx, hub *Hub, playerName string, roomId strin
 	// проверка исходного запроса
 	upgrader.CheckOrigin = func(ctx *fasthttp.RequestCtx) bool { return true }
 	err := upgrader.Upgrade(ctx, func(conn *websocket.Conn) {
-		fmt.Printf("Server got a new connection player: %s room: %s\n", playerName, roomId)
+		logger.Info(
+			"server got a new connection player",
+			zap.String("playerName", playerName),
+			zap.String("roomID", roomId),
+		)
 		p := NewPlayer(playerName)
 		c := NewConnection(conn)
-		s := Subscription{Conn: c, Room: roomId, Player: p}
+		s := Subscription{Conn: c, Room: roomId, Player: p, logger: logger}
 		hub.Register <- s
 		go s.WritePump()
 		s.ReadPump(hub)
 	})
 	if err != nil {
-		// TODO logger
-		log.Println(err.Error())
-		return
+		logger.Error("failed to connect websocket", zap.Error(err))
 	}
 }

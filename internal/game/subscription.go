@@ -2,9 +2,8 @@ package game
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/fasthttp/websocket"
-	"log"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -23,6 +22,7 @@ type Subscription struct {
 	Conn   *Connection
 	Room   string
 	Player *Player
+	logger *zap.Logger
 }
 
 // WritePump отправляет сообщения в сокет и пингует его
@@ -46,7 +46,7 @@ func (s *Subscription) WritePump() {
 			if err := c.Ws.WriteMessage(websocket.TextMessage, message); err != nil {
 				return
 			}
-			fmt.Println("Server sent a message: " + string(message))
+			s.logger.Info("server sent a message", zap.String("message", string(message)))
 		case <-ticker.C:
 			if err := c.Ws.WriteMessage(websocket.PingMessage, []byte{}); err != nil {
 				return
@@ -66,23 +66,28 @@ func (s Subscription) ReadPump(hub *Hub) {
 	c.Ws.SetReadDeadline(time.Now().Add(pongWait))
 	c.Ws.SetPongHandler(func(string) error { c.Ws.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	for {
-		_, msg, err := c.Ws.ReadMessage()
+		_, message, err := c.Ws.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-				log.Printf("error: %v", err)
+				s.logger.Error("failed to read message", zap.Error(err))
 			}
 			break
 		}
 		var request request
 		// Json decode
-		if err := json.Unmarshal(msg, &request); err != nil {
-			log.Printf("Failed to decode json: %v", err)
+		if err := json.Unmarshal(message, &request); err != nil {
+			s.logger.Error("failed to decode json after read message", zap.Error(err))
 		} else {
 			if request.Type == 1 || request.Type == 3 || request.Type == 4 {
-				fmt.Println("Server received a message: " + string(msg) + " player: " + s.Player.Name + " room: " + s.Room)
+				s.logger.Info(
+					"server received a message",
+					zap.String("message", string(message)),
+					zap.String("playerName", s.Player.Name),
+					zap.String("roomID", s.Room),
+				)
 
 				m := Message{
-					data:        msg,
+					data:        message,
 					Room:        s.Room,
 					PlayerColor: s.Player.Color,
 					Request:     &request,
@@ -90,7 +95,7 @@ func (s Subscription) ReadPump(hub *Hub) {
 				}
 				hub.Broadcast <- m
 			} else {
-				log.Printf("Request of unknown type: %d", request.Type)
+				s.logger.Error("request of unknown type", zap.Int("type", request.Type))
 			}
 		}
 	}
