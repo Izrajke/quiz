@@ -40,8 +40,8 @@ export const QuestionCounter: FunctionComponent<QuestionCounterProps> =
     const tooltipText = useMemo(
       () =>
         type === QuestionTypes.numeric
-          ? `Подсказка numeric`
-          : `Подсказка withWariants`,
+          ? "У этого типа вопросов ответ должен быть целым положительным числом"
+          : "У этого типа вопросов 4 варианта ответа. Нужно заполнить каждый из них и поставить чекбокс справа от верного.",
       [type],
     );
 
