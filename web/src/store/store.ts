@@ -8,6 +8,7 @@ import { PlayerStore } from './Player';
 import { RoomStore } from './Room';
 import { DictionariesStore } from './Dictionaries';
 import { CreatePackStore } from './CreatePack';
+import { LibraryStore } from './Library';
 
 interface Store {
   /** Root store */
@@ -22,6 +23,8 @@ interface Store {
   dictionaries: DictionariesStore;
   /** Страница создания/просмотра пака */
   createPack: CreatePackStore;
+  /** Библиотека */
+  library: LibraryStore;
 }
 
 export const store: Store = {
@@ -31,6 +34,7 @@ export const store: Store = {
   room: root.room,
   dictionaries: root.dictionaries,
   createPack: root.createPack,
+  library: root.library,
 };
 
 export const useStore = () => useContext(MobXProviderContext) as Store;
