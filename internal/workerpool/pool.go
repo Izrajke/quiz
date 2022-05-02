@@ -2,32 +2,28 @@ package workerpool
 
 import (
 	"context"
-	"errors"
 	"go.uber.org/atomic"
 	"go.uber.org/zap"
 	"math"
 	"sync"
 )
 
-var PoolClosedError = errors.New("pool closed")
-
 type Pool struct {
-	ctx       context.Context
-	logger    *zap.Logger
 	wg        sync.WaitGroup
+	ctx       context.Context
 	done      chan struct{}
 	closed    *atomic.Bool
-	collector chan *Task
+	collector chan *Worker
+	logger    *zap.Logger
 }
 
 func NewPool(ctx context.Context, logger *zap.Logger) *Pool {
 	pool := &Pool{
-		ctx: ctx,
-		// TODO add channel
-		logger:    logger,
+		ctx:       ctx,
 		done:      make(chan struct{}),
 		closed:    atomic.NewBool(false),
-		collector: make(chan *Task, math.MaxInt16),
+		collector: make(chan *Worker, math.MaxInt16),
+		logger:    logger.With(zap.String("channel", "worker-pool")),
 	}
 
 	go pool.waitDone()
@@ -43,32 +39,31 @@ func (p *Pool) waitDone() {
 	close(p.collector)
 }
 
-// handle запускает задачи в горутине с контролем ее завершения
+// handle запускает обработку воркеров
 func (p *Pool) handle() {
-	for task := range p.collector {
+	for worker := range p.collector {
 		p.wg.Add(1)
-		go func(task *Task) {
+		go func(worker *Worker) {
 			defer p.wg.Done()
-			err := task.Run(p.ctx)
+			err := worker.run(p.ctx)
 			if err != nil {
-				p.logger.Error("Failed run task", zap.Error(err))
+				p.logger.Error("failed to run task", zap.Error(err))
 			}
-		}(task)
+		}(worker)
 	}
 	close(p.done)
 }
 
-func (p *Pool) AddTask(task *Task) error {
+// AddTask добавляет воркер в пул
+func (p *Pool) AddTask(worker *Worker) {
 	if p.closed.Load() {
-		return PoolClosedError
+		p.logger.Error("failed to add task")
 	}
 
-	p.collector <- task
-
-	return nil
+	p.collector <- worker
 }
 
-// Wait ожидает когда закроется пул и завершатся все задачи в пуле
+// Wait ожидает выполнения всех воркеров в пуле
 func (p *Pool) Wait() {
 	<-p.done
 	p.wg.Wait()

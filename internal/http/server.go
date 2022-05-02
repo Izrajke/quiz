@@ -2,13 +2,10 @@ package http
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/buaazp/fasthttprouter"
-	"github.com/google/uuid"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"go.uber.org/zap"
-	"net/http"
 	"net/http/pprof"
 	"quiz/internal/game"
 )
@@ -21,7 +18,7 @@ type Server struct {
 func NewServer(hub *game.Hub, logger *zap.Logger) *Server {
 	return &Server{
 		hub:    hub,
-		logger: logger,
+		logger: logger.With(zap.String("channel", "http-server")),
 	}
 }
 
@@ -46,41 +43,6 @@ func (s *Server) ListenAndServe(ctx context.Context, listen string, enablePprof 
 	return s.runFastHttpServer(ctx, cors(router.Handler), listen)
 }
 
-func cors(next fasthttp.RequestHandler) fasthttp.RequestHandler {
-	return func(ctx *fasthttp.RequestCtx) {
-		ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
-		ctx.Response.Header.Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		ctx.Response.Header.Set(
-			"Access-Control-Allow-Headers",
-			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization",
-		)
-		if ctx.IsOptions() {
-			return
-		}
-
-		next(ctx)
-	}
-}
-
-func (s *Server) handleGameCreate(ctx *fasthttp.RequestCtx) {
-	id := struct {
-		ID uuid.UUID `json:"id"`
-	}{ID: uuid.New()}
-	ctx.Response.Header.SetContentType("application/json")
-	ctx.Response.SetStatusCode(http.StatusOK)
-
-	jsonBody, _ := json.Marshal(id)
-	ctx.SetBody(jsonBody)
-	return
-}
-
-func (s *Server) handleWs(ctx *fasthttp.RequestCtx) {
-	name := ctx.QueryArgs().Peek("name")
-	room := ctx.QueryArgs().Peek("room")
-
-	game.ServeWs(ctx, s.hub, string(name), string(room))
-}
-
 func (s *Server) runFastHttpServer(ctx context.Context, handler fasthttp.RequestHandler, listen string) <-chan error {
 	ctx, cancel := context.WithCancel(ctx)
 	server := &fasthttp.Server{Handler: handler}
@@ -101,4 +63,18 @@ func (s *Server) runFastHttpServer(ctx context.Context, handler fasthttp.Request
 	}()
 
 	return result
+}
+
+func cors(next fasthttp.RequestHandler) fasthttp.RequestHandler {
+	return func(ctx *fasthttp.RequestCtx) {
+		ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
+		ctx.Response.Header.Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		ctx.Response.Header.Set(
+			"Access-Control-Allow-Headers",
+			"Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization",
+		)
+		if !ctx.IsOptions() {
+			next(ctx)
+		}
+	}
 }

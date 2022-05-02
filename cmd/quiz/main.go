@@ -18,11 +18,6 @@ import (
 	"syscall"
 )
 
-type config struct {
-	httpListenPort string
-	enablePprof    bool
-}
-
 func main() {
 	// TODO 1. Добавить тесты для client websocket
 	err := godotenv.Load()
@@ -53,20 +48,26 @@ func main() {
 		}
 	}()
 
-	workerPool := workerpool.NewPool(ctx, logger)
-	hub := game.NewHub(ctx, workerPool)
-	go hub.Run()
-
 	wg := sync.WaitGroup{}
+	workerPool := workerpool.NewPool(ctx, logger)
+	hub := game.NewHub(ctx, workerPool, logger)
+
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		logger.Info("starting service Http server", zap.String("port", cfg.httpListenPort))
+		logger.Info("starting game hub")
+		hub.Run()
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		logger.Info("starting HTTP server", zap.String("port", cfg.httpListenPort))
 		errCh := httpserver.NewServer(hub, logger).ListenAndServe(ctx, cfg.httpListenPort, cfg.enablePprof)
 		err = <-errCh
 		cancel()
 		if err != nil {
-			logger.Error("error on listen and serve api Http server", zap.Error(err))
+			logger.Error("error on listen and serve api HTTP server", zap.Error(err))
 		}
 	}()
 
@@ -75,32 +76,53 @@ func main() {
 	logger.Info("application has been shutdown gracefully")
 }
 
-func newConfig() (*config, error) {
-	httpListenPort, found := os.LookupEnv("CL_HTTP_LISTEN")
-	if !found {
-		return nil, errors.New("CL_HTTP_LISTEN environment variable not found")
-	}
-	enablePprof, found := os.LookupEnv("CL_ENABLE_PPROF")
-	if !found {
-		return nil, errors.New("CL_ENABLE_PPROF environment variable not found")
-	}
-	enablePprofValue, err := strconv.ParseBool(enablePprof)
-	if err != nil {
-		return nil, errors.New("can't parse CL_ENABLE_PPROF")
-	}
-
-	return &config{
-		httpListenPort: httpListenPort,
-		enablePprof:    enablePprofValue,
-	}, nil
-}
-
 func newLogger() (*zap.Logger, error) {
 	opts := zap.NewProductionConfig()
 	opts.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
-	opts.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	opts.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02T15:04:05")
 	opts.Encoding = "console"
 	opts.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 
 	return opts.Build()
+}
+
+const (
+	appProd environment = "prod"
+)
+
+type environment string
+
+func (e environment) isProduction() bool {
+	return e != appProd
+}
+
+type config struct {
+	environment    environment
+	httpListenPort string
+	enablePprof    bool
+}
+
+func newConfig() (*config, error) {
+	env, found := os.LookupEnv("APP_ENV")
+	if !found {
+		return nil, errors.New("APP_ENV variable not found")
+	}
+	httpListenPort, found := os.LookupEnv("APP_HTTP_LISTEN")
+	if !found {
+		return nil, errors.New("APP_HTTP_LISTEN variable not found")
+	}
+	enablePprof, found := os.LookupEnv("APP_ENABLE_PPROF")
+	if !found {
+		return nil, errors.New("APP_ENABLE_PPROF variable not found")
+	}
+	enablePprofValue, err := strconv.ParseBool(enablePprof)
+	if err != nil {
+		return nil, errors.New("can't parse APP_ENABLE_PPROF")
+	}
+
+	return &config{
+		environment:    environment(env),
+		httpListenPort: httpListenPort,
+		enablePprof:    enablePprofValue,
+	}, nil
 }

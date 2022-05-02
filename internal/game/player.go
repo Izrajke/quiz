@@ -9,6 +9,7 @@ const (
 	defaultPoints = 300
 )
 
+// TODO переделать из .env
 var Environment string
 
 // мок uuid для тестов
