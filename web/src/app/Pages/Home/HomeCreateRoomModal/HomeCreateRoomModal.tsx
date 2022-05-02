@@ -52,11 +52,12 @@ export const HomeCreateRoomModal: FunctionComponent<HomeCreateRoomModalProps> =
     }));
 
     const onCreateLobbyClick = async () => {
-      const { id } = await createLobby({
+      const { id } = (await createLobby({
         name: state.roomName,
         password: state.password,
         players: state.players,
-      });
+      })) as { id: string };
+
       app.setRoomId(id);
       navigate(`/room/${app.roomId}`);
     };

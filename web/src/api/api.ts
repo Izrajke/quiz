@@ -15,7 +15,10 @@ export interface ApiParams {
   init?: RequestInit;
 }
 
-export const api = async ({ input, init }: ApiParams) => {
+export const api = async <T = unknown>({
+  input,
+  init,
+}: ApiParams): Promise<T | undefined> => {
   try {
     const response = await fetch(input, {
       ...init,

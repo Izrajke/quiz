@@ -35,3 +35,24 @@ export const loadDictionary = (dictionary: DICTIONARIES) => {
     },
   });
 };
+
+export interface LibraryItem {
+  name: string;
+  uuid: string;
+  type: string;
+  score: number;
+}
+
+// TODO: подключить реальное api. POST запрос или GET через string params
+export const loadLibrary = () => {
+  return api<LibraryItem[]>({
+    input: `/mock/library.json`,
+    init: {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'GET',
+    },
+  });
+};
