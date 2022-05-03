@@ -9,16 +9,6 @@ const (
 	defaultPoints = 300
 )
 
-// TODO переделать из .env
-var Environment string
-
-// мок uuid для тестов
-var testIds = []string{
-	"123e4567-e89b-12d3-a456-426614174001",
-	"123e4567-e89b-12d3-a456-426614174002",
-	"123e4567-e89b-12d3-a456-426614174003",
-	"123e4567-e89b-12d3-a456-426614174004",
-}
 var colors = []string{
 	"player-1",
 	"player-2",
@@ -33,21 +23,12 @@ type Player struct {
 	CreatedAt int64
 }
 
-// NewPlayer конструктор игрока
-func NewPlayer(name string) *Player {
-	var id string
-	if Environment != "test" {
-		id = uuid.New().String()
-	} else {
-		id = testIds[0]
-		testIds = testIds[1:]
-	}
-	createdAt := time.Now().UnixNano()
-
+// newPlayer конструктор игрока
+func newPlayer(name string) *Player {
 	return &Player{
-		Id:        id,
+		Id:        uuid.New().String(),
 		Name:      name,
 		Points:    defaultPoints,
-		CreatedAt: createdAt,
+		CreatedAt: time.Now().UnixNano(),
 	}
 }

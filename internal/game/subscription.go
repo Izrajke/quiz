@@ -68,7 +68,10 @@ func (s Subscription) ReadPump(hub *Hub) {
 	for {
 		_, message, err := c.Ws.ReadMessage()
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+			if websocket.IsUnexpectedCloseError(
+				err,
+				websocket.CloseGoingAway,
+			) {
 				s.logger.Error("failed to read message", zap.Error(err))
 			}
 			break

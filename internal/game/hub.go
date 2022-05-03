@@ -142,7 +142,7 @@ func (h *Hub) Run() {
 							g.FirstQuestionCount++
 							g.RoundCount++
 
-							if g.RoundCount == 6 {
+							if g.RoundCount == 5 {
 								h.event.Finish().SendToAll(g.Players, m.Room, h.games)
 							} else {
 								h.workerPool.AddTask(workerpool.NewTask(func(context.Context) {
