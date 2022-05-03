@@ -1,4 +1,4 @@
-import { makeObservable, flow } from 'mobx';
+import { makeObservable, flow, observable } from 'mobx';
 
 import { loadLibrary } from 'api';
 import type { LibraryItem } from 'api';
@@ -14,6 +14,7 @@ export class LibraryStore {
   constructor(root: RootStore) {
     makeObservable(this, {
       // observable
+      data: observable,
       // action
       // flow
       load: flow.bound,
