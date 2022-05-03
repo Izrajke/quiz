@@ -10,3 +10,12 @@
 .white-50 {
   fill: var(--white-50);
 }
+
+.gold {
+  fill: var(--player-3);
+}
+
+.gold-50 {
+  fill: var(--player-3);
+  opacity: 50%;
+}
