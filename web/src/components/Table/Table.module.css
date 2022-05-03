@@ -1,0 +1,40 @@
+.wrapper {
+  width: 100%;
+  max-height: 84vh;
+  border-radius: 8px;
+  overflow-y: scroll;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.thead {
+  position: sticky;
+  top: 0;
+  background: var(--dark-2);
+  text-align: left;
+  box-shadow: 0 1px 0 var(--dark-4), var(--soft-shadow);
+  z-index: 2;
+}
+
+.thead > tr {
+  border-radius: 8px;
+}
+
+.thead > tr > th {
+  padding: 24px 20px;
+}
+
+.tbody > tr:nth-child(even) {
+  background: var(--dark-3);
+}
+
+.tbody > tr:nth-child(odd) {
+  background: var(--dark-2);
+}
+
+.tbody > tr > td {
+  padding: 20px;
+}
