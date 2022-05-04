@@ -51,8 +51,15 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
+		logger.Info("starting home hub")
+		hub.Home()
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		logger.Info("starting game hub")
-		hub.Run()
+		hub.Game()
 	}()
 
 	wg.Add(1)

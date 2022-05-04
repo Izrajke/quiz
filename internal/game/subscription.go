@@ -18,6 +18,15 @@ const (
 	maxMessageSize = 512
 )
 
+// TODO refactoring
+type HomeClient struct {
+	// The websocket connection.
+	conn *websocket.Conn
+
+	// Buffered channel of outbound messages.
+	send chan []byte
+}
+
 type Subscription struct {
 	Conn   *Connection
 	Room   string
