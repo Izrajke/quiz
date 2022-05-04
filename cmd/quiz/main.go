@@ -2,24 +2,20 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"log"
-	"os"
 	"os/signal"
 	"quiz/internal/game"
 	httpserver "quiz/internal/http"
 	"quiz/internal/workerpool"
-	"strconv"
 	"sync"
 	"syscall"
 )
 
 func main() {
-	// TODO 1. Добавить тесты для client websocket
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to loading .env file: %s", err.Error()))
@@ -55,8 +51,15 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
+		logger.Info("starting home hub")
+		hub.Home()
+	}()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		logger.Info("starting game hub")
-		hub.Run()
+		hub.Game()
 	}()
 
 	wg.Add(1)
@@ -84,45 +87,4 @@ func newLogger() (*zap.Logger, error) {
 	opts.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 
 	return opts.Build()
-}
-
-const (
-	appProd environment = "prod"
-)
-
-type environment string
-
-func (e environment) isProduction() bool {
-	return e != appProd
-}
-
-type config struct {
-	environment    environment
-	httpListenPort string
-	enablePprof    bool
-}
-
-func newConfig() (*config, error) {
-	env, found := os.LookupEnv("APP_ENV")
-	if !found {
-		return nil, errors.New("APP_ENV variable not found")
-	}
-	httpListenPort, found := os.LookupEnv("APP_HTTP_LISTEN")
-	if !found {
-		return nil, errors.New("APP_HTTP_LISTEN variable not found")
-	}
-	enablePprof, found := os.LookupEnv("APP_ENABLE_PPROF")
-	if !found {
-		return nil, errors.New("APP_ENABLE_PPROF variable not found")
-	}
-	enablePprofValue, err := strconv.ParseBool(enablePprof)
-	if err != nil {
-		return nil, errors.New("can't parse APP_ENABLE_PPROF")
-	}
-
-	return &config{
-		environment:    environment(env),
-		httpListenPort: httpListenPort,
-		enablePprof:    enablePprofValue,
-	}, nil
 }

@@ -14,6 +14,11 @@ import (
 type Hub struct {
 	ctx context.Context
 
+	homeBroadcast  chan []byte
+	homeRegister   chan *HomeClient
+	homeUnregister chan *HomeClient
+	homeClients    map[*HomeClient]bool
+
 	// регистрируемые соединения
 	Register chan Subscription
 	// полученные сообщения
@@ -33,7 +38,12 @@ type Hub struct {
 
 func NewHub(ctx context.Context, workerPool *workerpool.Pool, logger *zap.Logger) *Hub {
 	return &Hub{
-		ctx:        ctx,
+		ctx:            ctx,
+		homeBroadcast:  make(chan []byte),
+		homeRegister:   make(chan *HomeClient),
+		homeUnregister: make(chan *HomeClient),
+		homeClients:    make(map[*HomeClient]bool),
+
 		Register:   make(chan Subscription),
 		Broadcast:  make(chan Message),
 		Unregister: make(chan Subscription),
@@ -44,7 +54,7 @@ func NewHub(ctx context.Context, workerPool *workerpool.Pool, logger *zap.Logger
 	}
 }
 
-func (h *Hub) Run() {
+func (h *Hub) Game() {
 	for {
 		select {
 		// регистрация нового соединения
@@ -142,7 +152,7 @@ func (h *Hub) Run() {
 							g.FirstQuestionCount++
 							g.RoundCount++
 
-							if g.RoundCount == 6 {
+							if g.RoundCount == 5 {
 								h.event.Finish().SendToAll(g.Players, m.Room, h.games)
 							} else {
 								h.workerPool.AddTask(workerpool.NewTask(func(context.Context) {
@@ -235,7 +245,31 @@ func (h *Hub) Run() {
 				}
 			}
 		case <-h.ctx.Done():
-			h.logger.Info("context cancel game hub")
+			return
+		}
+	}
+}
+
+func (h *Hub) Home() {
+	for {
+		select {
+		case homeClient := <-h.homeRegister:
+			h.homeClients[homeClient] = true
+		case homeClient := <-h.homeUnregister:
+			if _, ok := h.homeClients[homeClient]; ok {
+				delete(h.homeClients, homeClient)
+				close(homeClient.send)
+			}
+		case message := <-h.homeBroadcast:
+			for homeClient := range h.homeClients {
+				select {
+				case homeClient.send <- message:
+				default:
+					close(homeClient.send)
+					delete(h.homeClients, homeClient)
+				}
+			}
+		case <-h.ctx.Done():
 			return
 		}
 	}

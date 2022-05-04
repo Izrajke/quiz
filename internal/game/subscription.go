@@ -18,6 +18,15 @@ const (
 	maxMessageSize = 512
 )
 
+// TODO refactoring
+type HomeClient struct {
+	// The websocket connection.
+	conn *websocket.Conn
+
+	// Buffered channel of outbound messages.
+	send chan []byte
+}
+
 type Subscription struct {
 	Conn   *Connection
 	Room   string
@@ -68,7 +77,10 @@ func (s Subscription) ReadPump(hub *Hub) {
 	for {
 		_, message, err := c.Ws.ReadMessage()
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+			if websocket.IsUnexpectedCloseError(
+				err,
+				websocket.CloseGoingAway,
+			) {
 				s.logger.Error("failed to read message", zap.Error(err))
 			}
 			break
