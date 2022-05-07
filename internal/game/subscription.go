@@ -30,7 +30,7 @@ type HomeClient struct {
 type Subscription struct {
 	Conn   *Connection
 	Room   string
-	Player *Player
+	Player *player
 	logger *zap.Logger
 }
 

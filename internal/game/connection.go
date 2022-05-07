@@ -1,11 +1,12 @@
 package game
 
 import (
-	"bytes"
+	"encoding/json"
 	"github.com/fasthttp/websocket"
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -63,7 +64,7 @@ func ServeWs(
 			client := &HomeClient{conn: conn, send: make(chan []byte, 256)}
 			hub.homeRegister <- client
 			go client.writePump()
-			client.readPump(hub)
+			client.readPump(hub, logger)
 		}
 	})
 	if err != nil {
@@ -82,7 +83,7 @@ var (
 // The application runs readPump in a per-connection goroutine. The application
 // ensures that there is at most one reader on a connection by executing all
 // reads from this goroutine.
-func (c *HomeClient) readPump(hub *Hub) {
+func (c *HomeClient) readPump(hub *Hub, logger *zap.Logger) {
 	defer func() {
 		hub.homeRegister <- c
 		c.conn.Close()
@@ -98,9 +99,30 @@ func (c *HomeClient) readPump(hub *Hub) {
 			}
 			break
 		}
-		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		hub.homeBroadcast <- message
+		var request homeRequest
+		// Json decode
+		if err := json.Unmarshal(message, &request); err != nil {
+			logger.Error("failed to decode json after read message", zap.Error(err))
+		} else {
+			if request.Type == 10 {
+				logger.Info(
+					"server received a message",
+					zap.String("message", string(message)),
+				)
+
+				request.Message = strings.ReplaceAll(request.Message, `\n`, " ")
+				hub.homeBroadcast <- []byte(request.Message)
+			} else {
+				logger.Error("request of unknown type", zap.Int("type", request.Type))
+			}
+		}
 	}
+}
+
+// Type 10 - сообщение чата
+type homeRequest struct {
+	Type    int    `json:"type"`
+	Message string `json:"message"`
 }
 
 // writePump pumps messages from the hub to the websocket connection.

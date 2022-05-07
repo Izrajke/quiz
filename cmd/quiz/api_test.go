@@ -3,11 +3,12 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/google/uuid"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"testing"
 	"time"
 )
@@ -43,7 +44,8 @@ func TestApi(t *testing.T) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		// TODO di подмена на тестовые зависимости
-		fmt.Println(uuidValue.String())
+
+		r := regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$")
+		assert.True(t, r.MatchString(uuidValue.String()))
 	})
 }

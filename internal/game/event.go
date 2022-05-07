@@ -37,6 +37,10 @@ const (
 	eventInitPlayersType = 12
 	// сборка карты
 	eventBuildMapType = 13
+	// сообщение из чата
+	eventChatMessageType = 100
+	// информация об ожидающих комнатах
+	eventWaitingRoomsType = 101
 	// конец игры
 	eventFinish = 999
 )
@@ -46,15 +50,15 @@ type BaseType int
 
 type FirstQuestionData struct {
 	Type     int           `json:"type"`
-	Question FirstQuestion `json:"question"`
-	Answer   *Answer       `json:"answer,omitempty"`
+	Question firstQuestion `json:"question"`
+	Answer   *answer       `json:"answer,omitempty"`
 }
 
 type SecondQuestionData struct {
 	Type          int             `json:"type"`
-	Question      SecondQuestion  `json:"question"`
+	Question      secondQuestion  `json:"question"`
 	PlayerOptions []*PlayerOption `json:"options,omitempty"`
-	Answer        *Answer         `json:"answer,omitempty"`
+	Answer        *answer         `json:"answer,omitempty"`
 }
 
 // Event отправка событий
@@ -75,14 +79,14 @@ func (e *Event) marshal() []byte {
 }
 
 // SendToAll отправляет сообщение всем игрокам
-func (e *Event) SendToAll(players map[*Connection]*Player, room string, games map[string]*Game) {
+func (e *Event) SendToAll(players map[*Connection]*player, room string, games map[string]*Game) {
 	for c := range players {
 		e.SendToOne(players, room, c, games)
 	}
 }
 
 // SendToOne отправляет сообщение одному игроку
-func (e *Event) SendToOne(players map[*Connection]*Player, room string, c *Connection, games map[string]*Game) {
+func (e *Event) SendToOne(players map[*Connection]*player, room string, c *Connection, games map[string]*Game) {
 	select {
 	case c.Send <- e.marshal():
 	default:
@@ -95,8 +99,8 @@ func (e *Event) SendToOne(players map[*Connection]*Player, room string, c *Conne
 }
 
 // InitPlayers инициализация игроков
-func (e *Event) InitPlayers(players map[*Connection]*Player) *Event {
-	var playersSlice []*Player
+func (e *Event) InitPlayers(players map[*Connection]*player) *Event {
+	var playersSlice []*player
 	for _, player := range players {
 		playersSlice = append(playersSlice, player)
 	}
@@ -106,7 +110,7 @@ func (e *Event) InitPlayers(players map[*Connection]*Player) *Event {
 
 	e.message = struct {
 		BaseType `json:"type"`
-		Players  []*Player `json:"players"`
+		Players  []*player `json:"players"`
 	}{
 		BaseType: eventInitPlayersType,
 		Players:  playersSlice,
@@ -119,10 +123,10 @@ func (e *Event) InitPlayers(players map[*Connection]*Player) *Event {
 func (e *Event) BuildMap() *Event {
 	e.message = struct {
 		BaseType `json:"type"`
-		Map      [][]*Cell `json:"map"`
+		Map      [][]*cell `json:"map"`
 	}{
 		BaseType: eventBuildMapType,
-		Map:      GlobalMap,
+		Map:      globalMap,
 	}
 
 	return e
@@ -167,12 +171,12 @@ func (e *Event) CurrentMove(round int) *Event {
 	return e
 }
 
-// FirstQuestion вопрос первого типа
-func (e *Event) FirstQuestion(question FirstQuestion) *Event {
+// firstQuestion вопрос первого типа
+func (e *Event) FirstQuestion(question firstQuestion) *Event {
 	e.message = struct {
 		BaseType `json:"type"`
-		Question FirstQuestion `json:"question"`
-		Answer   *Answer       `json:"answer,omitempty"`
+		Question firstQuestion `json:"question"`
+		Answer   *answer       `json:"answer,omitempty"`
 	}{
 		BaseType: eventFirstQuestion,
 		Question: question,
@@ -181,13 +185,13 @@ func (e *Event) FirstQuestion(question FirstQuestion) *Event {
 	return e
 }
 
-// SecondQuestion вопрос второго типа
-func (e *Event) SecondQuestion(question SecondQuestion) *Event {
+// secondQuestion вопрос второго типа
+func (e *Event) SecondQuestion(question secondQuestion) *Event {
 	e.message = struct {
 		BaseType      `json:"type"`
-		Question      SecondQuestion  `json:"question"`
+		Question      secondQuestion  `json:"question"`
 		PlayerOptions []*PlayerOption `json:"options,omitempty"`
-		Answer        *Answer         `json:"answer,omitempty"`
+		Answer        *answer         `json:"answer,omitempty"`
 	}{
 		BaseType: eventSecondQuestionType,
 		Question: question,
@@ -200,7 +204,7 @@ func (e *Event) SecondQuestion(question SecondQuestion) *Event {
 func (e *Event) AnswerFirstQuestion(answerValue string) *Event {
 	e.message = &FirstQuestionData{
 		Type:   eventAnswerFirstQuestionType,
-		Answer: &Answer{Value: answerValue},
+		Answer: &answer{Value: answerValue},
 	}
 
 	return e
@@ -211,7 +215,7 @@ func (e *Event) AnswerSecondQuestion(playerOptions []*PlayerOption, answerValue 
 	e.message = &SecondQuestionData{
 		Type:          eventAnswerSecondQuestionType,
 		PlayerOptions: playerOptions,
-		Answer:        &Answer{Value: answerValue},
+		Answer:        &answer{Value: answerValue},
 	}
 
 	return e
@@ -230,6 +234,55 @@ func (e *Event) SelectCell(color string, count int) *Event {
 	}
 
 	return e
+}
+
+// ChatMessage сообщение из чата
+func (e *Event) ChatMessage(message string, playerName string, time int) []byte {
+	e.message = struct {
+		BaseType `json:"type"`
+		Message  string `json:"message"`
+		Author   string `json:"author"`
+		Time     int    `json:"time"`
+	}{
+		BaseType: eventChatMessageType,
+		Message:  message,
+		Author:   playerName,
+		Time:     time,
+	}
+
+	return e.marshal()
+}
+
+// WaitingRooms информация об ожидающих комнатах
+func (e *Event) WaitingRooms(games map[string]*Game) []byte {
+	type Room struct {
+		ID      string   `json:"id"`
+		Players []string `json:"players"`
+	}
+	rooms := make([]*Room, 0)
+	for id, game := range games {
+		if !game.IsFullPlayers() {
+			players := make([]string, 0)
+			for _, player := range game.Players {
+				players = append(players, player.Name)
+			}
+			room := &Room{
+				ID:      id,
+				Players: players,
+			}
+			rooms = append(rooms, room)
+		}
+	}
+
+	e.message = struct {
+		BaseType `json:"type"`
+		Rooms    []*Room `json:"rooms"`
+	}{
+		BaseType: eventWaitingRoomsType,
+		Rooms:    rooms,
+	}
+
+	return e.marshal()
 }
 
 // Finish конце игры

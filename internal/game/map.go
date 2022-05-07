@@ -1,14 +1,14 @@
 package game
 
-// Cell Ячейка
-type Cell struct {
+// cell Ячейка
+type cell struct {
 	IsExists bool   `json:"isExists"`
 	Owner    string `json:"owner"`
 }
 
-var GlobalMap = Map2Test
+var globalMap = map2Test
 
-var Map3 = [][]*Cell{
+var map3 = [][]*cell{
 	{ // 1
 		{ // 1
 			IsExists: false,
@@ -121,7 +121,7 @@ var Map3 = [][]*Cell{
 	},
 }
 
-var Map2 = [][]*Cell{
+var map2 = [][]*cell{
 	{ // 1
 		{ // 1
 			IsExists: false,
@@ -196,7 +196,7 @@ var Map2 = [][]*Cell{
 	},
 }
 
-var Map2Test = [][]*Cell{
+var map2Test = [][]*cell{
 	{ // 1
 		{ // 1
 			IsExists: true,

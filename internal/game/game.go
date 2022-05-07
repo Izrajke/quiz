@@ -16,7 +16,7 @@ type Game struct {
 	// максимальное кол-во игроков в игре
 	maxPlayers int
 	// данные о игроках, соединение - игрок
-	Players map[*Connection]*Player
+	Players map[*Connection]*player
 	// счетчик раундов
 	RoundCount int
 	// счетчик вопросов первого типа
@@ -75,7 +75,7 @@ func CreateOrGetGame(games map[string]*Game, s *Subscription) *Game {
 
 		s.Player.Color = game.Colors[0]
 		game.Colors = game.Colors[1:]
-		players := make(map[*Connection]*Player, 0)
+		players := make(map[*Connection]*player, 0)
 		players[s.Conn] = s.Player
 		game.Players = players
 

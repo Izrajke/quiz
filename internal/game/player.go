@@ -9,13 +9,7 @@ const (
 	defaultPoints = 300
 )
 
-var colors = []string{
-	"player-1",
-	"player-2",
-	"player-3",
-}
-
-type Player struct {
+type player struct {
 	Id        string `json:"id"`
 	Name      string `json:"name"`
 	Points    int    `json:"points"`
@@ -24,8 +18,8 @@ type Player struct {
 }
 
 // newPlayer конструктор игрока
-func newPlayer(name string) *Player {
-	return &Player{
+func newPlayer(name string) *player {
+	return &player{
 		Id:        uuid.New().String(),
 		Name:      name,
 		Points:    defaultPoints,
