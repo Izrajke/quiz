@@ -1,78 +1,78 @@
 package game
 
-type Answer struct {
+type answer struct {
 	Value string `json:"value"`
 }
 
-type FirstQuestion struct {
+type firstQuestion struct {
 	Title   string            `json:"title"`
 	Options map[string]string `json:"options"`
 }
 
-var GlobalFirstQuestions = []FirstQuestionData{
+var globalFirstQuestions = []FirstQuestionData{
 	{
-		Question: FirstQuestion{
+		Question: firstQuestion{
 			Title:   "Вопрос 1",
 			Options: map[string]string{"1": "Вариант 1", "2": "Вариант 2", "3": "Вариант 3", "4": "Вариант 4"},
 		},
-		Answer: &Answer{Value: "1"},
+		Answer: &answer{Value: "1"},
 	},
 	{
-		Question: FirstQuestion{
+		Question: firstQuestion{
 			Title:   "Вопрос 2",
 			Options: map[string]string{"1": "Вариант 1", "2": "Вариант 2", "3": "Вариант 3", "4": "Вариант 4"},
 		},
-		Answer: &Answer{Value: "2"},
+		Answer: &answer{Value: "2"},
 	},
 	{
-		Question: FirstQuestion{
+		Question: firstQuestion{
 			Title:   "Вопрос 3",
 			Options: map[string]string{"1": "Вариант 1", "2": "Вариант 2", "3": "Вариант 3", "4": "Вариант 4"},
 		},
-		Answer: &Answer{Value: "3"},
+		Answer: &answer{Value: "3"},
 	},
 	{
-		Question: FirstQuestion{
+		Question: firstQuestion{
 			Title:   "Вопрос 4",
 			Options: map[string]string{"1": "Вариант 1", "2": "Вариант 2", "3": "Вариант 3", "4": "Вариант 4"},
 		},
-		Answer: &Answer{Value: "4"},
+		Answer: &answer{Value: "4"},
 	},
 }
 
-type SecondQuestion struct {
+type secondQuestion struct {
 	Title string `json:"title"`
 }
 
-var GlobalSecondQuestions = []SecondQuestionData{
+var globalSecondQuestions = []SecondQuestionData{
 	{
-		Question: SecondQuestion{
+		Question: secondQuestion{
 			Title: "Вопрос 100 + 1",
 		},
-		Answer: &Answer{Value: "101"},
+		Answer: &answer{Value: "101"},
 	},
 	{
-		Question: SecondQuestion{
+		Question: secondQuestion{
 			Title: "Вопрос 50 - 49",
 		},
-		Answer: &Answer{Value: "1"},
+		Answer: &answer{Value: "1"},
 	},
 	{
-		Question: SecondQuestion{
+		Question: secondQuestion{
 			Title: "Вопрос 1 + 50",
 		},
-		Answer: &Answer{Value: "51"},
+		Answer: &answer{Value: "51"},
 	},
 	{
-		Question: SecondQuestion{
+		Question: secondQuestion{
 			Title: "Вопрос 10 - 5",
 		},
-		Answer: &Answer{Value: "5"},
+		Answer: &answer{Value: "5"},
 	},
 	{
-		Question: SecondQuestion{
+		Question: secondQuestion{
 			Title: "тест",
 		},
-		Answer: &Answer{Value: "1111"},
+		Answer: &answer{Value: "1111"},
 	},
 }

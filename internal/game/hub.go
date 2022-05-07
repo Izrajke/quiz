@@ -61,6 +61,18 @@ func (h *Hub) Game() {
 		case s := <-h.Register:
 			// 1. получение объекта игры
 			g := CreateOrGetGame(h.games, &s)
+			// TODO refactoring
+			// сообщение об ожидающих лобби
+			msg := h.event.WaitingRooms(h.games)
+			for homeClient := range h.homeClients {
+				select {
+				case homeClient.send <- msg:
+				default:
+					close(homeClient.send)
+					delete(h.homeClients, homeClient)
+				}
+			}
+
 			// 2. инициализация игроков
 			h.event.InitPlayers(g.Players).SendToAll(g.Players, s.Room, h.games)
 			// 3. сборка карты
@@ -81,7 +93,7 @@ func (h *Hub) Game() {
 				// 7. текущий ход
 				h.event.CurrentMove(g.SecondQuestionCount+1).SendToAll(g.Players, s.Room, h.games)
 				// 8. отправка вопроса
-				h.event.SecondQuestion(GlobalSecondQuestions[g.SecondQuestionCount].Question).SendToAll(g.Players, s.Room, h.games)
+				h.event.SecondQuestion(globalSecondQuestions[g.SecondQuestionCount].Question).SendToAll(g.Players, s.Room, h.games)
 				// 9. запоминаем время отправки
 				g.SecondQuestionStartedAt = time.Now()
 			}
@@ -108,7 +120,7 @@ func (h *Hub) Game() {
 						// 3. все ответили
 						if g.IsEveryoneAnswered() {
 							g.AnswerCount = 0
-							correctAnswer := GlobalSecondQuestions[g.SecondQuestionCount].Answer.Value
+							correctAnswer := globalSecondQuestions[g.SecondQuestionCount].Answer.Value
 
 							// 4. правильный ответ
 							h.event.AnswerSecondQuestion(g.SecondAnswers, correctAnswer).SendToAll(g.Players, m.Room, h.games)
@@ -137,13 +149,13 @@ func (h *Hub) Game() {
 							g.AnswerCount = 0
 
 							// отправка правильного ответа
-							correctAnswer := GlobalFirstQuestions[g.FirstQuestionCount].Answer.Value
+							correctAnswer := globalFirstQuestions[g.FirstQuestionCount].Answer.Value
 							h.event.AnswerFirstQuestion(correctAnswer).SendToAll(g.Players, m.Room, h.games)
 
 							for playerColor, answer := range g.FirstAnswers {
 								if answer == correctAnswer {
 
-									GlobalMap[m.Request.RowIndex][m.Request.CellIndex].Owner = playerColor
+									globalMap[m.Request.RowIndex][m.Request.CellIndex].Owner = playerColor
 									// сборка карты
 									h.event.BuildMap().SendToAll(g.Players, m.Room, h.games)
 									break
@@ -170,7 +182,7 @@ func (h *Hub) Game() {
 							// 1. считаем кол-во выбранных клеток у игрока
 							count--
 							g.SelectCellCount[m.PlayerColor] = count
-							GlobalMap[m.Request.RowIndex][m.Request.CellIndex].Owner = m.PlayerColor
+							globalMap[m.Request.RowIndex][m.Request.CellIndex].Owner = m.PlayerColor
 							g.FreeCellCounter--
 
 							// 2. отправляем карту
@@ -218,7 +230,11 @@ func (h *Hub) Game() {
 										// 5. текущий ход
 										h.event.CurrentMove(g.RoundCount).SendToAll(g.Players, m.Room, h.games)
 										// 6. отправка вопроса
-										h.event.SecondQuestion(GlobalSecondQuestions[g.SecondQuestionCount].Question).SendToAll(g.Players, m.Room, h.games)
+										h.event.SecondQuestion(globalSecondQuestions[g.SecondQuestionCount].Question).SendToAll(
+											g.Players,
+											m.Room,
+											h.games,
+										)
 									}))
 								}
 							}
@@ -226,7 +242,7 @@ func (h *Hub) Game() {
 					}
 				case EventAttackCellType:
 					if g.IsAttack {
-						h.event.FirstQuestion(GlobalFirstQuestions[g.FirstQuestionCount].Question).SendToAll(g.Players, m.Room, h.games)
+						h.event.FirstQuestion(globalFirstQuestions[g.FirstQuestionCount].Question).SendToAll(g.Players, m.Room, h.games)
 					}
 				}
 			}
@@ -261,9 +277,10 @@ func (h *Hub) Home() {
 				close(homeClient.send)
 			}
 		case message := <-h.homeBroadcast:
+			msg := h.event.ChatMessage(string(message), "test_name", 1651938896)
 			for homeClient := range h.homeClients {
 				select {
-				case homeClient.send <- message:
+				case homeClient.send <- msg:
 				default:
 					close(homeClient.send)
 					delete(h.homeClients, homeClient)
