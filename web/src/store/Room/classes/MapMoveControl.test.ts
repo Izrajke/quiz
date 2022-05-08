@@ -1,11 +1,11 @@
-import type { MapData, PlayerColors } from 'api';
+import type { RoomMapData, PlayerColors } from 'store/Sockets/RoomSocket/types';
 
 import type { CaptureCheckNames } from './MapMoveControl';
 import { MapMoveControl } from './MapMoveControl';
 
 describe('UNIT: MapMoveControl', () => {
   const player: PlayerColors = 'player-2';
-  const mockMap: MapData = [
+  const mockMap: RoomMapData = [
     [
       {
         isExists: true,

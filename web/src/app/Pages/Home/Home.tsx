@@ -1,8 +1,10 @@
+import { useEffect, useCallback } from 'react';
 import type { FunctionComponent } from 'react';
 
 import { observer, useLocalObservable } from 'mobx-react-lite';
 
 import { Paper, Textarea, Button, Divider, Header } from 'components';
+import { useStore } from 'store';
 
 import { HomeCreateRoomModal } from './HomeCreateRoomModal';
 
@@ -16,6 +18,7 @@ interface HomeState {
 }
 
 export const Home: FunctionComponent = observer(() => {
+  const { sockets } = useStore();
   // TODO: Унести в Home Store
   const state = useLocalObservable<HomeState>(() => ({
     isCreateLobbyModalOpen: false,
@@ -23,6 +26,19 @@ export const Home: FunctionComponent = observer(() => {
       this.isCreateLobbyModalOpen = !this.isCreateLobbyModalOpen;
     },
   }));
+
+  useEffect(() => {
+    sockets.homeSocket.connect();
+    // eslint-disable-next-line
+  }, []);
+
+  const onSendMessage = useCallback(() => {
+    sockets.homeSocket?.send({
+      type: 10,
+      message: '123',
+      // TODO убрать any
+    } as any);
+  }, [sockets.homeSocket]);
 
   return (
     <div className={classes.wrapper}>
@@ -38,6 +54,8 @@ export const Home: FunctionComponent = observer(() => {
             className={classes.textarea}
             placeholder="Введите сообщение ..."
           />
+          {/*TODO: убрать*/}
+          <button onClick={onSendMessage}>отправить</button>
         </Paper>
         <Paper className={classes.lobbys}>
           <div className={classes.lobbysContainer}></div>

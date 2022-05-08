@@ -2,8 +2,12 @@ import { Provider } from 'mobx-react';
 import { screen, render } from '@testing-library/react';
 
 import { store } from 'store';
-import { SocketResponseType } from 'api';
-import type { TurnQueueData, CurrentTurnData, SocketPlayersData } from 'api';
+import { RoomSocketResponseType } from 'store/Sockets/RoomSocket/types';
+import type {
+  RoomTurnQueueData,
+  RoomCurrentTurnData,
+  RoomSocketPlayersData,
+} from 'store/Sockets/RoomSocket/types';
 
 import { PlayingRoomTurnQueue } from './PlayingRoomTurnQueue';
 
@@ -18,12 +22,12 @@ describe('INTEGRATION: PlayingRoomTurnQueue', () => {
 
   test('Компонент в контексте capture/freeCapture рендерится корректно', () => {
     render(component);
-    const queue: TurnQueueData = {
+    const queue: RoomTurnQueueData = {
       type: 8,
       turns: 9,
     };
 
-    const turn: CurrentTurnData = {
+    const turn: RoomCurrentTurnData = {
       type: 10,
       number: 3,
     };
@@ -48,8 +52,8 @@ describe('INTEGRATION: PlayingRoomTurnQueue', () => {
   test('Компонент в конексте attack рендерится корректно', () => {
     render(component);
 
-    const players: SocketPlayersData = {
-      type: SocketResponseType.playersInfo,
+    const players: RoomSocketPlayersData = {
+      type: RoomSocketResponseType.playersInfo,
       players: [
         {
           color: 'player-1',
@@ -71,8 +75,8 @@ describe('INTEGRATION: PlayingRoomTurnQueue', () => {
         },
       ],
     };
-    const queue: TurnQueueData = {
-      type: SocketResponseType.attackTurnQueue,
+    const queue: RoomTurnQueueData = {
+      type: RoomSocketResponseType.attackTurnQueue,
       turns: [
         'player-1',
         'player-2',
@@ -82,7 +86,7 @@ describe('INTEGRATION: PlayingRoomTurnQueue', () => {
         'player-2',
       ],
     };
-    const turn: CurrentTurnData = {
+    const turn: RoomCurrentTurnData = {
       type: 10,
       number: 3,
     };

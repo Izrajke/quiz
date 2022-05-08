@@ -4,8 +4,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { store } from 'store';
 
 import { PlayingRoomQuestionModal } from './PlayingRoomQuestionModal';
-import { SocketResponseType } from 'api';
-import type { SocketAnswerData } from 'api';
+import { RoomSocketResponseType } from 'store/Sockets/RoomSocket/types';
+import type { RoomSocketAnswerData } from 'store/Sockets/RoomSocket/types';
 
 describe('INTEGRATION: PlayingRoomQuestionModal', () => {
   const { room } = store;
@@ -28,7 +28,7 @@ describe('INTEGRATION: PlayingRoomQuestionModal', () => {
     render(component);
 
     const question = {
-      type: SocketResponseType.firstQuestionType,
+      type: RoomSocketResponseType.firstQuestionType,
       question: {
         title: 'Заголовок вопроса',
         options: {
@@ -55,7 +55,7 @@ describe('INTEGRATION: PlayingRoomQuestionModal', () => {
     render(component);
 
     const question = {
-      type: SocketResponseType.secondQuestionType,
+      type: RoomSocketResponseType.secondQuestionType,
       question: {
         title: 'Заголовок вопроса',
       },
@@ -96,8 +96,8 @@ describe('INTEGRATION: PlayingRoomQuestionModal', () => {
 
   test('Компонент второго типа показывает результаты', () => {
     render(component);
-    const answer: SocketAnswerData = {
-      type: SocketResponseType.answerSecondQuestionType,
+    const answer: RoomSocketAnswerData = {
+      type: RoomSocketResponseType.answerSecondQuestionType,
       answer: {
         value: '100',
       },

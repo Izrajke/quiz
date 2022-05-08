@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { useAnimation } from 'utils';
-import type { PlayerColors } from 'api';
+import type { PlayerColors } from 'store/Sockets/RoomSocket/types';
 import type { TypographyColor } from 'components';
 
 import { AnswerText } from './AnswerText';

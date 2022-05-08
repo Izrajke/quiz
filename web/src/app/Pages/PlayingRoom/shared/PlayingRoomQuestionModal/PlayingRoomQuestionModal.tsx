@@ -3,7 +3,7 @@ import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { SocketResponseType } from 'api';
+import { RoomSocketResponseType } from 'store/Sockets/RoomSocket/types';
 
 import { useStore } from 'store';
 
@@ -15,9 +15,9 @@ export const PlayingRoomQuestionModal: FunctionComponent = observer(() => {
 
   const CurrentModal = useCallback(() => {
     switch (room.type) {
-      case SocketResponseType.firstQuestionType:
+      case RoomSocketResponseType.firstQuestionType:
         return <QuestionFirstType />;
-      case SocketResponseType.secondQuestionType:
+      case RoomSocketResponseType.secondQuestionType:
         return <QuestionSecondType />;
       default:
         return null;

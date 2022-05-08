@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { FunctionComponent, ChangeEvent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 import { useStore } from 'store';
@@ -7,24 +7,12 @@ import { useStore } from 'store';
 import classes from './SocketLogger.module.css';
 
 export const SocketLogger: FunctionComponent = observer(() => {
-  // eslint-disable-next-line
-  const [message, setMessage] = useState<any>('');
   const [isOpen, setIsOpen] = useState(false);
-  const { app } = useStore();
-
-  const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value);
-  };
-
-  const messageHandler = () => {
-    app.socketMessage(message);
-  };
+  const { sockets } = useStore();
 
   const closeHandler = () => {
     setIsOpen(!isOpen);
   };
-
-  if (!app.socket) return null;
 
   return (
     <div className={classes.wrapper}>
@@ -34,7 +22,7 @@ export const SocketLogger: FunctionComponent = observer(() => {
       {isOpen ? (
         <>
           <div className={classes.loggerContent}>
-            {app.socket.log.map(([sendingType, message], index) => {
+            {sockets.log.map(([sendingType, message], index) => {
               return (
                 <div className={classes.message} key={index}>
                   <b className={classes[sendingType]}>{sendingType}:</b>{' '}
@@ -43,15 +31,7 @@ export const SocketLogger: FunctionComponent = observer(() => {
               );
             })}
           </div>
-          <input
-            className={classes.input}
-            onChange={inputHandler}
-            type="text"
-            placeholder="событие"
-          />
-          <button onClick={messageHandler} className={classes.button}>
-            Отправить событие
-          </button>
+          <input className={classes.input} type="text" placeholder="событие" />
         </>
       ) : null}
     </div>

@@ -7,17 +7,17 @@ import { useStore } from 'store';
 import { Modal, Typography, Input, Button } from 'components';
 
 import classes from './Question.module.css';
-import { SocketRequestType } from 'api';
+import { RoomSocketRequestType } from 'store/Sockets/RoomSocket/types';
 
 export const Question: FunctionComponent = observer(() => {
   const [answer, setAnswer] = useState('');
-  const { room, app } = useStore();
+  const { room, sockets } = useStore();
 
   const answerHandler = useCallback(() => {
     if (answer) {
       room.setPlayerAnswer(answer);
-      app.socketMessage({
-        type: SocketRequestType.sendAnswer,
+      sockets.roomSocket.send({
+        type: RoomSocketRequestType.sendAnswer,
         option: answer,
       });
     }

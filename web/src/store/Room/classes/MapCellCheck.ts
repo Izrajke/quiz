@@ -1,10 +1,10 @@
-import type { MapData, PlayerColors } from 'api';
+import type { RoomMapData, PlayerColors } from 'store/Sockets/RoomSocket/types';
 
 import type { MapMoveControl } from './MapMoveControl';
 
 /** Класс со статическими методами проверки клетки на доступность хода */
 export class MapCellCheck {
-  mapData: MapData;
+  mapData: RoomMapData;
   rowIndex: number;
   cellIndex: number;
   player: PlayerColors;

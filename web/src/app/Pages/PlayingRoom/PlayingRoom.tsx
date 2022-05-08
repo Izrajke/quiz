@@ -13,13 +13,17 @@ import {
 } from './shared';
 
 export const PlayingRoom = observer(() => {
-  const { app } = useStore();
+  const { sockets } = useStore();
   const { id } = useParams();
 
   useEffect(() => {
     if (id) {
-      app.socketConnection(id);
+      sockets.roomSocket.connect(id);
     }
+
+    return () => {
+      sockets.roomSocket.disconnect();
+    };
     // eslint-disable-next-line
   }, []);
 

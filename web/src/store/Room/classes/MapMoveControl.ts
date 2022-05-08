@@ -1,4 +1,4 @@
-import type { MapData, PlayerColors } from 'api';
+import type { RoomMapData, PlayerColors } from 'store/Sockets/RoomSocket/types';
 
 import { MapCellCheck } from './MapCellCheck';
 
@@ -17,7 +17,7 @@ export interface CaptureChecks {
 export type CaptureCheckNames = keyof CaptureChecks;
 
 export interface MapControl {
-  mapData: MapData;
+  mapData: RoomMapData;
   rowIndex: number;
   cellIndex: number;
   player: PlayerColors;
@@ -25,7 +25,7 @@ export interface MapControl {
 
 /** Класс со статическими методами работы с картой */
 export class MapMoveControl implements MapControl {
-  mapData: MapData;
+  mapData: RoomMapData;
   rowIndex: number;
   cellIndex: number;
   player: PlayerColors;
@@ -41,7 +41,7 @@ export class MapMoveControl implements MapControl {
   };
 
   constructor(
-    mapData: MapData,
+    mapData: RoomMapData,
     rowIndex: number,
     cellIndex: number,
     player: PlayerColors,

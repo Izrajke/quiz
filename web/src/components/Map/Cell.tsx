@@ -5,11 +5,11 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
-import type { CellData } from 'api';
+import type { RoomCellData } from 'store/Sockets/RoomSocket/types';
 
 import classes from './Map.module.css';
 
-export interface CellProps extends CellData {
+export interface CellProps extends RoomCellData {
   className?: string;
   canMove?: boolean;
   /** Индексы матрицы клеток */

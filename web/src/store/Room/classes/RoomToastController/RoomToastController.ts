@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 import { createElement } from 'react';
 import type { ReactText } from 'react';
 
-import type { PlayerColors } from 'api';
+import type { PlayerColors } from 'store/Sockets/RoomSocket/types';
 import type { RoomStore } from 'store';
 
 import { makeObservable, observable, action } from 'mobx';

@@ -2,20 +2,23 @@ import { action, computed, makeObservable, observable } from 'mobx';
 
 import { RootStore } from '../RootStore';
 import type {
-  AnswerOptions,
-  CurrentTurnData,
-  MapData,
-  Player,
+  RoomAnswerOptions,
+  RoomCurrentTurnData,
+  RoomMapData,
+  RoomPlayer,
   PlayerColors,
-  SocketAllowedToCaptureData,
-  SocketAnswerData,
+  RoomSocketAllowedToCaptureData,
+  RoomSocketAnswerData,
   SocketMapData,
-  SocketOptions,
-  SocketPlayersData,
+  RoomSocketOptions,
+  RoomSocketPlayersData,
   SocketQuestionData,
-  TurnQueueData,
-} from 'api';
-import { SocketRequestType, SocketResponseType } from 'api';
+  RoomTurnQueueData,
+} from 'store/Sockets/RoomSocket/types';
+import {
+  RoomSocketRequestType,
+  RoomSocketResponseType,
+} from 'store/Sockets/RoomSocket/types';
 
 import type { CaptureCheckNames } from './classes';
 import { MapMoveControl, RoomToastController } from './classes';
@@ -25,9 +28,9 @@ export class RoomStore {
   /** Root store */
   root: RootStore;
   /** Варианты ответа  */
-  options: SocketOptions = {};
+  options: RoomSocketOptions = {};
   /** Тип сообщения сокета */
-  type: SocketResponseType = 999;
+  type: RoomSocketResponseType = 999;
   /** Название вопроса */
   title = '';
   /** Ответ игрока */
@@ -35,9 +38,9 @@ export class RoomStore {
   /** Ответ на вопрос с сервера */
   answer: string | number = '';
   /** Игроки */
-  players: Player[] = [];
+  players: RoomPlayer[] = [];
   /** Данные о карте с сервера */
-  mapData: MapData = [];
+  mapData: RoomMapData = [];
   /** Отформатированная карта */
   get map(): Map {
     return this.mapData.map((row, rowIndex) =>
@@ -64,7 +67,7 @@ export class RoomStore {
   /** Кол-во клеток для захвата */
   captureCount = 0;
   /** Ответы игроков вопроса типа 2 */
-  answerOptions: AnswerOptions[] = [];
+  answerOptions: RoomAnswerOptions[] = [];
   /** Очередь ходов */
   turnQueue: number | PlayerColors[] = 0;
   /** Текущий ход */
@@ -112,17 +115,17 @@ export class RoomStore {
     this.toastController = new RoomToastController(this);
   }
 
-  setTurnQueue(data: TurnQueueData) {
+  setTurnQueue(data: RoomTurnQueueData) {
     const { type, turns } = data;
     this.type = type;
     this.turnQueue = turns;
 
-    if (this.type === SocketResponseType.attackTurnQueue) {
+    if (this.type === RoomSocketResponseType.attackTurnQueue) {
       this.setMoveStatus('attack');
     }
   }
 
-  setCurrentTurn(data: CurrentTurnData) {
+  setCurrentTurn(data: RoomCurrentTurnData) {
     this.currentTurn = data.number;
   }
 
@@ -136,10 +139,10 @@ export class RoomStore {
   }
 
   /** Правильный ответ на вопрос */
-  setAnswer(answerData: SocketAnswerData) {
+  setAnswer(answerData: RoomSocketAnswerData) {
     const { options, answer, type } = answerData;
     this.answer = answer.value;
-    if (type === SocketResponseType.answerSecondQuestionType && options) {
+    if (type === RoomSocketResponseType.answerSecondQuestionType && options) {
       this.answerOptions = options;
     }
   }
@@ -154,12 +157,12 @@ export class RoomStore {
     this.playerAnswer = answer;
   }
 
-  setPlayers(playersData: SocketPlayersData) {
+  setPlayers(playersData: RoomSocketPlayersData) {
     const { players } = playersData;
     this.players = players;
   }
 
-  setType(type: SocketResponseType) {
+  setType(type: RoomSocketResponseType) {
     this.type = type;
   }
 
@@ -176,7 +179,7 @@ export class RoomStore {
     this.moveStatus = newStatus;
   };
 
-  setCaptureCapability = (data: SocketAllowedToCaptureData) => {
+  setCaptureCapability = (data: RoomSocketAllowedToCaptureData) => {
     const { color, count } = data;
     this.canCapture = color === this.root.player.color;
     if (this.canCapture) {
@@ -197,8 +200,8 @@ export class RoomStore {
   };
 
   getCell = (rowIndex: number, cellIndex: number) => {
-    this.root.app.socketMessage({
-      type: SocketRequestType.getCell,
+    this.root.sockets.roomSocket.send({
+      type: RoomSocketRequestType.getCell,
       rowIndex,
       cellIndex,
     });
@@ -206,8 +209,8 @@ export class RoomStore {
   };
 
   attackCell = (rowIndex: number, cellIndex: number) => {
-    this.root.app.socketMessage({
-      type: SocketRequestType.attackCell,
+    this.root.sockets.roomSocket.send({
+      type: RoomSocketRequestType.attackCell,
       rowIndex: rowIndex,
       cellIndex: cellIndex,
     });

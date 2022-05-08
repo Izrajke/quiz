@@ -9,15 +9,15 @@ import clsx from 'clsx';
 import { Modal, Button, Typography } from 'components';
 
 import { useStore } from 'store';
-import { SocketRequestType } from 'api';
-import type { SocketAnswer } from 'api';
+import { RoomSocketRequestType } from 'store/Sockets/RoomSocket/types';
+import type { RoomSocketAnswer } from 'store/Sockets/RoomSocket/types';
 
 import classes from './QuestionFirstType.module.css';
 
 export type QuestionFirstTypeComponent = FunctionComponent;
 
 export const QuestionFirstType: QuestionFirstTypeComponent = observer(() => {
-  const { app, room } = useStore();
+  const { sockets, room } = useStore();
 
   useEffect(() => {
     room.setPlayerAnswer('');
@@ -26,13 +26,12 @@ export const QuestionFirstType: QuestionFirstTypeComponent = observer(() => {
 
   /** Обработчик ответа на вопрос */
   const answerHandler = useCallback(
-    (answer: SocketAnswer) => () => {
-      if (app.socket) {
-        app.socketMessage(answer);
-        room.setPlayerAnswer(answer.option);
-      }
+    (answer: RoomSocketAnswer) => () => {
+      sockets.roomSocket.send(answer);
+      room.setPlayerAnswer(answer.option);
     },
-    [app, room],
+    // eslint-disable-next-line
+    [sockets.roomSocket],
   );
 
   /** Вычисляет стили для кнопки */
@@ -66,7 +65,7 @@ export const QuestionFirstType: QuestionFirstTypeComponent = observer(() => {
               type={'regular'}
               className={buttonStyle(id)}
               onClick={answerHandler({
-                type: SocketRequestType.sendAnswer,
+                type: RoomSocketRequestType.sendAnswer,
                 option: id,
               })}
               disabled={isButtonDisabled}

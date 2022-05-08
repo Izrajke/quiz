@@ -8,6 +8,7 @@
   right: 0;
   background: var(--white);
   z-index: 2000;
+  color: black;
 }
 
 .wrapper span {

@@ -1,6 +1,6 @@
-import { CellData } from 'api';
+import { RoomCellData } from 'store/Sockets/RoomSocket/types';
 
-export interface Cell extends CellData {
+export interface Cell extends RoomCellData {
   /** Может ли игрок сходить на эту клетку */
   canMove: boolean;
 }
