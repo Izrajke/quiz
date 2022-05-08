@@ -4,6 +4,8 @@ import { RoomStore } from './Room';
 import { DictionariesStore } from './Dictionaries';
 import { CreatePackStore } from './CreatePack';
 import { LibraryStore } from './Library';
+import { HomeStore } from './Home';
+import { SocketsStore } from './Sockets';
 
 export class RootStore {
   /** Стор приложения */
@@ -18,6 +20,10 @@ export class RootStore {
   createPack: CreatePackStore;
   /** Библиотека паков */
   library: LibraryStore;
+  /** Домашняя страница */
+  home: HomeStore;
+  /** Сокеты */
+  sockets: SocketsStore;
 
   constructor() {
     this.app = new AppStore(this);
@@ -26,6 +32,8 @@ export class RootStore {
     this.dictionaries = new DictionariesStore(this);
     this.createPack = new CreatePackStore(this);
     this.library = new LibraryStore(this);
+    this.home = new HomeStore(this);
+    this.sockets = new SocketsStore(this);
   }
 }
 

@@ -1,0 +1,45 @@
+import { action, makeObservable, observable } from 'mobx';
+import { toast } from 'react-toastify';
+
+import { SocketLog, SocketSendingType } from 'store/Sockets';
+import type { RoomSocketRequest } from 'store/Sockets/RoomSocket/types';
+
+import { RoomSocket } from './RoomSocket';
+import { HomeSocket } from './HomeSocket';
+
+import type { RootStore } from '../RootStore';
+
+export class SocketsStore {
+  /** Root store */
+  root: RootStore;
+  /** Сокет игровой комнаты */
+  roomSocket: RoomSocket;
+  /** Сокет главной страницы */
+  homeSocket: HomeSocket;
+
+  log: SocketLog = [];
+
+  constructor(root: RootStore) {
+    makeObservable(this, {
+      // observable
+      roomSocket: observable,
+      homeSocket: observable,
+      // action
+      socketActionRegister: action,
+    });
+    this.root = root;
+    this.roomSocket = new RoomSocket(root);
+    this.homeSocket = new HomeSocket(root);
+  }
+
+  socketActionRegister(type: SocketSendingType, body: RoomSocketRequest) {
+    this.log.push([type, body]);
+  }
+
+  connectionError = (socketName: string) => {
+    const message = `Нет подключения к сокету ${socketName}`;
+
+    console.error(message);
+    toast.error(message);
+  };
+}

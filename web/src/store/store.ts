@@ -9,10 +9,14 @@ import { RoomStore } from './Room';
 import { DictionariesStore } from './Dictionaries';
 import { CreatePackStore } from './CreatePack';
 import { LibraryStore } from './Library';
+import { HomeStore } from './Home';
+import { SocketsStore } from './Sockets';
 
 interface Store {
   /** Root store */
   root: RootStore;
+  /** Сокеты */
+  sockets: SocketsStore;
   /** Приложение */
   app: AppStore;
   /** Игрок */
@@ -25,6 +29,8 @@ interface Store {
   createPack: CreatePackStore;
   /** Библиотека */
   library: LibraryStore;
+  /** Домашняя страница */
+  home: HomeStore;
 }
 
 export const store: Store = {
@@ -35,6 +41,8 @@ export const store: Store = {
   dictionaries: root.dictionaries,
   createPack: root.createPack,
   library: root.library,
+  home: root.home,
+  sockets: root.sockets,
 };
 
 export const useStore = () => useContext(MobXProviderContext) as Store;
