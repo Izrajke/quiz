@@ -1,0 +1,21 @@
+/* Лобби */
+.lobbies {
+  width: 45vw;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.lobbiesContainer {
+  height: 100%;
+}
+
+.divider {
+  margin-bottom: 16px;
+}
+
+.createLobbiesButton {
+  width: 100%;
+  margin-top: auto;
+}

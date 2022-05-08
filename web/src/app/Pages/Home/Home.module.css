@@ -12,29 +12,6 @@
   height: 82vh;
 }
 
-/* Чат */
-.chat {
-  width: 30vw;
-  padding: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.messagesContainer {
-  height: 100%;
-  box-sizing: border-box;
-  border: 1px solid var(--dark-4);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-}
-
-.textarea {
-  height: 120px;
-}
-
 /* Лобби */
 .lobbys {
   width: 45vw;
