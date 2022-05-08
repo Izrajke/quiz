@@ -15,7 +15,7 @@ export class HomeSocketResponseController {
   control(data: HomeSocketResponse) {
     switch (data.type) {
       case HomeSocketResponseType.chatMessage:
-        console.log(data);
+        this.home.setMessage(data);
         break;
       default:
         console.log('Неизвестный SocketResponseType');

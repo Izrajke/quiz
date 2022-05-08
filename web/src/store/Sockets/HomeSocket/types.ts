@@ -9,6 +9,7 @@ export enum HomeSocketRequestType {
 }
 
 export interface HomeSocketMessage {
+  uuid: string;
   type: HomeSocketResponseType;
   author: string;
   message: string;

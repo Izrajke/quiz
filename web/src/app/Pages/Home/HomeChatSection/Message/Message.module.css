@@ -1,0 +1,43 @@
+.wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+.wrapperPlayerIsAuthor {
+  justify-content: right;
+}
+
+.message {
+  padding: 12px;
+  max-width: 20vw;
+
+  background: var(--dark-4);
+  border-radius: 8px 8px 8px 0;
+}
+
+.messagePlayerIsAuthor {
+  background: var(--player-1);
+  border-radius: 8px 8px 0 8px;
+}
+
+.info {
+  float: right;
+  padding-left: 10px;
+}
+
+.infoPlayerIsAuthor {
+  float: left;
+  padding-right: 10px;
+}
+
+.triangleLeft {
+  border: 8px solid transparent;
+  border-right: 8px solid var(--dark-4);
+  border-bottom: 8px solid var(--dark-4);
+}
+
+.triangleRight {
+  border: 8px solid transparent;
+  border-left: 8px solid var(--player-1);
+  border-bottom: 8px solid var(--player-1);
+}
