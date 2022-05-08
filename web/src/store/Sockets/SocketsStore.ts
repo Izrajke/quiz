@@ -2,10 +2,11 @@ import { action, makeObservable, observable } from 'mobx';
 import { toast } from 'react-toastify';
 
 import { SocketLog, SocketSendingType } from 'store/Sockets';
-import type { RoomSocketRequest } from 'store/Sockets/RoomSocket/types';
 
 import { RoomSocket } from './RoomSocket';
+import type { RoomSocketRequest } from './RoomSocket';
 import { HomeSocket } from './HomeSocket';
+import type { HomeSocketRequest } from './HomeSocket';
 
 import type { RootStore } from '../RootStore';
 
@@ -32,7 +33,10 @@ export class SocketsStore {
     this.homeSocket = new HomeSocket(root);
   }
 
-  socketActionRegister(type: SocketSendingType, body: RoomSocketRequest) {
+  socketActionRegister(
+    type: SocketSendingType,
+    body: RoomSocketRequest | HomeSocketRequest,
+  ) {
     this.log.push([type, body]);
   }
 

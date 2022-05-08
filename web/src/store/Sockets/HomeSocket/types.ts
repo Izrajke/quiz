@@ -1,0 +1,24 @@
+export enum HomeSocketResponseType {
+  /** Сообщение из чата */
+  chatMessage = 100,
+}
+
+export enum HomeSocketRequestType {
+  /** Отправить сообщение */
+  sendMessage = 10,
+}
+
+export interface HomeSocketMessage {
+  type: HomeSocketResponseType;
+  author: string;
+  message: string;
+  time: number;
+}
+
+export interface HomeSocketSendMessage {
+  type: HomeSocketRequestType.sendMessage;
+}
+
+export type HomeSocketResponse = HomeSocketMessage;
+
+export type HomeSocketRequest = HomeSocketSendMessage;

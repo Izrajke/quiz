@@ -1,7 +1,4 @@
-import {
-  RoomSocketResponse,
-  RoomSocketResponseType,
-} from 'store/Sockets/RoomSocket/types';
+import { RoomSocketResponse, RoomSocketResponseType } from '../types';
 import type { RoomSocket } from '../RoomSocket';
 import type { PlayerStore, RoomStore } from 'store/index';
 
@@ -56,7 +53,6 @@ export class RoomSocketResponseController {
         this.room.setType(RoomSocketResponseType.endGame);
         break;
       default:
-        console.log(data);
         console.log('Неизвестный SocketResponseType');
     }
   }
