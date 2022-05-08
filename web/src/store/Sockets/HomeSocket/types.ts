@@ -18,6 +18,7 @@ export interface HomeSocketMessage {
 
 export interface HomeSocketSendMessage {
   type: HomeSocketRequestType.sendMessage;
+  message: string;
 }
 
 export type HomeSocketResponse = HomeSocketMessage;
