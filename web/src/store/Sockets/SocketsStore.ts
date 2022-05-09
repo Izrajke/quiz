@@ -25,6 +25,7 @@ export class SocketsStore {
       // observable
       roomSocket: observable,
       homeSocket: observable,
+      log: observable,
       // action
       socketActionRegister: action,
     });

@@ -28,7 +28,7 @@ export class HomeSocket {
 
     this.socket.onmessage = (evt: MessageEvent) => {
       const data = JSON.parse(evt.data);
-      this.root.sockets.socketActionRegister('sent', data);
+      this.root.sockets.socketActionRegister('received', data);
       this.controller.control(data);
     };
 
