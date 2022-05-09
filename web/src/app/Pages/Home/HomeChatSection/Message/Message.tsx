@@ -7,6 +7,7 @@ import { observer } from 'mobx-react-lite';
 
 import { Typography } from 'components';
 import { useStore } from 'store';
+import { formatDate, FORMAT_DATE } from 'utils';
 import type { HomeSocketMessage } from 'store/Sockets/HomeSocket';
 
 import classes from './Message.module.css';
@@ -35,6 +36,11 @@ export const Message: FunctionComponent<HomeSocketMessage> = observer(
       [isPlayerAuthor],
     );
 
+    const formatTime = useMemo(
+      () => formatDate(time, FORMAT_DATE.time),
+      [time],
+    );
+
     return (
       <div className={styles.wrapper}>
         {!isPlayerAuthor && <div className={classes.triangleLeft} />}
@@ -44,7 +50,7 @@ export const Message: FunctionComponent<HomeSocketMessage> = observer(
           </Typography.Text>
           <div className={styles.info}>
             <Typography.Text color="white-50" type="caption-2">
-              {`${isPlayerAuthor ? 'Вы' : author} ${time}`}
+              {`${isPlayerAuthor ? 'Вы' : author} ${formatTime}`}
             </Typography.Text>
           </div>
         </div>

@@ -1,3 +1,16 @@
+import { format } from 'date-fns';
+
+/** Форматы времени. */
+export enum FORMAT_DATE {
+  time = 'HH:mm',
+  dateTime = 'dd.MM.yyyy, HH:mm',
+}
+
+export const formatDate = (
+  date: string | number,
+  formatDate: FORMAT_DATE = FORMAT_DATE.time,
+) => format(new Date(date), formatDate);
+
 /** Вызвать функцию с указанной задержкой */
 export const withDelay = <T>(
   func: (...args: T[]) => unknown,
