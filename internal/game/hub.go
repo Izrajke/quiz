@@ -271,6 +271,15 @@ func (h *Hub) Home() {
 		select {
 		case homeClient := <-h.homeRegister:
 			h.homeClients[homeClient] = true
+			// TODO refactoring
+			// сообщение об ожидающих лобби
+			msg := h.event.WaitingRooms(h.games)
+			select {
+			case homeClient.send <- msg:
+			default:
+				close(homeClient.send)
+				delete(h.homeClients, homeClient)
+			}
 		case homeClient := <-h.homeUnregister:
 			if _, ok := h.homeClients[homeClient]; ok {
 				delete(h.homeClients, homeClient)
