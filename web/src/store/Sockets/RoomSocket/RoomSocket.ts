@@ -1,7 +1,7 @@
 import { makeObservable, action } from 'mobx';
 
 import type { RootStore } from 'store/RootStore';
-import type { RoomSocketRequest } from 'store/Sockets/RoomSocket/types';
+import type { RoomSocketRequest } from './types';
 
 import { RoomSocketResponseController } from './RoomSocketResponseController';
 

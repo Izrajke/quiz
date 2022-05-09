@@ -9,9 +9,14 @@
 
 .lobbiesContainer {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: scroll;
 }
 
 .divider {
+  margin-top: 16px;
   margin-bottom: 16px;
 }
 

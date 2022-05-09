@@ -1,0 +1,44 @@
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--dark-4);
+  border-radius: 8px;
+}
+
+.leftSide {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rightSide {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.playersContainer {
+  justify-content: flex-end;
+  display: flex;
+  gap: 12px;
+}
+
+.avatar {
+  height: 40px;
+  width: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.noPlayer {
+  height: 40px;
+  width: 40px;
+  border-radius: 8px;
+  background: var(--dark-3);
+}
+
+.button {
+  width: 144px;
+}

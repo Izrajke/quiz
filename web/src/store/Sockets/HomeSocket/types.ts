@@ -21,6 +21,20 @@ export interface HomeSocketSendMessage {
   message: string;
 }
 
-export type HomeSocketResponse = HomeSocketMessage;
+export interface HomeSocketPlayer {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+export interface HomeSocketLobbyCard {
+  id: string;
+  maximumOfPlayers: number;
+  name: string;
+  type: string;
+  players: HomeSocketPlayer[];
+}
+
+export type HomeSocketResponse = HomeSocketMessage | HomeSocketLobbyCard;
 
 export type HomeSocketRequest = HomeSocketSendMessage;
