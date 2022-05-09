@@ -15,12 +15,12 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--dark-2);
+  background-color: var(--white-50);
   border-width: 1px;
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background-color: var(--dark-2);
+  background-color: var(--white-50);
 }
 
 ::-webkit-scrollbar-button {
