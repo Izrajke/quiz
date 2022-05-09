@@ -256,8 +256,10 @@ func (e *Event) ChatMessage(message string, playerName string, time int) []byte 
 // WaitingRooms информация об ожидающих комнатах
 func (e *Event) WaitingRooms(games map[string]*Game) []byte {
 	type Room struct {
-		ID      string   `json:"id"`
-		Players []string `json:"players"`
+		ID               string   `json:"id"`
+		MaximumOfPlayers int      `json:"maximumOfPlayers"`
+		Name             string   `json:"name"`
+		Players          []string `json:"players"`
 	}
 	rooms := make([]*Room, 0)
 	for id, game := range games {
@@ -267,8 +269,10 @@ func (e *Event) WaitingRooms(games map[string]*Game) []byte {
 				players = append(players, player.Name)
 			}
 			room := &Room{
-				ID:      id,
-				Players: players,
+				ID:               id,
+				MaximumOfPlayers: 2,
+				Name:             "test_name",
+				Players:          players,
 			}
 			rooms = append(rooms, room)
 		}
