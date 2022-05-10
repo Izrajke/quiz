@@ -2,7 +2,11 @@ import type { ChangeEvent } from 'react';
 import { makeObservable, observable, action } from 'mobx';
 
 import type { RootStore } from '../RootStore';
-import type { HomeSocketMessage } from '../Sockets/HomeSocket';
+import type {
+  HomeSocketMessage,
+  HomeSocketCreatedLobbies,
+  HomeSocketLobbyCard,
+} from '../Sockets/HomeSocket';
 
 export class HomeStore {
   /** Root store */
@@ -10,6 +14,8 @@ export class HomeStore {
   isCreateLobbyModalOpen = false;
   /** Массив всех сообщений */
   messages: HomeSocketMessage[] = [];
+  /** Созданные лобби */
+  lobbies: HomeSocketLobbyCard[] = [];
 
   /** Текст сообщения */
   newMessageValue = '';
@@ -20,11 +26,13 @@ export class HomeStore {
       isCreateLobbyModalOpen: observable,
       messages: observable,
       newMessageValue: observable,
+      lobbies: observable,
       // action
       setIsCreateLobbyModalOpen: action,
       setMessage: action,
       setNewMessageValue: action,
       sendMessage: action,
+      setLobbies: action,
     });
     this.root = root;
   }
@@ -35,6 +43,12 @@ export class HomeStore {
 
   setMessage = (message: HomeSocketMessage) => {
     this.messages.push(message);
+  };
+
+  setLobbies = (data: HomeSocketCreatedLobbies) => {
+    const { rooms } = data;
+
+    this.lobbies = rooms;
   };
 
   sendMessage = () => {

@@ -1,7 +1,7 @@
 import type { HomeStore } from 'store';
 import type { HomeSocket } from '../HomeSocket';
 
-import { HomeSocketResponseType, HomeSocketResponse } from '../types';
+import { HomeSocketResponse, HomeSocketResponseType } from '../types';
 
 export class HomeSocketResponseController {
   socket: HomeSocket;
@@ -16,6 +16,9 @@ export class HomeSocketResponseController {
     switch (data.type) {
       case HomeSocketResponseType.chatMessage:
         this.home.setMessage(data);
+        break;
+      case HomeSocketResponseType.lobbys:
+        this.home.setLobbies(data);
         break;
       default:
         console.log('Неизвестный SocketResponseType');

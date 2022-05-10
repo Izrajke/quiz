@@ -1,6 +1,8 @@
 export enum HomeSocketResponseType {
   /** Сообщение из чата */
   chatMessage = 100,
+  /** Созданные лобби */
+  lobbys = 101,
 }
 
 export enum HomeSocketRequestType {
@@ -29,12 +31,17 @@ export interface HomeSocketPlayer {
 
 export interface HomeSocketLobbyCard {
   id: string;
-  maximumOfPlayers: number;
-  name: string;
-  type: string;
+  max: number;
+  pack: string;
+  subject: string;
   players: HomeSocketPlayer[];
 }
 
-export type HomeSocketResponse = HomeSocketMessage | HomeSocketLobbyCard;
+export interface HomeSocketCreatedLobbies {
+  type: HomeSocketResponseType;
+  rooms: HomeSocketLobbyCard[];
+}
+
+export type HomeSocketResponse = HomeSocketMessage & HomeSocketCreatedLobbies;
 
 export type HomeSocketRequest = HomeSocketSendMessage;

@@ -9,15 +9,10 @@ import type { HomeSocketLobbyCard } from 'store/Sockets/HomeSocket/types';
 import classes from './LobbyCard.module.css';
 
 export const LobbyCard: FunctionComponent<HomeSocketLobbyCard> = observer(
-  ({ players, maximumOfPlayers, type, name }) => {
-    console.log(maximumOfPlayers);
-
+  ({ players, max, subject, pack }) => {
     const renderPlayersArray = useMemo(
-      () =>
-        new Array(maximumOfPlayers)
-          .fill(0)
-          .map((_, i) => (players[i] ? players[i] : 0)),
-      [players, maximumOfPlayers],
+      () => new Array(max).fill(0).map((_, i) => (players[i] ? players[i] : 0)),
+      [players, max],
     ).reverse();
 
     console.log(renderPlayersArray);
@@ -26,10 +21,10 @@ export const LobbyCard: FunctionComponent<HomeSocketLobbyCard> = observer(
       <div className={classes.wrapper}>
         <div className={classes.leftSide}>
           <Typography.Text color="white" type="text-1" weight="weight-bold">
-            {name}
+            {pack}
           </Typography.Text>
           <Typography.Text color="white-50" type="text-0">
-            {type}
+            {subject}
           </Typography.Text>
         </div>
         <div className={classes.rightSide}>
@@ -39,7 +34,7 @@ export const LobbyCard: FunctionComponent<HomeSocketLobbyCard> = observer(
                 <img
                   className={classes.avatar}
                   key={player.id}
-                  src={player.avatar}
+                  src="https://imya-sonnik.ru/wp-content/uploads/2019/10/s1200-86-1.jpg"
                   alt="avatar"
                 />
               ) : (
