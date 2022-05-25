@@ -7,7 +7,7 @@ import { useLocalObservable } from 'mobx-react-lite';
 
 import type { SettingsModalState } from '../Header';
 
-import { Avatar, Input, Typography } from 'components';
+import { Avatar, DEFAULT_AVATAR_CONFIG, Input, Typography } from 'components';
 import type { AvatarConfig, SettingsItems } from 'components';
 
 import { renderSettingsItems } from './utils';
@@ -55,7 +55,7 @@ export const HeaderSettingsModalBody: FunctionComponent<HeaderSettingsModalBodyP
           ) as AvatarConfig;
 
           setDefaultConfig(result);
-          return result;
+          return { ...DEFAULT_AVATAR_CONFIG, ...result };
         },
         onSettingsChange(key) {
           const item = toJS(this.settingsItems[key]);

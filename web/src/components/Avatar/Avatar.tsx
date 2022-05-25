@@ -14,7 +14,7 @@ import { observer } from 'mobx-react-lite';
 
 export interface AvatarProps {
   size: number;
-  config?: NiceAvatarProps;
+  config: NiceAvatarProps;
   round?: boolean;
 }
 
@@ -23,7 +23,7 @@ type DefaultConfig =
   | AvatarConfigColorTypes;
 
 // TODO: рандомно устанавливать цвета
-export const DEFAULT_CONFIG: DefaultConfig = {
+export const DEFAULT_AVATAR_CONFIG: DefaultConfig = {
   sex: 'man',
   faceColor: '#AC6651',
   hairColor: '#000',
@@ -34,13 +34,13 @@ export const DEFAULT_CONFIG: DefaultConfig = {
 };
 
 export const genDefaultConfig = (
-  config: AvatarFullConfig = { ...genConfig(DEFAULT_CONFIG) },
+  config: AvatarFullConfig = { ...genConfig(DEFAULT_AVATAR_CONFIG) },
 ) => ({
   ...genConfig(config),
 });
 
 export const Avatar: FunctionComponent<AvatarProps> = observer(
-  ({ size, config = genDefaultConfig(), round = true }) => {
+  ({ size, config, round = true }) => {
     const style = useMemo<Style>(
       () => ({
         width: size,
@@ -50,7 +50,7 @@ export const Avatar: FunctionComponent<AvatarProps> = observer(
       [size, round],
     );
 
-    return <NiceAvatar style={style} {...config} />;
+    return <NiceAvatar style={style} {...genDefaultConfig(config)} />;
   },
 );
 
