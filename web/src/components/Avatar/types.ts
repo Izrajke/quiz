@@ -29,6 +29,11 @@ export interface AvatarConfig
   shirtColor: ShirtColor;
 }
 
+export type AvatarConfigColorTypes = Pick<
+  AvatarConfig,
+  'faceColor' | 'hairColor' | 'hatColor' | 'bgColor' | 'shirtColor'
+>;
+
 export type AvatarConfigWithoutColors = Omit<
   AvatarConfig,
   'faceColor' | 'hairColor' | 'hatColor' | 'bgColor' | 'shirtColor'

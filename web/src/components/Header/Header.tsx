@@ -3,7 +3,8 @@ import type { FunctionComponent, ChangeEvent } from 'react';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 
 import { useStore } from 'store';
-import { Navigation, Icon, Typography } from 'components';
+import { Navigation, Icon, Typography, Avatar } from 'components';
+import type { AvatarConfig } from 'components';
 
 import { HeaderSettingsModalBody } from './HeaderSettingsModalBody';
 
@@ -12,12 +13,16 @@ import classes from './Header.module.css';
 export interface SettingsModalState {
   /** Обработчик нажатия на иконку настроек */
   onSettingsClick: () => void;
+  /** Текущий конфиг аватарки */
+  avatarConfig: AvatarConfig;
+  /** Установить конфиг */
+  setAvatarConfig: (config: AvatarConfig) => void;
   /** Никнейм пользователя, в локальном стейте */
   nickname: string;
   /** Обновить никнейм локально */
   onChangeNickname: (e: ChangeEvent<HTMLInputElement>) => void;
   /** Сохранить никнем в сторе */
-  saveNickname: () => void;
+  save: () => void;
 }
 
 export const Header: FunctionComponent = observer(() => {
@@ -28,8 +33,13 @@ export const Header: FunctionComponent = observer(() => {
     onChangeNickname(e) {
       this.nickname = e.target.value;
     },
-    saveNickname() {
+    avatarConfig: player.avatarConfig,
+    setAvatarConfig(config: AvatarConfig) {
+      this.avatarConfig = config;
+    },
+    save() {
       player.setNickname(this.nickname);
+      player.setAvatarConfig(this.avatarConfig);
     },
     onSettingsClick() {
       app.setDialog({
@@ -40,6 +50,8 @@ export const Header: FunctionComponent = observer(() => {
         ),
         body: (
           <HeaderSettingsModalBody
+            defaultConfig={this.avatarConfig}
+            setDefaultConfig={this.setAvatarConfig}
             nickname={this.nickname}
             onChangeNickname={this.onChangeNickname}
           />
@@ -47,7 +59,7 @@ export const Header: FunctionComponent = observer(() => {
         dialogButtons: [
           {
             type: 'primary',
-            onClick: this.saveNickname,
+            onClick: this.save,
             size: 'normal',
             text: 'Сохранить',
             className: classes.dialogButton,
@@ -70,6 +82,7 @@ export const Header: FunctionComponent = observer(() => {
         size={16}
         onClick={state.onSettingsClick}
       />
+      <Avatar size={40} config={player.avatarConfig} />
     </header>
   );
 });
