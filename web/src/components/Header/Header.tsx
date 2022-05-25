@@ -1,14 +1,15 @@
-import type { FunctionComponent } from 'react';
+import type { FunctionComponent, ChangeEvent } from 'react';
 
 import { observer, useLocalObservable } from 'mobx-react-lite';
 
 import { useStore } from 'store';
-import { Navigation, Icon, Typography, Input } from 'components';
+import { Navigation, Icon, Typography } from 'components';
+
+import { HeaderSettingsModalBody } from './HeaderSettingsModalBody';
 
 import classes from './Header.module.css';
-import { ChangeEvent } from 'react';
 
-interface SettingsModalState {
+export interface SettingsModalState {
   /** Обработчик нажатия на иконку настроек */
   onSettingsClick: () => void;
   /** Никнейм пользователя, в локальном стейте */
@@ -38,11 +39,9 @@ export const Header: FunctionComponent = observer(() => {
           </Typography.Text>
         ),
         body: (
-          <Input
-            placeholder="123"
-            defaultValue={this.nickname}
-            onChange={this.onChangeNickname}
-            label="Никнейм"
+          <HeaderSettingsModalBody
+            nickname={this.nickname}
+            onChangeNickname={this.onChangeNickname}
           />
         ),
         dialogButtons: [
