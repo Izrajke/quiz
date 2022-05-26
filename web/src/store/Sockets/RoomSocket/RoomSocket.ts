@@ -31,6 +31,7 @@ export class RoomSocket {
     const searchParams = new URLSearchParams({
       room: roomId,
       name: this.root.player.nickname,
+      avatar: window.btoa(JSON.stringify(this.root.player.avatarConfig)),
     }).toString();
 
     this.socket = new WebSocket(`${this.url}?${searchParams}`);
