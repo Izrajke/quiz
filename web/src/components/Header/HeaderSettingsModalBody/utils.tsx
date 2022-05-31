@@ -8,11 +8,31 @@ export const renderSettingsItems = (config: AvatarConfig): SettingsItems => ({
     currentValue: config.shirtColor,
     allVariants: [
       {
-        value: config.shirtColor,
+        value: '#F9C9B6',
         view: (
           <SettingsItem
             itemName="shirtColor"
             value="#F9C9B6"
+            type={SettingsItemTypes.color}
+          />
+        ),
+      },
+      {
+        value: '#77311D',
+        view: (
+          <SettingsItem
+            itemName="shirtColor"
+            value="#77311D"
+            type={SettingsItemTypes.color}
+          />
+        ),
+      },
+      {
+        value: '#FFFFFF',
+        view: (
+          <SettingsItem
+            itemName="shirtColor"
+            value="#FFFFFF"
             type={SettingsItemTypes.color}
           />
         ),
@@ -57,6 +77,26 @@ export const renderSettingsItems = (config: AvatarConfig): SettingsItems => ({
           />
         ),
       },
+      {
+        value: '#F4D150',
+        view: (
+          <SettingsItem
+            value="#F4D150"
+            type={SettingsItemTypes.color}
+            itemName="bgColor"
+          />
+        ),
+      },
+      {
+        value: '#F48150',
+        view: (
+          <SettingsItem
+            value="#F48150"
+            type={SettingsItemTypes.color}
+            itemName="bgColor"
+          />
+        ),
+      },
     ],
   },
   hatColor: {
@@ -67,6 +107,26 @@ export const renderSettingsItems = (config: AvatarConfig): SettingsItems => ({
         view: (
           <SettingsItem
             value="#000"
+            type={SettingsItemTypes.color}
+            itemName="hatColor"
+          />
+        ),
+      },
+      {
+        value: '#D2EFF3',
+        view: (
+          <SettingsItem
+            value="#D2EFF3"
+            type={SettingsItemTypes.color}
+            itemName="hatColor"
+          />
+        ),
+      },
+      {
+        value: '#FC909F',
+        view: (
+          <SettingsItem
+            value="#FC909F"
             type={SettingsItemTypes.color}
             itemName="hatColor"
           />
@@ -83,6 +143,36 @@ export const renderSettingsItems = (config: AvatarConfig): SettingsItems => ({
           <SettingsItem
             itemName="hairColor"
             value="#000"
+            type={SettingsItemTypes.color}
+          />
+        ),
+      },
+      {
+        value: '#FFFFFF',
+        view: (
+          <SettingsItem
+            itemName="hairColor"
+            value="#FFFFFF"
+            type={SettingsItemTypes.color}
+          />
+        ),
+      },
+      {
+        value: '#D2EFF3',
+        view: (
+          <SettingsItem
+            itemName="hairColor"
+            value="#D2EFF3"
+            type={SettingsItemTypes.color}
+          />
+        ),
+      },
+      {
+        value: '#FC909F',
+        view: (
+          <SettingsItem
+            itemName="hairColor"
+            value="#FC909F"
             type={SettingsItemTypes.color}
           />
         ),
