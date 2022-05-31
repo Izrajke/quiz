@@ -60,7 +60,7 @@ export const renderSettingsItems = (config: AvatarConfig): SettingsItems => ({
     ],
   },
   hatColor: {
-    currentValue: config.hairColor,
+    currentValue: config.hatColor,
     allVariants: [
       {
         value: '#000',

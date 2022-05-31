@@ -70,3 +70,15 @@ export const getFromLocalStorage = (key: string) => {
 
   return value ? JSON.parse(value) : null;
 };
+
+export const encodeBase64 = (code: string) => JSON.parse(window.atob(code));
+
+export const selectRandomIndex = <T>(
+  arr: Readonly<T[]>,
+): typeof arr[number] => {
+  const randomIndex = Math.abs(
+    Math.round(0 - 0.5 + Math.random() * (arr.length + 1)),
+  );
+
+  return arr.find((_, index) => index === randomIndex) || arr[0];
+};

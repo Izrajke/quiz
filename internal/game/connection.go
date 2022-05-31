@@ -53,7 +53,7 @@ func ServeWs(
 				"server got a new connection for game",
 				zap.String("playerName", playerName),
 				zap.String("roomID", roomId),
-				zap.String("avatar", avatar)
+				zap.String("avatar", avatar),
 			)
 			p := newPlayer(playerName, avatar)
 			c := NewConnection(conn)

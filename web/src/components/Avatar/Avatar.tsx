@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
+import { observer } from 'mobx-react-lite';
 
 import NiceAvatar, { genConfig } from 'react-nice-avatar';
 import type {
@@ -8,9 +9,10 @@ import type {
   AvatarFullConfig,
 } from 'react-nice-avatar';
 
-import { AvatarConfigColorTypes } from './types';
+import { selectRandomIndex } from 'utils';
 
-import { observer } from 'mobx-react-lite';
+import { defaultColors } from './types';
+import type { AvatarConfigColorTypes } from './types';
 
 export interface AvatarProps {
   size: number;
@@ -22,21 +24,20 @@ type DefaultConfig =
   | Pick<AvatarFullConfig, 'sex' | 'eyeBrowStyle'>
   | AvatarConfigColorTypes;
 
-// TODO: рандомно устанавливать цвета
 export const DEFAULT_AVATAR_CONFIG: DefaultConfig = {
   sex: 'man',
-  faceColor: '#AC6651',
-  hairColor: '#000',
-  bgColor: '#E0DDFF',
-  hatColor: '#000',
-  shirtColor: '#F9C9B6',
+  faceColor: selectRandomIndex(defaultColors.faceColors),
+  hairColor: selectRandomIndex(defaultColors.hairColors),
+  bgColor: selectRandomIndex(defaultColors.bgColors),
+  hatColor: selectRandomIndex(defaultColors.hatColors),
+  shirtColor: selectRandomIndex(defaultColors.shirtColors),
   eyeBrowStyle: 'up',
 };
 
 export const genDefaultConfig = (
   config: AvatarFullConfig = { ...genConfig(DEFAULT_AVATAR_CONFIG) },
 ) => ({
-  ...genConfig(config),
+  ...genConfig({ ...DEFAULT_AVATAR_CONFIG, ...config }),
 });
 
 export const Avatar: FunctionComponent<AvatarProps> = observer(

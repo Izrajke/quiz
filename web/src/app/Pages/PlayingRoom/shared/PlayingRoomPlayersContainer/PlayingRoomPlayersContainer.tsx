@@ -14,13 +14,7 @@ export const PlayingRoomPlayersContainer: FunctionComponent = observer(() => {
   return (
     <div className={classes.wrapper}>
       {room.players.map((player) => (
-        <PlayerCard
-          key={player.id}
-          id={player.id}
-          name={player.name}
-          points={player.points}
-          color={player.color}
-        />
+        <PlayerCard key={player.id} {...player} />
       ))}
     </div>
   );
