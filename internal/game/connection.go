@@ -39,6 +39,7 @@ func ServeWs(
 	logger *zap.Logger,
 	playerName string,
 	roomId string,
+	avatar string,
 ) {
 	var upgrader = websocket.FastHTTPUpgrader{
 		ReadBufferSize:  1024,
@@ -52,8 +53,9 @@ func ServeWs(
 				"server got a new connection for game",
 				zap.String("playerName", playerName),
 				zap.String("roomID", roomId),
+				zap.String("avatar", avatar)
 			)
-			p := newPlayer(playerName)
+			p := newPlayer(playerName, avatar)
 			c := NewConnection(conn)
 			s := Subscription{Conn: c, Room: roomId, Player: p, logger: logger}
 			hub.Register <- s
