@@ -23,7 +23,7 @@ export const HomeLobbiesSection: FunctionComponent = observer(() => {
       <Button
         className={classes.createLobbiesButton}
         type="primary"
-        onClick={home.setIsCreateLobbyModalOpen}
+        onClick={home.createLobbyModal.setIsOpen}
       >
         Создать лобби
       </Button>
