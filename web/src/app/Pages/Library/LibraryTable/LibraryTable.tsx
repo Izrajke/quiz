@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
@@ -10,9 +10,13 @@ import { useStore } from 'store';
 import { ScoreStars } from './ScoreStars';
 
 import classes from './LibraryTable.module.css';
+import { LibraryItem } from '../../../../api';
 
 export const LibraryTable: FunctionComponent = observer(() => {
-  const { library } = useStore();
+  const {
+    library,
+    home: { createLobbyModal },
+  } = useStore();
 
   const columns = useMemo<TableColumns[]>(
     () => [
@@ -36,18 +40,30 @@ export const LibraryTable: FunctionComponent = observer(() => {
     [],
   );
 
+  const onChoosePackHandler = useCallback(
+    (pack: LibraryItem) => () => {
+      createLobbyModal.setPackInfo(pack);
+      createLobbyModal.setIsOpen();
+    },
+    [createLobbyModal],
+  );
+
   const data = useMemo(
     () =>
       library.data.map((pack) => ({
         ...pack,
         score: <ScoreStars score={pack.score} />,
         actions: (
-          <Button type="default" className={classes.createLobbyButton}>
-            Создать лобби
+          <Button
+            type="default"
+            className={classes.createLobbyButton}
+            onClick={onChoosePackHandler(pack)}
+          >
+            Выбрать для игры
           </Button>
         ),
       })),
-    [library.data],
+    [library.data, onChoosePackHandler],
   ) as unknown as TableData[];
 
   const tableClassNames = useMemo<TableClassNames>(

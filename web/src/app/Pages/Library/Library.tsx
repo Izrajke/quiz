@@ -3,7 +3,7 @@ import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { Header } from 'components';
+import { Header, CreateRoomModal } from 'components';
 import { useStore } from 'store';
 
 import { LibraryTable } from './LibraryTable';
@@ -20,6 +20,7 @@ export const Library: FunctionComponent = observer(() => {
 
   return (
     <div className={classes.root}>
+      <CreateRoomModal />
       <Header />
       <LibraryTable />
     </div>

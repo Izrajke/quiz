@@ -1,0 +1,79 @@
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.labelsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.inputsContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.inputsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.password {
+  margin-top: 16px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.createButton {
+  width: 100%;
+}
+
+.choosePackContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.choosePackButtons {
+  display: flex;
+  gap: 16px;
+}
+
+.choosePackButton {
+  width: 100%;
+}
+
+.randomIcon > svg {
+  cursor: pointer;
+  fill: var(--dark-4);
+  transition: all 0.3s;
+}
+
+.randomIcon:hover > svg {
+  fill: var(--player-1);
+  opacity: 0.8;
+}
+
+.pack {
+  display: flex;
+  justify-content: space-between;
+  background: var(--player-1);
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.packTextInfoSide {
+  display: flex;
+  flex-direction: column;
+}
+
+.closeIcon {
+  cursor: pointer;
+}
