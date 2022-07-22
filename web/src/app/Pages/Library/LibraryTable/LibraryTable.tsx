@@ -76,7 +76,14 @@ export const LibraryTable: FunctionComponent = observer(() => {
 
   return (
     <Paper className={classes.wrapper}>
-      <Table columns={columns} data={data} classNames={tableClassNames} />
+      <Table
+        columns={columns}
+        data={data}
+        classNames={tableClassNames}
+        currentPage={library.currentPage}
+        totalPages={library.totalPages}
+        setPage={library.setCurrentPage}
+      />
     </Paper>
   );
 });

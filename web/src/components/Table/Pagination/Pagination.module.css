@@ -1,0 +1,40 @@
+.wrapper {
+  position: sticky;
+  width: 100%;
+  bottom: 0;
+  padding: 20px 44px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+
+  background: var(--dark-2);
+  border-top: 1px solid var(--dark-4);
+}
+
+.paginationButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.activeButton {
+  background: var(--player-1);
+}
+
+.normalButton {
+  cursor: pointer;
+  color: var(--white-50);
+  background: var(--dark-4);
+}
+
+.normalButton:hover {
+  color: var(--white);
+}
