@@ -8,17 +8,27 @@ import (
 	"go.uber.org/zap"
 	"net/http/pprof"
 	"quiz/internal/game"
+	"quiz/internal/http/api"
 )
 
 type Server struct {
-	hub    *game.Hub
-	logger *zap.Logger
+	packController     *api.PackController
+	categoryController *api.CategoryController
+	hub                *game.Hub
+	logger             *zap.Logger
 }
 
-func NewServer(hub *game.Hub, logger *zap.Logger) *Server {
+func NewServer(
+	packController *api.PackController,
+	categoryController *api.CategoryController,
+	hub *game.Hub,
+	logger *zap.Logger,
+) *Server {
 	return &Server{
-		hub:    hub,
-		logger: logger.With(zap.String("channel", "http-server")),
+		packController:     packController,
+		categoryController: categoryController,
+		hub:                hub,
+		logger:             logger.With(zap.String("channel", "http-server")),
 	}
 }
 
@@ -28,6 +38,14 @@ func (s *Server) ListenAndServe(ctx context.Context, listen string, enablePprof 
 
 	router.POST("/create", s.handleGameCreate)
 	router.GET("/ws", s.handleWs)
+
+	router.POST("/api/category/filter", s.categoryController.HandleFilter)
+
+	router.POST("/api/pack/filter", s.packController.HandleFilter)
+	router.POST("/api/pack/create", s.packController.HandleCreate)
+	router.POST("/api/pack/update/:id", s.packController.HandleUpdate)
+	router.POST("/api/pack/view/:id", s.packController.HandleView)
+	router.POST("/api/pack/delete/:id", s.packController.HandleDelete)
 
 	if enablePprof {
 		for _, path := range []string{"/", "/allocs", "/block", "/goroutine", "/heap", "/mutex", "/threadcreate"} {
