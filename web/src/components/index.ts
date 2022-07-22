@@ -17,3 +17,5 @@ export * from './RSelect';
 export * from './Checkbox';
 export * from './Tooltip';
 export * from './Table';
+export * from './Avatar';
+export * from './CreateRoomModal';

@@ -4,6 +4,8 @@ import { useTable } from 'react-table';
 
 import { observer } from 'mobx-react-lite';
 
+import { Pagination } from './Pagination';
+
 import classes from './Table.module.css';
 
 export interface TableData {
@@ -24,10 +26,13 @@ export interface TableProps {
   data: TableData[];
   columns: TableColumns[];
   classNames?: TableClassNames;
+  currentPage: number;
+  totalPages: number;
+  setPage: (page: number) => void;
 }
 
 export const Table: FunctionComponent<TableProps> = observer(
-  ({ data, columns, classNames }) => {
+  ({ data, columns, classNames, currentPage, totalPages, setPage }) => {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
       useTable({ data, columns });
 
@@ -66,6 +71,11 @@ export const Table: FunctionComponent<TableProps> = observer(
             })}
           </tbody>
         </table>
+        <Pagination
+          current={currentPage}
+          total={totalPages}
+          onItemClick={setPage}
+        />
       </div>
     );
   },

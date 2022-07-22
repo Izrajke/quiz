@@ -1,6 +1,6 @@
-import { makeObservable, flow, observable } from 'mobx';
+import { makeObservable, flow, observable, action } from 'mobx';
 
-import { loadLibrary } from 'api';
+import { LibraryResponse, loadLibrary } from 'api';
 import type { LibraryItem } from 'api';
 
 import type { RootStore } from '../RootStore';
@@ -10,23 +10,35 @@ export class LibraryStore {
   root: RootStore;
 
   data: LibraryItem[] = [];
+  currentPage = 1;
+  totalPages = 1;
 
   constructor(root: RootStore) {
     makeObservable(this, {
       // observable
       data: observable,
+      currentPage: observable,
+      totalPages: observable,
       // action
+      setCurrentPage: action,
       // flow
       load: flow.bound,
     });
     this.root = root;
   }
 
-  *load() {
-    const data: LibraryItem[] | undefined = yield loadLibrary();
+  setCurrentPage = (page: number) => {
+    this.currentPage = page;
+    this.load();
+  };
 
+  *load() {
+    const data: LibraryResponse | undefined = yield loadLibrary(
+      this.currentPage,
+    );
     if (!data) return;
 
-    this.data = data;
+    this.data = data.content;
+    this.totalPages = data.totalPages;
   }
 }

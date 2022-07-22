@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"quiz/internal/game"
 	httpserver "quiz/internal/http"
+	"quiz/internal/http/api"
 	"quiz/internal/workerpool"
 	"sync"
 	"syscall"
@@ -66,7 +67,14 @@ func main() {
 	go func() {
 		defer wg.Done()
 		logger.Info("starting HTTP server", zap.String("port", cfg.httpListenPort))
-		errCh := httpserver.NewServer(hub, logger).ListenAndServe(ctx, cfg.httpListenPort, cfg.enablePprof)
+		packController := api.NewPackController()
+		categoryController := api.NewCategoryController()
+		errCh := httpserver.NewServer(
+			packController,
+			categoryController,
+			hub,
+			logger,
+		).ListenAndServe(ctx, cfg.httpListenPort, cfg.enablePprof)
 		err = <-errCh
 		cancel()
 		if err != nil {

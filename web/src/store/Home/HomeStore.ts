@@ -7,11 +7,13 @@ import type {
   HomeSocketCreatedLobbies,
   HomeSocketLobbyCard,
 } from '../Sockets/HomeSocket';
+import { CreateLobbyModalState } from './CreateLobbyModalState';
 
 export class HomeStore {
   /** Root store */
   root: RootStore;
-  isCreateLobbyModalOpen = false;
+  /** Модальное окно создания лобби */
+  createLobbyModal: CreateLobbyModalState;
   /** Массив всех сообщений */
   messages: HomeSocketMessage[] = [];
   /** Созданные лобби */
@@ -23,23 +25,19 @@ export class HomeStore {
   constructor(root: RootStore) {
     makeObservable(this, {
       // observable
-      isCreateLobbyModalOpen: observable,
       messages: observable,
       newMessageValue: observable,
       lobbies: observable,
+      createLobbyModal: observable,
       // action
-      setIsCreateLobbyModalOpen: action,
       setMessage: action,
       setNewMessageValue: action,
       sendMessage: action,
       setLobbies: action,
     });
     this.root = root;
+    this.createLobbyModal = new CreateLobbyModalState(this.root);
   }
-
-  setIsCreateLobbyModalOpen = () => {
-    this.isCreateLobbyModalOpen = !this.isCreateLobbyModalOpen;
-  };
 
   setMessage = (message: HomeSocketMessage) => {
     this.messages.push(message);

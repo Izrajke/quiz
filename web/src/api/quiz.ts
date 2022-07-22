@@ -43,9 +43,16 @@ export interface LibraryItem {
   score: number;
 }
 
+export interface LibraryResponse {
+  totalPages: number;
+  content: LibraryItem[];
+}
+
 // TODO: подключить реальное api. POST запрос или GET через string params
-export const loadLibrary = () => {
-  return api<LibraryItem[]>({
+export const loadLibrary = (page: number) => {
+  // TODO: параметр страницы либо в Query либо переделать в POST
+  console.log(page);
+  return api<LibraryResponse>({
     input: `/mock/library.json`,
     init: {
       headers: {

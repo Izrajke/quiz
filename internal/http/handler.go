@@ -22,6 +22,7 @@ func (s *Server) handleGameCreate(ctx *fasthttp.RequestCtx) {
 func (s *Server) handleWs(ctx *fasthttp.RequestCtx) {
 	name := ctx.QueryArgs().Peek("name")
 	room := ctx.QueryArgs().Peek("room")
+	avatar := ctx.QueryArgs().Peek("avatar")
 
-	game.ServeWs(ctx, s.hub, s.logger, string(name), string(room))
+	game.ServeWs(ctx, s.hub, s.logger, string(name), string(room), string(avatar))
 }

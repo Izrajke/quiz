@@ -102,6 +102,7 @@ export interface RoomPlayer {
   name: string;
   points: number;
   color: PlayerColors;
+  avatar: string;
 }
 
 /** Информация о игроках */

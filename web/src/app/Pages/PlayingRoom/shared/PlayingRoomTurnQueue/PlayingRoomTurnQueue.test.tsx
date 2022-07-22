@@ -60,18 +60,21 @@ describe('INTEGRATION: PlayingRoomTurnQueue', () => {
           name: 'Вася',
           id: '1',
           points: 100,
+          avatar: '',
         },
         {
           color: 'player-2',
           name: 'gogsh',
           id: '2',
           points: 200,
+          avatar: '',
         },
         {
           color: 'player-3',
           name: 'Петя',
           id: '3',
           points: 300,
+          avatar: '',
         },
       ],
     };

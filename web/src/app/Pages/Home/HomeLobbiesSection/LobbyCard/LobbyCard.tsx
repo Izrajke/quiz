@@ -15,8 +15,6 @@ export const LobbyCard: FunctionComponent<HomeSocketLobbyCard> = observer(
       [players, max],
     ).reverse();
 
-    console.log(renderPlayersArray);
-
     return (
       <div className={classes.wrapper}>
         <div className={classes.leftSide}>

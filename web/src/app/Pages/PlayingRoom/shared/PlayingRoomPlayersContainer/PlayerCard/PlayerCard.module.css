@@ -9,24 +9,14 @@
   display: flex;
   gap: 18px;
   width: 100%;
-  margin: 0px 20px;
-  padding: 20px 0px;
-}
-
-.avatar {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  object-fit: cover;
-  height: 70px;
-  width: 70px;
-  border-radius: 100%;
+  margin: 0 20px;
+  padding: 20px 0;
 }
 
 .playerLine {
   height: 10px;
   width: 100%;
-  border-radius: 6px 6px 0px 0px;
+  border-radius: 6px 6px 0 0;
 }
 
 .line-player-1 {
