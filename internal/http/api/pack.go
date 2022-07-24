@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"github.com/valyala/fasthttp"
+	"math"
 	"net/http"
 )
 
@@ -89,10 +90,46 @@ var packs = []*pack{
 }
 
 func (s *PackController) HandleFilter(ctx *fasthttp.RequestCtx) {
+	body := ctx.PostBody()
+
+	request := struct {
+		Page int `json:"page"`
+	}{}
+	err := json.Unmarshal(body, &request)
+	if err != nil {
+		ctx.Error("bad request", fasthttp.StatusBadRequest)
+		return
+	}
+
+	page := 1
+	if request.Page != 0 {
+		page = request.Page
+	}
+	limit := 10
+	offset := (page - 1) * limit
+	total := int(math.Ceil(float64(len(packs)) / float64(limit)))
+
+	response := struct {
+		Content    []*pack `json:"content"`
+		Pagination struct {
+			CurrentPage int `json:"currentPage"`
+			TotalPages  int `json:"totalPages"`
+		} `json:"pagination"`
+	}{
+		Content: packs[offset:],
+		Pagination: struct {
+			CurrentPage int `json:"currentPage"`
+			TotalPages  int `json:"totalPages"`
+		}{
+			CurrentPage: page,
+			TotalPages:  total,
+		},
+	}
+
 	ctx.Response.Header.SetContentType("application/json")
 	ctx.Response.SetStatusCode(http.StatusOK)
 
-	jsonBody, _ := json.Marshal(packs)
+	jsonBody, _ := json.Marshal(response)
 	ctx.SetBody(jsonBody)
 }
 
