@@ -19,7 +19,7 @@ export const ScoreStars: FunctionComponent<ScoreStarsProps> = observer(
       () =>
         new Array(MAX_STARS_IN_LIBRARY_TABLE)
           .fill(0)
-          .map((_, index) => (index++ < score ? 1 : 0)),
+          .map((_, index) => (index++ < Math.round(score) ? 1 : 0)),
       [score],
     );
 

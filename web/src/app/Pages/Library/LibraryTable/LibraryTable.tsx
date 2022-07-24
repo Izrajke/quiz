@@ -22,11 +22,11 @@ export const LibraryTable: FunctionComponent = observer(() => {
     () => [
       {
         header: 'Название пака',
-        accessor: 'name',
+        accessor: 'title',
       },
       {
         header: 'Тематика',
-        accessor: 'type',
+        accessor: 'category',
       },
       {
         header: 'Оценка',
@@ -52,7 +52,7 @@ export const LibraryTable: FunctionComponent = observer(() => {
     () =>
       library.data.map((pack) => ({
         ...pack,
-        score: <ScoreStars score={pack.score} />,
+        score: <ScoreStars score={pack.rating} />,
         actions: (
           <Button
             type="default"
