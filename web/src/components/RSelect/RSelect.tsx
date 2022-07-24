@@ -13,7 +13,7 @@ type RSelectOnChange = (
 ) => void;
 
 export interface Option {
-  value: string;
+  value: string | number;
   label: string;
 }
 

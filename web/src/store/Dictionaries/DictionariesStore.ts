@@ -30,7 +30,7 @@ export class DictionariesStore {
 
     for (let i = 0; i < result.length; i++) {
       switch (dictionaries[i]) {
-        case DICTIONARIES.packTypes: {
+        case DICTIONARIES.filter: {
           this.packTypes = result[i] as DictionaryPackTypes[];
           break;
         }

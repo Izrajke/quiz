@@ -16,8 +16,8 @@ export const CreatePackMainSection: FunctionComponent = observer(() => {
   const selectOptions = useMemo<Option[]>(
     () =>
       dictionaries.packTypes.map((type) => ({
-        label: type.name,
-        value: type.uuid,
+        label: type.title,
+        value: type.id,
       })),
     [dictionaries.packTypes],
   );

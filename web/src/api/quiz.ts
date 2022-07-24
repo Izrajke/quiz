@@ -25,13 +25,13 @@ export const createLobby = (params: CreateLobbyParams) => {
 export const loadDictionary = (dictionary: DICTIONARIES) => {
   return api({
     // TODO: подключить реальное api
-    input: `/mock/${dictionary}.json`,
+    input: `${BACKEND_URL}/api/category/${dictionary}`,
     init: {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      method: 'GET',
+      method: 'POST',
     },
   });
 };
