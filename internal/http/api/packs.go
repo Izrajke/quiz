@@ -6,7 +6,7 @@ var fullPacks = []*fullPack{
 		CategoryId: 1,
 		Title:      "Тестовое название 1",
 		Pack: pack{
-			RangeQuestion: []rangeQuestion{
+			RangeQuestions: []rangeQuestion{
 				// 1
 				{
 					Title:  "qwe123",
@@ -497,7 +497,7 @@ var fullPacks = []*fullPack{
 		CategoryId: 2,
 		Title:      "Тестовое название 2",
 		Pack: pack{
-			RangeQuestion: []rangeQuestion{
+			RangeQuestions: []rangeQuestion{
 				// 1
 				{
 					Title:  "qwe123",

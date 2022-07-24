@@ -23,7 +23,7 @@ type multipleChoiceQuestion struct {
 }
 
 type pack struct {
-	RangeQuestion           []rangeQuestion          `json:"rangeQuestion"`
+	RangeQuestions          []rangeQuestion          `json:"rangeQuestions"`
 	MultipleChoiceQuestions []multipleChoiceQuestion `json:"multipleChoiceQuestions"`
 }
 

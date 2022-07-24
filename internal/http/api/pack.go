@@ -117,9 +117,13 @@ func (s *PackController) HandleUpdate(ctx *fasthttp.RequestCtx) {
 		}
 	}
 
+	response := struct {
+		Success bool `json:"success"`
+	}{Success: true}
+
 	ctx.Response.Header.SetContentType("application/json")
 	ctx.Response.SetStatusCode(http.StatusOK)
-	jsonBody, _ := json.Marshal(fullPackRequest)
+	jsonBody, _ := json.Marshal(response)
 	ctx.SetBody(jsonBody)
 }
 
