@@ -112,380 +112,220 @@ var fullPacks = []*fullPack{
 				// 1
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 2
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 3
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 4
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 5
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 6
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 7
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 8
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 9
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 10
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 11
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 12
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 13
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 14
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 15
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 16
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 17
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 18
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 19
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 20
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
@@ -603,380 +443,220 @@ var fullPacks = []*fullPack{
 				// 1
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 2
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 3
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 4
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 5
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 6
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 7
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 8
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 9
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 10
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 11
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 12
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 13
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 14
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 15
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 16
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 17
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 18
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 19
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},
 				// 20
 				{
 					Title: "qwe123",
-					Options: []multipleChoiceQuestionOption{
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
-						{
-							Option: "1111",
-						},
+					Options: []string{
+						"1111",
+						"1111",
+						"1111",
+						"1111",
 					},
 					Answer: 1,
 				},

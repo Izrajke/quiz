@@ -110,6 +110,7 @@ func (s *PackController) HandleUpdate(ctx *fasthttp.RequestCtx) {
 		ctx.Error("bad request", fasthttp.StatusBadRequest)
 		return
 	}
+	fullPackRequest.Id = packIdInt
 
 	for i, currentPack := range fullPacks {
 		if packIdInt == currentPack.Id {

@@ -12,14 +12,10 @@ type rangeQuestion struct {
 	Answer int    `json:"answer"`
 }
 
-type multipleChoiceQuestionOption struct {
-	Option string `json:"option"`
-}
-
 type multipleChoiceQuestion struct {
-	Title   string                         `json:"title"`
-	Options []multipleChoiceQuestionOption `json:"options"`
-	Answer  int                            `json:"answer"`
+	Title   string   `json:"title"`
+	Options []string `json:"options"`
+	Answer  int      `json:"answer"`
 }
 
 type pack struct {
