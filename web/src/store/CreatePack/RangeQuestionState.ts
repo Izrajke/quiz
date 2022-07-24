@@ -5,7 +5,7 @@ import { uuid } from 'utils';
 
 import type { RootStore } from '../RootStore';
 
-export class NumericQuestionState {
+export class rangeQuestionState {
   /** Root store */
   root: RootStore;
 

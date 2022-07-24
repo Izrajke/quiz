@@ -1,3 +1,3 @@
 export * from './CreatePackStore';
-export type { NumericQuestionState } from './NumericQuestionState';
-export type { WithVariantsQuestionState } from './WithVariantsQuestionState';
+export type { rangeQuestionState } from './RangeQuestionState';
+export type { multipleChoiceQuestionState } from './MultipleChoiceQuestionState';

@@ -7,7 +7,7 @@ import { NUMBER_OF_VARIANTS } from 'const';
 import type { RootStore } from '../RootStore';
 
 class QuestionAnswerState {
-  questionState: WithVariantsQuestionState;
+  questionState: multipleChoiceQuestionState;
   answer = '';
   uuid: string;
 
@@ -15,7 +15,7 @@ class QuestionAnswerState {
     return this.questionState.correctAnswer === this.uuid;
   }
 
-  constructor(questionState: WithVariantsQuestionState, id?: string) {
+  constructor(questionState: multipleChoiceQuestionState, id?: string) {
     makeObservable(this, {
       // observable
       answer: observable,
@@ -38,7 +38,7 @@ class QuestionAnswerState {
   };
 }
 
-export class WithVariantsQuestionState {
+export class multipleChoiceQuestionState {
   /** Root store */
   root: RootStore;
 

@@ -82,7 +82,7 @@ export const CreateRoomModal: FunctionComponent = observer(() => {
                   {createLobbyModal.packInfo.title}
                 </Typography.Text>
                 <Typography.Text color="white-50" type="caption-1">
-                  {createLobbyModal.packInfo.category}
+                  {createLobbyModal.packInfo.categoryId}
                 </Typography.Text>
               </div>
               <Icon

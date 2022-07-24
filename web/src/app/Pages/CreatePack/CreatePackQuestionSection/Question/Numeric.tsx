@@ -2,12 +2,12 @@ import type { FunctionComponent } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { Textarea, Input } from 'components';
-import type { NumericQuestionState } from 'store/CreatePack/NumericQuestionState';
+import type { rangeQuestionState } from 'store/CreatePack/RangeQuestionState';
 
 import classes from './Question.module.css';
 
 export interface NumericProps {
-  state: NumericQuestionState;
+  state: rangeQuestionState;
 }
 
 export type NumericComponent = FunctionComponent<NumericProps>;

@@ -3,12 +3,12 @@ import type { FunctionComponent } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { Input, Textarea, Checkbox } from 'components';
-import type { WithVariantsQuestionState } from 'store/CreatePack/WithVariantsQuestionState';
+import type { multipleChoiceQuestionState } from 'store/CreatePack/MultipleChoiceQuestionState';
 
 import classes from './Question.module.css';
 
 export interface WithVariantsProps {
-  state: WithVariantsQuestionState;
+  state: multipleChoiceQuestionState;
 }
 
 export type WithVariantsComponent = FunctionComponent<WithVariantsProps>;

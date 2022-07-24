@@ -17,6 +17,7 @@ export const ControlButtons: FunctionComponent = observer(() => {
           className={classes.button}
           type="primary"
           disabled={!createPack.isAllFilled}
+          onClick={createPack.create}
         >
           Создать пак
         </Button>

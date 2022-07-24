@@ -1,31 +1,33 @@
 import type { ChangeEvent } from 'react';
 import { makeObservable, observable, action, computed, flow } from 'mobx';
+import { createPack } from 'api';
+import type { CreatePackResponse } from 'api';
 
 import { NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK } from 'const';
 import type { Option } from 'components';
 
 import type { RootStore } from '../RootStore';
 
-import { NumericQuestionState } from './NumericQuestionState';
-import { WithVariantsQuestionState } from './WithVariantsQuestionState';
+import { rangeQuestionState } from './RangeQuestionState';
+import { multipleChoiceQuestionState } from './MultipleChoiceQuestionState';
 
 export class CreatePackStore {
   /** Root store */
   root: RootStore;
   name = '';
   type: Option | null = null;
-  numericQuestions: NumericQuestionState[] = [];
-  withVariantsQuestions: WithVariantsQuestionState[] = [];
+  rangeQuestions: rangeQuestionState[] = [];
+  multipleChoiceQuestions: multipleChoiceQuestionState[] = [];
 
   get numericFilledQuestions() {
-    return this.numericQuestions.reduce((acc, item) => {
+    return this.rangeQuestions.reduce((acc, item) => {
       acc += item.isFilled ? 1 : 0;
       return acc;
     }, 0);
   }
 
   get withVariantsFilledQuestions() {
-    return this.withVariantsQuestions.reduce((acc, item) => {
+    return this.multipleChoiceQuestions.reduce((acc, item) => {
       acc += item.isFilled ? 1 : 0;
       return acc;
     }, 0);
@@ -33,13 +35,16 @@ export class CreatePackStore {
 
   /** Заполнены ли все вопросы */
   get isAllFilled() {
-    if (!this.numericQuestions.length || !this.withVariantsQuestions.length) {
+    if (!this.rangeQuestions.length || !this.multipleChoiceQuestions.length) {
       return false;
     }
 
     return (
-      this.numericFilledQuestions === this.numericQuestions.length &&
-      this.withVariantsFilledQuestions === this.withVariantsQuestions.length
+      this.numericFilledQuestions === this.rangeQuestions.length &&
+      this.withVariantsFilledQuestions ===
+        this.multipleChoiceQuestions.length &&
+      this.type &&
+      this.name
     );
   }
 
@@ -52,8 +57,8 @@ export class CreatePackStore {
       // observable
       name: observable,
       type: observable,
-      numericQuestions: observable,
-      withVariantsQuestions: observable,
+      rangeQuestions: observable,
+      multipleChoiceQuestions: observable,
       // action
       setName: action,
       setType: action,
@@ -66,17 +71,19 @@ export class CreatePackStore {
 
   init = () => {
     // TODO: Это говно нужно будет переработать =(
-    if (this.numericQuestions.length || this.withVariantsQuestions.length)
+    if (this.rangeQuestions.length || this.multipleChoiceQuestions.length)
       return;
 
     // TODO: Если смотрмим чужой пак
-    this.withVariantsQuestions = new Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
+    this.multipleChoiceQuestions = new Array(
+      NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK,
+    )
       .fill(0)
-      .map(() => new WithVariantsQuestionState(this.root));
+      .map(() => new multipleChoiceQuestionState(this.root));
 
-    this.numericQuestions = Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
+    this.rangeQuestions = Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
       .fill(0)
-      .map(() => new NumericQuestionState(this.root));
+      .map(() => new rangeQuestionState(this.root));
   };
 
   setName = (e: ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +94,40 @@ export class CreatePackStore {
     this.type = type;
   };
 
-  // TODO: Создание пака
-  // eslint-disable-next-line
-  *create() {}
+  *create() {
+    // TODO: отрефакторить
+    const data = (yield createPack({
+      categoryId: this.type?.value as number,
+      title: this.name,
+      pack: {
+        multipleChoiceQuestions: this.multipleChoiceQuestions.map(
+          (questionState) => {
+            const answerIndex = questionState.options.findIndex(
+              (answerState) => answerState.isChecked,
+            );
+
+            return {
+              title: questionState.question,
+              options: questionState.options.map(
+                (answerState) => answerState.answer,
+              ),
+              answer: answerIndex,
+            };
+          },
+        ),
+        rangeQuestions: this.rangeQuestions.map((questionState) => ({
+          title: questionState.question,
+          answer: Number(questionState.answer),
+        })),
+      },
+    })) as CreatePackResponse;
+
+    if (!data) {
+      return;
+    }
+
+    if (data.success) {
+      // TODO
+    }
+  }
 }
