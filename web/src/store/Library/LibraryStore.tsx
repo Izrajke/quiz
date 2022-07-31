@@ -39,6 +39,6 @@ export class LibraryStore {
     if (!data) return;
 
     this.data = data.content;
-    this.totalPages = data.totalPages;
+    this.totalPages = data.pagination.totalPages;
   }
 }

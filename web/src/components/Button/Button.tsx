@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 
 import classes from './Button.module.css';
 
-type ButtonType = 'regular' | 'primary' | 'default';
+type ButtonType = 'regular' | 'primary' | 'default' | 'danger';
 type ButtonSize = 'normal' | 'large' | 'small';
 
 export interface ButtonProps {

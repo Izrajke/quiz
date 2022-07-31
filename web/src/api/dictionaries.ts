@@ -3,5 +3,6 @@ export interface Dictionary {
 }
 
 export interface DictionaryPackTypes extends Dictionary {
-  name: string;
+  id: number;
+  title: string;
 }

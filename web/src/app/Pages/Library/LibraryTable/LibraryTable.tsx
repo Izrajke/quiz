@@ -1,32 +1,34 @@
 import { useMemo, useCallback } from 'react';
 import type { FunctionComponent } from 'react';
+import { Link } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
 
 import { Paper, Table, Button } from 'components';
 import type { TableColumns, TableData, TableClassNames } from 'components';
 import { useStore } from 'store';
+import { LibraryItem } from 'api';
 
 import { ScoreStars } from './ScoreStars';
 
 import classes from './LibraryTable.module.css';
-import { LibraryItem } from '../../../../api';
 
 export const LibraryTable: FunctionComponent = observer(() => {
   const {
     library,
     home: { createLobbyModal },
+    dictionaries,
   } = useStore();
 
   const columns = useMemo<TableColumns[]>(
     () => [
       {
         header: 'Название пака',
-        accessor: 'name',
+        accessor: 'title',
       },
       {
         header: 'Тематика',
-        accessor: 'type',
+        accessor: 'categoryId',
       },
       {
         header: 'Оценка',
@@ -47,12 +49,16 @@ export const LibraryTable: FunctionComponent = observer(() => {
     },
     [createLobbyModal],
   );
+  console.log(library.data);
 
   const data = useMemo(
     () =>
       library.data.map((pack) => ({
         ...pack,
-        score: <ScoreStars score={pack.score} />,
+        categoryId: dictionaries.packTypes.find((type) => type.id === pack.id)
+          ?.title,
+        title: <Link to={`/pack/${pack.id}`}>{pack.title}</Link>,
+        score: <ScoreStars score={pack.rating} />,
         actions: (
           <Button
             type="default"
@@ -63,7 +69,7 @@ export const LibraryTable: FunctionComponent = observer(() => {
           </Button>
         ),
       })),
-    [library.data, onChoosePackHandler],
+    [library.data, onChoosePackHandler, dictionaries.packTypes],
   ) as unknown as TableData[];
 
   const tableClassNames = useMemo<TableClassNames>(

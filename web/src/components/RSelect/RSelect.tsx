@@ -13,19 +13,21 @@ type RSelectOnChange = (
 ) => void;
 
 export interface Option {
-  value: string;
+  value: string | number;
   label: string;
 }
 
 export interface RSelectProps {
   options: Option[];
-  defaultValue: Option | null;
+  defaultValue?: Option | null;
+  value: Option | null;
   onChange: (value: Option | null) => void;
   isClearable?: boolean;
   isSearchable?: boolean;
   wrapperClassName?: string;
   label?: string;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 export const RSelect: FunctionComponent<RSelectProps> = observer(
@@ -38,6 +40,8 @@ export const RSelect: FunctionComponent<RSelectProps> = observer(
     wrapperClassName,
     label,
     placeholder,
+    value,
+    disabled,
   }) => {
     const wrapperStyle = useMemo(
       () => clsx(classes.root, wrapperClassName),
@@ -63,6 +67,8 @@ export const RSelect: FunctionComponent<RSelectProps> = observer(
           isClearable={isClearable}
           isSearchable={isSearchable}
           placeholder={placeholder}
+          value={value}
+          isDisabled={disabled}
         />
       </div>
     );

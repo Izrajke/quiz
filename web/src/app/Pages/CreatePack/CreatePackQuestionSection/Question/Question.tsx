@@ -10,8 +10,8 @@ import type { WithVariantsComponent } from './WithVariants';
 import classes from './Question.module.css';
 
 import type {
-  NumericQuestionState,
-  WithVariantsQuestionState,
+  rangeQuestionState,
+  multipleChoiceQuestionState,
 } from 'store/CreatePack';
 
 export enum QuestionTypes {
@@ -21,7 +21,7 @@ export enum QuestionTypes {
 
 interface QuestionProps {
   type: QuestionTypes;
-  data: WithVariantsQuestionState | NumericQuestionState;
+  data: multipleChoiceQuestionState | rangeQuestionState;
 }
 
 const questionComponents = {
@@ -38,7 +38,7 @@ export const Question: FunctionComponent<QuestionProps> = observer(
     return (
       <div className={classes.wrapper}>
         <QuestionComponent
-          state={data as NumericQuestionState & WithVariantsQuestionState}
+          state={data as rangeQuestionState & multipleChoiceQuestionState}
         />
       </div>
     );

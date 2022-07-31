@@ -24,42 +24,46 @@ export const createLobby = (params: CreateLobbyParams) => {
 
 export const loadDictionary = (dictionary: DICTIONARIES) => {
   return api({
-    // TODO: подключить реальное api
-    input: `/mock/${dictionary}.json`,
+    input: `${BACKEND_URL}/api/category/${dictionary}`,
     init: {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      method: 'GET',
+      method: 'POST',
     },
   });
 };
 
 export interface LibraryItem {
-  name: string;
-  uuid: string;
-  type: string;
-  score: number;
+  title: string;
+  id: number;
+  categoryId: string;
+  rating: number;
+}
+
+export interface PaginationResponse {
+  currentPage: number;
+  totalPages: number;
 }
 
 export interface LibraryResponse {
-  totalPages: number;
   content: LibraryItem[];
+  pagination: PaginationResponse;
 }
 
-// TODO: подключить реальное api. POST запрос или GET через string params
 export const loadLibrary = (page: number) => {
-  // TODO: параметр страницы либо в Query либо переделать в POST
-  console.log(page);
+  const body = JSON.stringify({ page });
+
   return api<LibraryResponse>({
-    input: `/mock/library.json`,
+    input: `${BACKEND_URL}/api/pack/filter`,
     init: {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      method: 'GET',
+      method: 'POST',
+      body,
     },
   });
 };

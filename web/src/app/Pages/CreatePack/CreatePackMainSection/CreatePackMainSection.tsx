@@ -9,6 +9,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from 'store';
 
 import classes from './CreatePackMainSection.module.css';
+import { ViewPackTypes } from '../CreatePack';
 
 export const CreatePackMainSection: FunctionComponent = observer(() => {
   const { dictionaries, createPack } = useStore();
@@ -16,10 +17,15 @@ export const CreatePackMainSection: FunctionComponent = observer(() => {
   const selectOptions = useMemo<Option[]>(
     () =>
       dictionaries.packTypes.map((type) => ({
-        label: type.name,
-        value: type.uuid,
+        label: type.title,
+        value: type.id,
       })),
     [dictionaries.packTypes],
+  );
+
+  const isFieldsDisabled = useMemo(
+    () => createPack.viewType === ViewPackTypes.view,
+    [createPack.viewType],
   );
 
   return (
@@ -34,16 +40,18 @@ export const CreatePackMainSection: FunctionComponent = observer(() => {
           onChange={createPack.setName}
           label="Название пака"
           placeholder="введите название пака"
+          disabled={isFieldsDisabled}
         />
         <RSelect
           options={selectOptions}
-          defaultValue={createPack.type}
+          value={createPack.type}
           label="Тематика"
           wrapperClassName={classes.selectWrapper}
           onChange={createPack.setType}
           isSearchable
           isClearable
           placeholder="выберите тему"
+          disabled={isFieldsDisabled}
         />
       </div>
     </Paper>

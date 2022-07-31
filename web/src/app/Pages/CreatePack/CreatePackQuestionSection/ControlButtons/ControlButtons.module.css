@@ -1,9 +1,12 @@
 .wrapper {
   width: 100%;
+  display: flex;
+  gap: 16px;
   position: sticky;
   bottom: 0;
   padding: 20px 0 20px 0;
   background: var(--dark-2);
+
 }
 
 .button {

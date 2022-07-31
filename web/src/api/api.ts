@@ -4,8 +4,8 @@ export const BACKEND_URL = 'http://localhost:8080';
 
 /** Справочники. */
 export enum DICTIONARIES {
-  /** Типы пака */
-  packTypes = 'packTypes',
+  /** Фильтр по типу пака */
+  filter = 'filter',
 }
 
 export interface ApiParams {
@@ -13,6 +13,10 @@ export interface ApiParams {
   input: RequestInfo;
   /** Дополнения к запросу */
   init?: RequestInit;
+}
+
+export interface SuccessResponse {
+  success: boolean;
 }
 
 export const api = async <T = unknown>({

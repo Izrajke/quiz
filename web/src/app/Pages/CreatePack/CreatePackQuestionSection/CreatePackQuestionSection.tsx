@@ -24,10 +24,10 @@ export const CreatePackQuestionSection: FunctionComponent = observer(() => {
         <div className={classes.questionsContainer}>
           <QuestionCounter
             type={QuestionTypes.numeric}
-            count={createPack.numericQuestions.length}
+            count={createPack.rangeQuestions.length}
             countFilled={createPack.numericFilledQuestions}
           />
-          {createPack.numericQuestions.map((question) => (
+          {createPack.rangeQuestions.map((question) => (
             <Question
               key={question.uuid}
               type={QuestionTypes.numeric}
@@ -39,11 +39,11 @@ export const CreatePackQuestionSection: FunctionComponent = observer(() => {
         <div className={classes.questionsContainer}>
           <QuestionCounter
             type={QuestionTypes.withVariants}
-            count={createPack.numericQuestions.length}
+            count={createPack.rangeQuestions.length}
             countFilled={createPack.withVariantsFilledQuestions}
             textAlign="right"
           />
-          {createPack.withVariantsQuestions.map((question) => (
+          {createPack.multipleChoiceQuestions.map((question) => (
             <Question
               key={question.uuid}
               type={QuestionTypes.withVariants}

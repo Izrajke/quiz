@@ -16,10 +16,11 @@ export interface CheckboxProps
   > {
   className?: string;
   checked?: boolean;
+  disabled?: boolean;
 }
 
 export const Checkbox: FunctionComponent<CheckboxProps> = observer(
-  ({ className, checked = false, onChange, ...props }) => {
+  ({ className, checked = false, disabled, onChange, ...props }) => {
     const styles = useMemo(
       () => clsx(classes.checkBox, className),
       [className],
@@ -32,6 +33,7 @@ export const Checkbox: FunctionComponent<CheckboxProps> = observer(
           checked={checked}
           onChange={onChange}
           className={classes.checkInput}
+          disabled={disabled}
           {...props}
         />
         <span className={styles}>

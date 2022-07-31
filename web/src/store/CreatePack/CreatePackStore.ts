@@ -1,31 +1,39 @@
 import type { ChangeEvent } from 'react';
-import { makeObservable, observable, action, computed, flow } from 'mobx';
+import { action, computed, flow, makeObservable, observable } from 'mobx';
+import { NavigateFunction } from 'react-router';
+
+import type { NormalizedPackData, SuccessResponse } from 'api';
+import { createPack, deletePack, editPack, loadPack } from 'api';
 
 import { NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK } from 'const';
 import type { Option } from 'components';
 
 import type { RootStore } from '../RootStore';
 
-import { NumericQuestionState } from './NumericQuestionState';
-import { WithVariantsQuestionState } from './WithVariantsQuestionState';
+import { rangeQuestionState } from './RangeQuestionState';
+import { multipleChoiceQuestionState } from './MultipleChoiceQuestionState';
+import { ViewPackTypes } from '../../app/Pages';
+import { toast } from 'react-toastify';
 
 export class CreatePackStore {
   /** Root store */
   root: RootStore;
   name = '';
   type: Option | null = null;
-  numericQuestions: NumericQuestionState[] = [];
-  withVariantsQuestions: WithVariantsQuestionState[] = [];
+  rangeQuestions: rangeQuestionState[] = [];
+  multipleChoiceQuestions: multipleChoiceQuestionState[] = [];
+  viewType: ViewPackTypes = ViewPackTypes.create;
+  currentPackId: null | string = null;
 
   get numericFilledQuestions() {
-    return this.numericQuestions.reduce((acc, item) => {
+    return this.rangeQuestions.reduce((acc, item) => {
       acc += item.isFilled ? 1 : 0;
       return acc;
     }, 0);
   }
 
   get withVariantsFilledQuestions() {
-    return this.withVariantsQuestions.reduce((acc, item) => {
+    return this.multipleChoiceQuestions.reduce((acc, item) => {
       acc += item.isFilled ? 1 : 0;
       return acc;
     }, 0);
@@ -33,13 +41,16 @@ export class CreatePackStore {
 
   /** Заполнены ли все вопросы */
   get isAllFilled() {
-    if (!this.numericQuestions.length || !this.withVariantsQuestions.length) {
+    if (!this.rangeQuestions.length || !this.multipleChoiceQuestions.length) {
       return false;
     }
 
     return (
-      this.numericFilledQuestions === this.numericQuestions.length &&
-      this.withVariantsFilledQuestions === this.withVariantsQuestions.length
+      this.numericFilledQuestions === this.rangeQuestions.length &&
+      this.withVariantsFilledQuestions ===
+        this.multipleChoiceQuestions.length &&
+      this.type &&
+      this.name
     );
   }
 
@@ -52,42 +63,167 @@ export class CreatePackStore {
       // observable
       name: observable,
       type: observable,
-      numericQuestions: observable,
-      withVariantsQuestions: observable,
+      rangeQuestions: observable,
+      multipleChoiceQuestions: observable,
+      viewType: observable,
+      currentPackId: observable,
       // action
       setName: action,
       setType: action,
       init: action,
+      clear: action,
+      setCurrentPackId: action,
       // flow
       create: flow.bound,
+      loadPack: flow.bound,
+      edit: flow.bound,
+      delete: flow.bound,
     });
     this.root = root;
   }
 
-  init = () => {
-    // TODO: Это говно нужно будет переработать =(
-    if (this.numericQuestions.length || this.withVariantsQuestions.length)
+  init = (viewType: ViewPackTypes, id?: string) => {
+    this.viewType = viewType;
+
+    if (id) {
+      this.setCurrentPackId(id);
+      this.loadPack(id);
       return;
+    }
 
-    // TODO: Если смотрмим чужой пак
-    this.withVariantsQuestions = new Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
+    this.multipleChoiceQuestions = new Array(
+      NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK,
+    )
       .fill(0)
-      .map(() => new WithVariantsQuestionState(this.root));
+      .map(() => new multipleChoiceQuestionState(this.root));
 
-    this.numericQuestions = Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
+    this.rangeQuestions = Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
       .fill(0)
-      .map(() => new NumericQuestionState(this.root));
+      .map(() => new rangeQuestionState(this.root));
   };
 
   setName = (e: ChangeEvent<HTMLInputElement>) => {
     this.name = e.target.value;
   };
 
+  clear = () => {
+    this.rangeQuestions = [];
+    this.multipleChoiceQuestions = [];
+    this.type = null;
+    this.name = '';
+    this.currentPackId = null;
+  };
+
   setType = (type: Option | null) => {
     this.type = type;
   };
 
-  // TODO: Создание пака
-  // eslint-disable-next-line
-  *create() {}
+  setCurrentPackId = (id: string) => {
+    this.currentPackId = id;
+  };
+
+  *loadPack(id: string) {
+    const data = (yield loadPack(id)) as NormalizedPackData;
+
+    if (!data) {
+      return;
+    }
+
+    const {
+      title,
+      categoryId,
+      pack: { multipleChoiceQuestions, rangeQuestions },
+    } = data;
+
+    this.name = title;
+    const category = this.root.dictionaries.packTypes.find(
+      (type) => type.id === categoryId,
+    );
+
+    if (category) {
+      this.setType({
+        label: category.title,
+        value: category.id,
+      });
+    }
+
+    this.multipleChoiceQuestions = multipleChoiceQuestions.map(
+      (question) => new multipleChoiceQuestionState(this.root, question),
+    );
+
+    this.rangeQuestions = rangeQuestions.map(
+      (question) => new rangeQuestionState(this.root, question),
+    );
+  }
+
+  *create() {
+    const data = (yield createPack(
+      this.normalizePackData(),
+    )) as SuccessResponse;
+
+    if (!data) {
+      return;
+    }
+
+    if (data.success) {
+      // TODO Возможно стоит перебрасывать на страницу просмотра пака
+      this.clear();
+      toast.success('пак успешно создан');
+    }
+  }
+
+  *edit() {
+    const data = (yield editPack(
+      this.normalizePackData(),
+      this.currentPackId || '',
+    )) as SuccessResponse;
+
+    if (!data) {
+      return;
+    }
+
+    // TODO
+  }
+
+  *delete(navigate: NavigateFunction) {
+    const data = (yield deletePack(
+      this.currentPackId || '',
+    )) as SuccessResponse;
+
+    if (!data) {
+      return;
+    }
+
+    this.clear();
+    toast.success('Пак успешно удален');
+    navigate('/pack/create');
+  }
+
+  normalizePackData() {
+    return {
+      categoryId: this.type?.value as number,
+      title: this.name,
+      pack: {
+        multipleChoiceQuestions: this.multipleChoiceQuestions.map(
+          (questionState) => {
+            const answerIndex = questionState.options.findIndex(
+              (answerState) => answerState.isChecked,
+            );
+
+            return {
+              title: questionState.question,
+              options: questionState.options.map(
+                (answerState) => answerState.answer,
+              ),
+              answer: answerIndex,
+            };
+          },
+        ),
+        rangeQuestions: this.rangeQuestions.map((questionState) => ({
+          title: questionState.question,
+          answer: Number(questionState.answer),
+        })),
+      },
+    };
+  }
 }

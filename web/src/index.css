@@ -18,6 +18,10 @@
   --player-1: #3096e1;
   --player-1-hover: #1f75b3;
 
+  /* ошибки */
+  --danger: #de6754;
+  --danger-hover: #C54F3D;
+
   /* серый */
   --gray-1: rgba(230, 230, 230, 0.3);
 
