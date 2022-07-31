@@ -9,7 +9,7 @@ import classes from './Navigation.module.css';
 
 export enum NavigationPathways {
   home = '/',
-  createPack = '/pack',
+  createPack = '/pack/create',
   aboutGame = '/about',
   library = '/library',
 }

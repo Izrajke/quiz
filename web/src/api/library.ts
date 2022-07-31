@@ -11,7 +11,7 @@ export interface NormalizedMultipleChoiceQuestionsData {
   answer: number;
 }
 
-export interface CreatePackRequest {
+export interface NormalizedPackData {
   categoryId: number;
   title: string;
   pack: {
@@ -24,7 +24,7 @@ export interface CreatePackResponse {
   success: boolean;
 }
 
-export const createPack = (pack: CreatePackRequest) => {
+export const createPack = (pack: NormalizedPackData) => {
   const body = JSON.stringify(pack);
 
   return api({
@@ -36,6 +36,19 @@ export const createPack = (pack: CreatePackRequest) => {
       },
       method: 'POST',
       body,
+    },
+  });
+};
+
+export const loadPack = (id: string) => {
+  return api({
+    input: `${BACKEND_URL}/api/pack/view/${id}`,
+    init: {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
     },
   });
 };

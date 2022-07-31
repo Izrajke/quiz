@@ -1,21 +1,23 @@
 import { useMemo, useCallback } from 'react';
 import type { FunctionComponent } from 'react';
+import { Link } from 'react-router-dom';
 
 import { observer } from 'mobx-react-lite';
 
 import { Paper, Table, Button } from 'components';
 import type { TableColumns, TableData, TableClassNames } from 'components';
 import { useStore } from 'store';
+import { LibraryItem } from 'api';
 
 import { ScoreStars } from './ScoreStars';
 
 import classes from './LibraryTable.module.css';
-import { LibraryItem } from '../../../../api';
 
 export const LibraryTable: FunctionComponent = observer(() => {
   const {
     library,
     home: { createLobbyModal },
+    dictionaries,
   } = useStore();
 
   const columns = useMemo<TableColumns[]>(
@@ -26,7 +28,7 @@ export const LibraryTable: FunctionComponent = observer(() => {
       },
       {
         header: 'Тематика',
-        accessor: 'category',
+        accessor: 'categoryId',
       },
       {
         header: 'Оценка',
@@ -52,6 +54,9 @@ export const LibraryTable: FunctionComponent = observer(() => {
     () =>
       library.data.map((pack) => ({
         ...pack,
+        categoryId: dictionaries.packTypes.find((type) => type.id === pack.id)
+          ?.title,
+        title: <Link to={`/pack/${pack.id}`}>{pack.title}</Link>,
         score: <ScoreStars score={pack.rating} />,
         actions: (
           <Button
@@ -63,7 +68,7 @@ export const LibraryTable: FunctionComponent = observer(() => {
           </Button>
         ),
       })),
-    [library.data, onChoosePackHandler],
+    [library.data, onChoosePackHandler, dictionaries.packTypes],
   ) as unknown as TableData[];
 
   const tableClassNames = useMemo<TableClassNames>(

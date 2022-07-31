@@ -1,32 +1,47 @@
 import type { ChangeEvent } from 'react';
-import { action, makeObservable, observable, computed } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 import { uuid } from 'utils';
 import { NUMBER_OF_VARIANTS } from 'const';
+import type { NormalizedMultipleChoiceQuestionsData } from 'api';
 
 import type { RootStore } from '../RootStore';
+import { ViewPackTypes } from '../../app/Pages';
 
 class QuestionAnswerState {
   questionState: multipleChoiceQuestionState;
   answer = '';
   uuid: string;
 
+  get isDisabled() {
+    return this.questionState.isDisabled;
+  }
+
   get isChecked() {
     return this.questionState.correctAnswer === this.uuid;
   }
 
-  constructor(questionState: multipleChoiceQuestionState, id?: string) {
+  constructor(
+    questionState: multipleChoiceQuestionState,
+    value?: string,
+    id?: string,
+  ) {
     makeObservable(this, {
       // observable
       answer: observable,
       // computed
       isChecked: computed,
+      isDisabled: computed,
       // action
       setAnswer: action,
       onCheck: action,
     });
     this.questionState = questionState;
     this.uuid = id || uuid();
+
+    if (value) {
+      this.answer = value;
+    }
   }
 
   setAnswer = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +62,10 @@ export class multipleChoiceQuestionState {
   options: QuestionAnswerState[] = [];
   correctAnswer: string | null = null;
 
+  get isDisabled() {
+    return this.root.createPack.viewType === ViewPackTypes.view;
+  }
+
   get isFilled() {
     return !!(
       this.question &&
@@ -55,10 +74,14 @@ export class multipleChoiceQuestionState {
     );
   }
 
-  constructor(root: RootStore, id?: string) {
+  constructor(
+    root: RootStore,
+    initFields?: NormalizedMultipleChoiceQuestionsData,
+  ) {
     makeObservable(this, {
       // computed
       isFilled: computed,
+      isDisabled: computed,
       // observable
       question: observable,
       options: observable,
@@ -68,10 +91,27 @@ export class multipleChoiceQuestionState {
       setCorrectAnswer: action,
     });
     this.root = root;
+    this.uuid = uuid();
+
+    if (initFields) {
+      this.question = initFields.title;
+
+      this.options = initFields.options.map((option, i) => {
+        const id = uuid();
+
+        if (i === initFields.answer) {
+          this.correctAnswer = id;
+        }
+
+        return new QuestionAnswerState(this, option, id);
+      });
+
+      return;
+    }
+
     this.options = new Array(NUMBER_OF_VARIANTS)
       .fill(0)
       .map(() => new QuestionAnswerState(this));
-    this.uuid = id || uuid();
   }
 
   setQuestion = (e: ChangeEvent<HTMLTextAreaElement>) => {

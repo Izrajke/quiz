@@ -1,11 +1,14 @@
+import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
 import { Input, Textarea, Checkbox } from 'components';
 import type { multipleChoiceQuestionState } from 'store/CreatePack/MultipleChoiceQuestionState';
+import { ViewPackTypes } from '../../CreatePack';
 
 import classes from './Question.module.css';
+import { useStore } from 'store';
 
 export interface WithVariantsProps {
   state: multipleChoiceQuestionState;
@@ -14,6 +17,13 @@ export interface WithVariantsProps {
 export type WithVariantsComponent = FunctionComponent<WithVariantsProps>;
 
 export const WithVariants: WithVariantsComponent = observer(({ state }) => {
+  const { createPack } = useStore();
+
+  const isFieldsDisabled = useMemo(
+    () => createPack.viewType === ViewPackTypes.view,
+    [createPack.viewType],
+  );
+
   return (
     <div className={classes.withVariantsWrapper}>
       <Textarea
@@ -23,6 +33,7 @@ export const WithVariants: WithVariantsComponent = observer(({ state }) => {
         label="Вопрос"
         placeholder="введите вопрос"
         rows={6}
+        disabled={isFieldsDisabled}
       />
       <div className={classes.variantsContainer}>
         {state.options.map((option, index) => (
@@ -32,11 +43,13 @@ export const WithVariants: WithVariantsComponent = observer(({ state }) => {
               defaultValue={option.answer}
               onChange={option.setAnswer}
               label={index === 0 ? 'Варианты ответа' : undefined}
+              disabled={isFieldsDisabled}
             />
             <Checkbox
               checked={option.isChecked}
               onChange={option.onCheck}
               className={classes.checkbox}
+              disabled={isFieldsDisabled}
             />
           </div>
         ))}

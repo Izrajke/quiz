@@ -37,7 +37,7 @@ export const loadDictionary = (dictionary: DICTIONARIES) => {
 
 export interface LibraryItem {
   title: string;
-  id: string;
+  id: number;
   categoryId: string;
   rating: number;
 }

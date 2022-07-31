@@ -18,16 +18,17 @@ export interface InputProps
   > {
   className?: string;
   label?: string;
+  disabled?: boolean;
 }
 
 export const Input: FunctionComponent<InputProps> = observer(
-  ({ label, className, ...props }) => {
+  ({ label, className, disabled, ...props }) => {
     const styles = useMemo(() => clsx(classes.wrapper, className), [className]);
 
     return (
       <label className={styles}>
         {label}
-        <input className={classes.input} {...props} />
+        <input disabled={disabled} className={classes.input} {...props} />
       </label>
     );
   },

@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react';
-import { makeObservable, observable, action, computed, flow } from 'mobx';
-import { createPack } from 'api';
-import type { CreatePackResponse } from 'api';
+import { action, computed, flow, makeObservable, observable } from 'mobx';
+import type { CreatePackResponse, NormalizedPackData } from 'api';
+import { createPack, loadPack } from 'api';
 
 import { NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK } from 'const';
 import type { Option } from 'components';
@@ -10,6 +10,8 @@ import type { RootStore } from '../RootStore';
 
 import { rangeQuestionState } from './RangeQuestionState';
 import { multipleChoiceQuestionState } from './MultipleChoiceQuestionState';
+import { ViewPackTypes } from '../../app/Pages';
+import { toast } from 'react-toastify';
 
 export class CreatePackStore {
   /** Root store */
@@ -18,6 +20,7 @@ export class CreatePackStore {
   type: Option | null = null;
   rangeQuestions: rangeQuestionState[] = [];
   multipleChoiceQuestions: multipleChoiceQuestionState[] = [];
+  viewType: ViewPackTypes = ViewPackTypes.create;
 
   get numericFilledQuestions() {
     return this.rangeQuestions.reduce((acc, item) => {
@@ -59,40 +62,89 @@ export class CreatePackStore {
       type: observable,
       rangeQuestions: observable,
       multipleChoiceQuestions: observable,
+      viewType: observable,
       // action
       setName: action,
       setType: action,
       init: action,
+      clear: action,
       // flow
       create: flow.bound,
+      loadPack: flow.bound,
     });
     this.root = root;
   }
 
-  init = () => {
-    // TODO: Это говно нужно будет переработать =(
-    if (this.rangeQuestions.length || this.multipleChoiceQuestions.length)
-      return;
+  init = (viewType: ViewPackTypes, id?: string) => {
+    this.viewType = viewType;
 
-    // TODO: Если смотрмим чужой пак
-    this.multipleChoiceQuestions = new Array(
-      NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK,
-    )
-      .fill(0)
-      .map(() => new multipleChoiceQuestionState(this.root));
+    switch (viewType) {
+      case ViewPackTypes.view:
+        if (id) {
+          this.loadPack(id);
+        }
+        break;
+      default:
+        this.multipleChoiceQuestions = new Array(
+          NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK,
+        )
+          .fill(0)
+          .map(() => new multipleChoiceQuestionState(this.root));
 
-    this.rangeQuestions = Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
-      .fill(0)
-      .map(() => new rangeQuestionState(this.root));
+        this.rangeQuestions = Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
+          .fill(0)
+          .map(() => new rangeQuestionState(this.root));
+    }
   };
 
   setName = (e: ChangeEvent<HTMLInputElement>) => {
     this.name = e.target.value;
   };
 
+  clear = () => {
+    this.rangeQuestions = [];
+    this.multipleChoiceQuestions = [];
+    this.type = null;
+    this.name = '';
+  };
+
   setType = (type: Option | null) => {
     this.type = type;
   };
+
+  *loadPack(id: string) {
+    const data = (yield loadPack(id)) as NormalizedPackData;
+
+    if (!data) {
+      return;
+    }
+
+    const {
+      title,
+      categoryId,
+      pack: { multipleChoiceQuestions, rangeQuestions },
+    } = data;
+
+    this.name = title;
+    const category = this.root.dictionaries.packTypes.find(
+      (type) => type.id === categoryId,
+    );
+
+    if (category) {
+      this.setType({
+        label: category.title,
+        value: category.id,
+      });
+    }
+
+    this.multipleChoiceQuestions = multipleChoiceQuestions.map(
+      (question) => new multipleChoiceQuestionState(this.root, question),
+    );
+
+    this.rangeQuestions = rangeQuestions.map(
+      (question) => new rangeQuestionState(this.root, question),
+    );
+  }
 
   *create() {
     // TODO: отрефакторить
@@ -127,7 +179,9 @@ export class CreatePackStore {
     }
 
     if (data.success) {
-      // TODO
+      // TODO Возможно стоит перебрасывать на страницу просмотра пака
+      this.clear();
+      toast.success('пак успешно создан');
     }
   }
 }

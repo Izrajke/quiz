@@ -10,22 +10,43 @@ import { CreatePackMainSection } from './CreatePackMainSection';
 import { CreatePackQuestionSection } from './CreatePackQuestionSection';
 
 import classes from './CreatePack.module.css';
+import { useLocation, useParams } from 'react-router';
 
-export const CreatePack: FunctionComponent = observer(() => {
-  const { createPack } = useStore();
+export enum ViewPackTypes {
+  create = 'create',
+  view = 'view',
+  // TODO:  добавить Edit когда появится
+  // edit = 'edit',
+}
 
-  useEffect(() => {
-    createPack.init();
-    // eslint-disable-next-line
-  }, []);
+interface CreatePackProps {
+  viewType: ViewPackTypes;
+}
 
-  return (
-    <div className={classes.root}>
-      <Header />
-      <CreatePackMainSection />
-      <CreatePackQuestionSection />
-    </div>
-  );
-});
+export const CreatePack: FunctionComponent<CreatePackProps> = observer(
+  ({ viewType }) => {
+    const { createPack } = useStore();
+    const { pathname } = useLocation();
+
+    const { id } = useParams();
+
+    useEffect(() => {
+      createPack.init(viewType, id);
+
+      return () => {
+        createPack.clear();
+      };
+      // eslint-disable-next-line
+    }, [pathname]);
+
+    return (
+      <div className={classes.root}>
+        <Header />
+        <CreatePackMainSection />
+        <CreatePackQuestionSection />
+      </div>
+    );
+  },
+);
 
 CreatePack.displayName = 'CreatePack';
