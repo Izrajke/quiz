@@ -24,7 +24,7 @@ export const App: FunctionComponent = observer(() => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/room/:id" element={<PlayingRoom />} />
-        <Route path="/createPack" element={<CreatePack />} />
+        <Route path="/pack" element={<CreatePack />} />
         <Route path="/library" element={<Library />} />
       </Routes>
       <SocketLogger />

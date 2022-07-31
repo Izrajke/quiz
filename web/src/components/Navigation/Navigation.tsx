@@ -9,8 +9,8 @@ import classes from './Navigation.module.css';
 
 export enum NavigationPathways {
   home = '/',
-  createPack = '/createPack',
-  aboutGame = '/aboutGame',
+  createPack = '/pack',
+  aboutGame = '/about',
   library = '/library',
 }
 
