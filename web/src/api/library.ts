@@ -20,10 +20,6 @@ export interface NormalizedPackData {
   };
 }
 
-export interface CreatePackResponse {
-  success: boolean;
-}
-
 export const createPack = (pack: NormalizedPackData) => {
   const body = JSON.stringify(pack);
 
@@ -43,6 +39,35 @@ export const createPack = (pack: NormalizedPackData) => {
 export const loadPack = (id: string) => {
   return api({
     input: `${BACKEND_URL}/api/pack/view/${id}`,
+    init: {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    },
+  });
+};
+
+export const editPack = (pack: NormalizedPackData, id: string) => {
+  const body = JSON.stringify(pack);
+
+  return api({
+    input: `${BACKEND_URL}/api/pack/update/${id}`,
+    init: {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body,
+    },
+  });
+};
+
+export const deletePack = (id: string) => {
+  return api({
+    input: `${BACKEND_URL}/api/pack/delete/${id}`,
     init: {
       headers: {
         Accept: 'application/json',

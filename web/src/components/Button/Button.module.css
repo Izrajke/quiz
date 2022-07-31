@@ -54,6 +54,22 @@
   opacity: 50%;
 }
 
+/* danger */
+
+.danger {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.danger:hover {
+  background: var(--danger-hover);
+}
+
+.danger:disabled {
+  opacity: 50%;
+}
+
+
 /* Size */
 .normal {
   font-size: 20px;

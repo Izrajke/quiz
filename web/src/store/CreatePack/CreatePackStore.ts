@@ -1,7 +1,9 @@
 import type { ChangeEvent } from 'react';
 import { action, computed, flow, makeObservable, observable } from 'mobx';
-import type { CreatePackResponse, NormalizedPackData } from 'api';
-import { createPack, loadPack } from 'api';
+import { NavigateFunction } from 'react-router';
+
+import type { NormalizedPackData, SuccessResponse } from 'api';
+import { createPack, deletePack, editPack, loadPack } from 'api';
 
 import { NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK } from 'const';
 import type { Option } from 'components';
@@ -21,6 +23,7 @@ export class CreatePackStore {
   rangeQuestions: rangeQuestionState[] = [];
   multipleChoiceQuestions: multipleChoiceQuestionState[] = [];
   viewType: ViewPackTypes = ViewPackTypes.create;
+  currentPackId: null | string = null;
 
   get numericFilledQuestions() {
     return this.rangeQuestions.reduce((acc, item) => {
@@ -63,14 +66,18 @@ export class CreatePackStore {
       rangeQuestions: observable,
       multipleChoiceQuestions: observable,
       viewType: observable,
+      currentPackId: observable,
       // action
       setName: action,
       setType: action,
       init: action,
       clear: action,
+      setCurrentPackId: action,
       // flow
       create: flow.bound,
       loadPack: flow.bound,
+      edit: flow.bound,
+      delete: flow.bound,
     });
     this.root = root;
   }
@@ -78,23 +85,21 @@ export class CreatePackStore {
   init = (viewType: ViewPackTypes, id?: string) => {
     this.viewType = viewType;
 
-    switch (viewType) {
-      case ViewPackTypes.view:
-        if (id) {
-          this.loadPack(id);
-        }
-        break;
-      default:
-        this.multipleChoiceQuestions = new Array(
-          NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK,
-        )
-          .fill(0)
-          .map(() => new multipleChoiceQuestionState(this.root));
-
-        this.rangeQuestions = Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
-          .fill(0)
-          .map(() => new rangeQuestionState(this.root));
+    if (id) {
+      this.setCurrentPackId(id);
+      this.loadPack(id);
+      return;
     }
+
+    this.multipleChoiceQuestions = new Array(
+      NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK,
+    )
+      .fill(0)
+      .map(() => new multipleChoiceQuestionState(this.root));
+
+    this.rangeQuestions = Array(NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK)
+      .fill(0)
+      .map(() => new rangeQuestionState(this.root));
   };
 
   setName = (e: ChangeEvent<HTMLInputElement>) => {
@@ -106,10 +111,15 @@ export class CreatePackStore {
     this.multipleChoiceQuestions = [];
     this.type = null;
     this.name = '';
+    this.currentPackId = null;
   };
 
   setType = (type: Option | null) => {
     this.type = type;
+  };
+
+  setCurrentPackId = (id: string) => {
+    this.currentPackId = id;
   };
 
   *loadPack(id: string) {
@@ -147,8 +157,50 @@ export class CreatePackStore {
   }
 
   *create() {
-    // TODO: отрефакторить
-    const data = (yield createPack({
+    const data = (yield createPack(
+      this.normalizePackData(),
+    )) as SuccessResponse;
+
+    if (!data) {
+      return;
+    }
+
+    if (data.success) {
+      // TODO Возможно стоит перебрасывать на страницу просмотра пака
+      this.clear();
+      toast.success('пак успешно создан');
+    }
+  }
+
+  *edit() {
+    const data = (yield editPack(
+      this.normalizePackData(),
+      this.currentPackId || '',
+    )) as SuccessResponse;
+
+    if (!data) {
+      return;
+    }
+
+    // TODO
+  }
+
+  *delete(navigate: NavigateFunction) {
+    const data = (yield deletePack(
+      this.currentPackId || '',
+    )) as SuccessResponse;
+
+    if (!data) {
+      return;
+    }
+
+    this.clear();
+    toast.success('Пак успешно удален');
+    navigate('/pack/create');
+  }
+
+  normalizePackData() {
+    return {
       categoryId: this.type?.value as number,
       title: this.name,
       pack: {
@@ -172,16 +224,6 @@ export class CreatePackStore {
           answer: Number(questionState.answer),
         })),
       },
-    })) as CreatePackResponse;
-
-    if (!data) {
-      return;
-    }
-
-    if (data.success) {
-      // TODO Возможно стоит перебрасывать на страницу просмотра пака
-      this.clear();
-      toast.success('пак успешно создан');
-    }
+    };
   }
 }

@@ -15,6 +15,10 @@ export interface ApiParams {
   init?: RequestInit;
 }
 
+export interface SuccessResponse {
+  success: boolean;
+}
+
 export const api = async <T = unknown>({
   input,
   init,

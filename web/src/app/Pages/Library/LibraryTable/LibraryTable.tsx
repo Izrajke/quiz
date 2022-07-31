@@ -49,6 +49,7 @@ export const LibraryTable: FunctionComponent = observer(() => {
     },
     [createLobbyModal],
   );
+  console.log(library.data);
 
   const data = useMemo(
     () =>
