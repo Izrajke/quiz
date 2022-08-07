@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import type { FunctionComponent } from 'react';
 
 import { useTable } from 'react-table';
@@ -29,12 +30,28 @@ export interface TableProps {
   currentPage: number;
   totalPages: number;
   setPage: (page: number) => void;
+  onRowClick: (id: string) => void;
 }
 
 export const Table: FunctionComponent<TableProps> = observer(
-  ({ data, columns, classNames, currentPage, totalPages, setPage }) => {
+  ({
+    data,
+    columns,
+    classNames,
+    currentPage,
+    totalPages,
+    setPage,
+    onRowClick,
+  }) => {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
       useTable({ data, columns });
+
+    const onRowClickHandler = useCallback(
+      (id: string) => () => {
+        onRowClick(id);
+      },
+      [onRowClick],
+    );
 
     return (
       <div className={classes.wrapper}>
@@ -44,8 +61,11 @@ export const Table: FunctionComponent<TableProps> = observer(
               // eslint-disable-next-line
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  // eslint-disable-next-line
-                  <th className={classNames?.th} {...column.getHeaderProps()}>
+                  <th
+                    className={classNames?.th}
+                    {...column.getHeaderProps()}
+                    key={column.id}
+                  >
                     {column.render('header')}
                   </th>
                 ))}
@@ -56,16 +76,17 @@ export const Table: FunctionComponent<TableProps> = observer(
             {rows.map((row) => {
               prepareRow(row);
               return (
-                // eslint-disable-next-line
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return (
-                      // eslint-disable-next-line
-                      <td className={classNames?.td} {...cell.getCellProps()}>
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
+                <tr
+                  {...row.getRowProps()}
+                  key={row.original.id}
+                  onClick={onRowClickHandler(row.original.id)}
+                >
+                  {row.cells.map((cell) => (
+                    // eslint-disable-next-line
+                    <td className={classNames?.td} {...cell.getCellProps()}>
+                      {cell.render('Cell')}
+                    </td>
+                  ))}
                 </tr>
               );
             })}

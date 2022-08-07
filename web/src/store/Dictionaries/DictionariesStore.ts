@@ -38,5 +38,7 @@ export class DictionariesStore {
           break;
       }
     }
+
+    console.log(this.packTypes);
   }
 }

@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo } from 'react';
+import { MouseEventHandler, FunctionComponent, useMemo } from 'react';
 
 import clsx from 'clsx';
 
@@ -13,7 +13,7 @@ export interface ButtonProps {
   /** Тип кнопки */
   type: ButtonType;
   /** Обработчик нажатия */
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   /** Стили */
   className?: string;
   /** Размер */

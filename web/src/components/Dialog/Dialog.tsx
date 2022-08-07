@@ -1,4 +1,9 @@
-import type { FunctionComponent, ReactNode } from 'react';
+import type {
+  FunctionComponent,
+  ReactNode,
+  MouseEvent,
+  MouseEventHandler,
+} from 'react';
 
 import { observer } from 'mobx-react-lite';
 
@@ -29,17 +34,18 @@ export const Dialog: FunctionComponent = observer(() => {
 
   /** Устанавливает поведение кнопки в зависимости от её роли */
   const getButtonClickHandler =
-    (onClick?: () => void, clickType?: ClickTypes) => () => {
+    (onClick?: MouseEventHandler<HTMLButtonElement>, clickType?: ClickTypes) =>
+    (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
       switch (clickType) {
         case 'submit':
-          onClick && onClick();
+          onClick && onClick(e);
           app.removeDialog();
           break;
         case 'cancel':
           app.removeDialog();
           break;
         default:
-          onClick && onClick();
+          onClick && onClick(e);
           break;
       }
     };

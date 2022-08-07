@@ -1,6 +1,6 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, MouseEventHandler } from 'react';
 import type { FunctionComponent } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { observer } from 'mobx-react-lite';
 
@@ -19,6 +19,7 @@ export const LibraryTable: FunctionComponent = observer(() => {
     home: { createLobbyModal },
     dictionaries,
   } = useStore();
+  const navigate = useNavigate();
 
   const columns = useMemo<TableColumns[]>(
     () => [
@@ -43,21 +44,23 @@ export const LibraryTable: FunctionComponent = observer(() => {
   );
 
   const onChoosePackHandler = useCallback(
-    (pack: LibraryItem) => () => {
-      createLobbyModal.setPackInfo(pack);
-      createLobbyModal.setIsOpen();
-    },
+    (pack: LibraryItem): MouseEventHandler<HTMLButtonElement> =>
+      (e) => {
+        e.stopPropagation();
+        createLobbyModal.setPackInfo(pack);
+        createLobbyModal.setIsOpen();
+      },
     [createLobbyModal],
   );
-  console.log(library.data);
 
   const data = useMemo(
     () =>
       library.data.map((pack) => ({
         ...pack,
-        categoryId: dictionaries.packTypes.find((type) => type.id === pack.id)
-          ?.title,
-        title: <Link to={`/pack/${pack.id}`}>{pack.title}</Link>,
+        categoryId: dictionaries.packTypes.find((type) => {
+          console.log(type, pack);
+          return type.id === pack.categoryId;
+        })?.title,
         score: <ScoreStars score={pack.rating} />,
         actions: (
           <Button
@@ -80,6 +83,13 @@ export const LibraryTable: FunctionComponent = observer(() => {
     [],
   );
 
+  const onRowClick = useCallback(
+    (id: string) => {
+      navigate(`/pack/${id}`);
+    },
+    [navigate],
+  );
+
   return (
     <Paper className={classes.wrapper}>
       <Table
@@ -89,6 +99,7 @@ export const LibraryTable: FunctionComponent = observer(() => {
         currentPage={library.currentPage}
         totalPages={library.totalPages}
         setPage={library.setCurrentPage}
+        onRowClick={onRowClick}
       />
     </Paper>
   );
