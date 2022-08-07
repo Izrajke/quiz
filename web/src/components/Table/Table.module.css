@@ -29,6 +29,7 @@
 
 .thead > tr > th {
   padding: 24px 20px;
+  font: var(--font-regular);
   width: 20%;
 }
 
