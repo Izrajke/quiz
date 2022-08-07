@@ -5,7 +5,9 @@ go 1.16
 require (
 	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/fasthttp/websocket v1.5.0
+	github.com/georgysavva/scany v1.0.0
 	github.com/google/uuid v1.3.0
+	github.com/jackc/pgx/v4 v4.16.1
 	github.com/joho/godotenv v1.4.0
 	github.com/stretchr/testify v1.7.1
 	github.com/valyala/fasthttp v1.33.0

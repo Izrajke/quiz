@@ -2,16 +2,24 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/georgysavva/scany/pgxscan"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/valyala/fasthttp"
+	"log"
 	"math"
 	"net/http"
 	"strconv"
 )
 
-type PackController struct{}
+type PackController struct {
+	db *pgxpool.Pool
+}
 
-func NewPackController() *PackController {
-	return &PackController{}
+func NewPackController(db *pgxpool.Pool) *PackController {
+	return &PackController{
+		db: db,
+	}
 }
 
 func (s *PackController) HandleFilter(ctx *fasthttp.RequestCtx) {
@@ -26,14 +34,16 @@ func (s *PackController) HandleFilter(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	var filterShortPacks []*shortPack
-	for _, currentPack := range fullPacks {
-		filterShortPacks = append(filterShortPacks, &shortPack{
-			Id:         currentPack.Id,
-			Title:      currentPack.Title,
-			CategoryId: currentPack.CategoryId,
-			Rating:     3.5,
-		})
+	filterShortPacks := make([]*shortPack, 0)
+	err = pgxscan.Select(ctx, s.db, &filterShortPacks, `SELECT id, categoryid, title FROM packages`)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("failed to select from db: %s", err.Error()))
+		ctx.Error("internal server error", fasthttp.StatusInternalServerError)
+		return
+	}
+
+	for _, filterShortPack := range filterShortPacks {
+		filterShortPack.Rating = 3.5
 	}
 
 	page := 1
@@ -77,8 +87,19 @@ func (s *PackController) HandleCreate(ctx *fasthttp.RequestCtx) {
 		ctx.Error("bad request", fasthttp.StatusBadRequest)
 		return
 	}
-	fullPackRequest.Id = len(fullPacks) + 1
-	fullPacks = append(fullPacks, fullPackRequest)
+
+	_, err = s.db.Query(
+		ctx,
+		`INSERT INTO packages (categoryId, title, data) VALUES ($1, $2, $3)`,
+		fullPackRequest.CategoryId,
+		fullPackRequest.Title,
+		fullPackRequest.Pack,
+	)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("failed to inser to db: %s", err.Error()))
+		ctx.Error("internal server error", fasthttp.StatusInternalServerError)
+		return
+	}
 
 	response := struct {
 		Success bool `json:"success"`
@@ -91,33 +112,6 @@ func (s *PackController) HandleCreate(ctx *fasthttp.RequestCtx) {
 }
 
 func (s *PackController) HandleUpdate(ctx *fasthttp.RequestCtx) {
-	body := ctx.PostBody()
-
-	packIdStr, ok := ctx.UserValue("id").(string)
-	if packIdStr == "" || !ok {
-		ctx.Error("bad request", fasthttp.StatusBadRequest)
-		return
-	}
-	packIdInt, err := strconv.Atoi(packIdStr)
-	if err != nil {
-		ctx.Error("bad request", fasthttp.StatusBadRequest)
-		return
-	}
-
-	fullPackRequest := &fullPack{}
-	err = json.Unmarshal(body, &fullPackRequest)
-	if err != nil {
-		ctx.Error("bad request", fasthttp.StatusBadRequest)
-		return
-	}
-	fullPackRequest.Id = packIdInt
-
-	for i, currentPack := range fullPacks {
-		if packIdInt == currentPack.Id {
-			fullPacks[i] = fullPackRequest
-		}
-	}
-
 	response := struct {
 		Success bool `json:"success"`
 	}{Success: true}
@@ -140,11 +134,18 @@ func (s *PackController) HandleView(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	var viewPack *fullPack
-	for _, currentPack := range fullPacks {
-		if packIdInt == currentPack.Id {
-			viewPack = currentPack
-			break
+	rows, err := s.db.Query(ctx, "SELECT id, categoryid, title, data FROM packages WHERE id = $1", packIdInt)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("failed to select from db: %s", err.Error()))
+		ctx.Error("internal server error", fasthttp.StatusInternalServerError)
+		return
+	}
+
+	viewPack := &fullPack{}
+	for rows.Next() {
+		err := rows.Scan(&viewPack.Id, &viewPack.CategoryId, &viewPack.Title, &viewPack.Pack)
+		if err != nil {
+			log.Fatal(err)
 		}
 	}
 
@@ -166,13 +167,12 @@ func (s *PackController) HandleDelete(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	var newPacks []*fullPack
-	for _, currentPack := range fullPacks {
-		if packIdInt != currentPack.Id {
-			newPacks = append(newPacks, currentPack)
-		}
+	_, err = s.db.Query(ctx, `DELETE FROM packages WHERE id = $1`, packIdInt)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("failed to delete to db: %s", err.Error()))
+		ctx.Error("internal server error", fasthttp.StatusInternalServerError)
+		return
 	}
-	fullPacks = newPacks
 
 	response := struct {
 		Success bool `json:"success"`

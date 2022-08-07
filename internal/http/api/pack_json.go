@@ -2,8 +2,8 @@ package api
 
 type shortPack struct {
 	Id         int     `json:"id"`
+	CategoryId int     `json:"categoryId" db:"categoryid"`
 	Title      string  `json:"title"`
-	CategoryId int     `json:"categoryId"`
 	Rating     float32 `json:"rating"`
 }
 
@@ -25,7 +25,7 @@ type pack struct {
 
 type fullPack struct {
 	Id         int    `json:"id"`
-	CategoryId int    `json:"categoryId"`
+	CategoryId int    `json:"categoryId" `
 	Title      string `json:"title"`
-	Pack       pack   `json:"pack"`
+	Pack       pack   `json:"pack" db:"data"`
 }

@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	_ "github.com/georgysavva/scany/pgxscan"
+	"github.com/jackc/pgx/v4/pgxpool"
+	_ "github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -31,6 +34,11 @@ func main() {
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to create new logger: %s", err.Error()))
 	}
+
+	ctx := context.Background()
+	// init db
+	databaseUrl := "postgres://postgres:postgres@127.0.0.1:5432/postgres"
+	db, _ := pgxpool.Connect(ctx, databaseUrl)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
 	defer cancel()
@@ -67,8 +75,8 @@ func main() {
 	go func() {
 		defer wg.Done()
 		logger.Info("starting HTTP server", zap.String("port", cfg.httpListenPort))
-		packController := api.NewPackController()
-		categoryController := api.NewCategoryController()
+		packController := api.NewPackController(db)
+		categoryController := api.NewCategoryController(db)
 		errCh := httpserver.NewServer(
 			packController,
 			categoryController,

@@ -2,14 +2,21 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/georgysavva/scany/pgxscan"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/valyala/fasthttp"
 	"net/http"
 )
 
-type CategoryController struct{}
+type CategoryController struct {
+	db *pgxpool.Pool
+}
 
-func NewCategoryController() *CategoryController {
-	return &CategoryController{}
+func NewCategoryController(db *pgxpool.Pool) *CategoryController {
+	return &CategoryController{
+		db: db,
+	}
 }
 
 type category struct {
@@ -17,26 +24,16 @@ type category struct {
 	Title string `json:"title"`
 }
 
-var categories = []*category{
-	{
-		Id:    1,
-		Title: "История",
-	},
-	{
-		Id:    2,
-		Title: "Литература",
-	},
-	{
-		Id:    3,
-		Title: "География",
-	},
-	{
-		Id:    4,
-		Title: "Спорт",
-	},
-}
-
 func (s *CategoryController) HandleFilter(ctx *fasthttp.RequestCtx) {
+	var categories []*category
+
+	err := pgxscan.Select(ctx, s.db, &categories, `SELECT id, title FROM categories`)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("failed to select from db: %s", err.Error()))
+		ctx.Error("internal server error", fasthttp.StatusInternalServerError)
+		return
+	}
+
 	ctx.Response.Header.SetContentType("application/json")
 	ctx.Response.SetStatusCode(http.StatusOK)
 

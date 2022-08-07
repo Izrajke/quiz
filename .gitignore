@@ -2,3 +2,4 @@
 vendor
 main.exe
 quiz.exe
+docker/postgres
