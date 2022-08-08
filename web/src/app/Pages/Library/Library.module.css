@@ -3,5 +3,5 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: calc(30vw + 45vw + 32px);
+  width: 100%;
 }

@@ -1,5 +1,5 @@
-import { useMemo, useCallback, MouseEventHandler } from 'react';
-import type { FunctionComponent } from 'react';
+import { useMemo, useCallback } from 'react';
+import type { FunctionComponent, MouseEventHandler } from 'react';
 import { useNavigate } from 'react-router';
 
 import { observer } from 'mobx-react-lite';
@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { Paper, Table, Button } from 'components';
 import type { TableColumns, TableData, TableClassNames } from 'components';
 import { useStore } from 'store';
-import { LibraryItem } from 'api';
+import type { LibraryItem } from 'api';
 
 import { ScoreStars } from './ScoreStars';
 
@@ -57,10 +57,9 @@ export const LibraryTable: FunctionComponent = observer(() => {
     () =>
       library.data.map((pack) => ({
         ...pack,
-        categoryId: dictionaries.packTypes.find((type) => {
-          console.log(type, pack);
-          return type.id === pack.categoryId;
-        })?.title,
+        categoryId: dictionaries.packTypes.find(
+          (type) => type.id === pack.categoryId,
+        )?.title,
         score: <ScoreStars score={pack.rating} />,
         actions: (
           <Button
@@ -91,7 +90,7 @@ export const LibraryTable: FunctionComponent = observer(() => {
   );
 
   return (
-    <Paper className={classes.wrapper}>
+    <Paper>
       <Table
         columns={columns}
         data={data}
