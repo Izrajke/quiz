@@ -41,6 +41,12 @@ export class HomeSocket {
     };
   };
 
+  disconnect = () => {
+    if (this.socket) {
+      this.socket.close();
+    }
+  };
+
   /** Отправить сообщение сокету */
   send(body: HomeSocketRequest) {
     if (this.socket) {
