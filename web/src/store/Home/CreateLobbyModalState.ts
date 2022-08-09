@@ -18,8 +18,9 @@ export class CreateLobbyModalState {
   packInfo: LibraryItem | null = null;
   players = 2;
 
+  /** заполнены ли все обязательные поля */
   get isAllFieldsAreCompleted() {
-    return !!(this.roomName && this.password && this.packInfo && this.players);
+    return !!(this.roomName && this.packInfo && this.players);
   }
 
   constructor(root: RootStore) {
