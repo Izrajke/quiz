@@ -21,7 +21,6 @@ export class AppStore {
       dialogs: observable,
       // action
       init: action,
-      // socketMessage: action,
       setDialog: action,
       removeDialog: action,
       setRoomId: action,

@@ -25,7 +25,15 @@ export class DictionariesStore {
     const dictionaries = Object.values(DICTIONARIES);
 
     const result: unknown[][] = yield Promise.all(
-      dictionaries.map((dictionary) => loadDictionary(dictionary)),
+      dictionaries.map(async (dictionary) => {
+        const loadedData = await loadDictionary(dictionary);
+
+        if (!loadedData) {
+          return [];
+        }
+
+        return loadedData;
+      }),
     ).catch(() => []);
 
     for (let i = 0; i < result.length; i++) {

@@ -12,12 +12,17 @@ import { HomeLobbiesSection } from './HomeLobbiesSection';
 import classes from './Home.module.css';
 
 export const Home: FunctionComponent = observer(() => {
-  const { sockets } = useStore();
+  const {
+    sockets: { homeSocket },
+  } = useStore();
 
   useEffect(() => {
-    sockets.homeSocket.connect();
+    homeSocket.connect();
     // eslint-disable-next-line
-  }, []);
+    return () => {
+      homeSocket.disconnect();
+    };
+  }, [homeSocket]);
 
   return (
     <>
