@@ -4,7 +4,6 @@
   padding: 20px 20px 0 20px;
   gap: 20px;
   box-sizing: border-box;
-  width: calc(30vw + 45vw + 33px);
 }
 
 .questionsWrapper {

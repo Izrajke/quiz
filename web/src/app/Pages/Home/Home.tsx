@@ -3,7 +3,7 @@ import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { Header, CreateRoomModal } from 'components';
+import { CreateRoomModal } from 'components';
 import { useStore } from 'store';
 
 import { HomeChatSection } from './HomeChatSection';
@@ -20,13 +20,12 @@ export const Home: FunctionComponent = observer(() => {
   }, []);
 
   return (
-    <div className={classes.wrapper}>
+    <>
       <CreateRoomModal />
-      <Header />
       <div className={classes.body}>
         <HomeChatSection />
         <HomeLobbiesSection />
       </div>
-    </div>
+    </>
   );
 });

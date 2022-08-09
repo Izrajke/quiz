@@ -3,13 +3,11 @@ import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { Header } from 'components';
 import { useStore } from 'store';
 
 import { CreatePackMainSection } from './CreatePackMainSection';
 import { CreatePackQuestionSection } from './CreatePackQuestionSection';
 
-import classes from './CreatePack.module.css';
 import { useLocation, useParams } from 'react-router';
 
 export enum ViewPackTypes {
@@ -40,11 +38,10 @@ export const CreatePack: FunctionComponent<CreatePackProps> = observer(
     }, [pathname]);
 
     return (
-      <div className={classes.root}>
-        <Header />
+      <>
         <CreatePackMainSection />
         <CreatePackQuestionSection />
-      </div>
+      </>
     );
   },
 );

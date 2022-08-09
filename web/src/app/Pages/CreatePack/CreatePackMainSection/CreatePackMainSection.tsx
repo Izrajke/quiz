@@ -7,9 +7,9 @@ import type { Option } from 'components';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
+import { ViewPackTypes } from '../CreatePack';
 
 import classes from './CreatePackMainSection.module.css';
-import { ViewPackTypes } from '../CreatePack';
 
 export const CreatePackMainSection: FunctionComponent = observer(() => {
   const { dictionaries, createPack } = useStore();
