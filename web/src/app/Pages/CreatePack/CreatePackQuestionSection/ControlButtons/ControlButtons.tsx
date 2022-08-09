@@ -26,7 +26,11 @@ export const ControlButtons: FunctionComponent = observer(() => {
   return (
     <div className={classes.wrapper}>
       {isCreatePackButtonVisible && (
-        <Tooltip id="createPackButton" tooltipText="Заполните все вопросы">
+        <Tooltip
+          containerClassName={classes.tooltipItemWrapper}
+          id="createPackButton"
+          tooltipText="Заполните все вопросы"
+        >
           <Button
             className={classes.button}
             type="primary"

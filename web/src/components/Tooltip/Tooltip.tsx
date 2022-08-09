@@ -11,15 +11,16 @@ import classes from './Tooltip.module.css';
 export interface RTooltipProps extends TooltipProps {
   className?: string;
   tooltipText: string;
+  containerClassName?: string;
 }
 
 export const Tooltip: FunctionComponent<RTooltipProps> = observer(
-  ({ children, className, id, tooltipText, ...props }) => {
+  ({ children, className, id, tooltipText, containerClassName, ...props }) => {
     const style = useMemo(() => clsx(classes.tooltop, className), [className]);
 
     return (
       <>
-        <span data-tip data-for={id}>
+        <span data-tip data-for={id} className={containerClassName}>
           {children}
         </span>
         <ReactTooltip
