@@ -3,6 +3,7 @@ import type { FunctionComponent } from 'react';
 
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
+
 import { useStore } from 'store';
 
 import classes from './Capture.module.css';

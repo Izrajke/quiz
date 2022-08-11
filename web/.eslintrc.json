@@ -7,7 +7,8 @@
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -17,7 +18,7 @@
     "ecmaVersion": 13,
     "sourceType": "module"
   },
-  "plugins": ["react"],
+  "plugins": ["react", "import"],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "error",
@@ -25,6 +26,49 @@
     "no-undef": "off",
     "@typescript-eslint/no-unused-vars": "error",
     "no-unused-vars": "off",
-    "no-empty-interface": "off"
+    "no-empty-interface": "off",
+    "import/no-unresolved": "off",
+    "import/named": "off",
+    "no-console": "warn",
+    "react/no-array-index-key": "warn",
+    "import/order": ["error", {
+      "groups": [
+        "builtin",
+        "external",
+        "internal",
+        "parent",
+        "sibling",
+        "index",
+        "unknown"
+      ],
+      "pathGroups": [
+        {
+          "pattern": "{react,react-dom}",
+          "group": "builtin",
+          "position": "before"
+        },
+        {
+          "pattern": "{mobx-react-lite,mobx,clsx}",
+          "group": "external",
+          "position": "after"
+        },
+        {
+          "pattern": "{api,app,components,const,fonts,store,utils,app/*}",
+          "group": "internal",
+          "position": "after"
+        },
+        {
+          "pattern": ".*/**/*.scss",
+          "group": "unknown",
+          "position": "after"
+        }
+      ],
+      "pathGroupsExcludedImportTypes": ["builtin"],
+      "newlines-between": "always",
+      "alphabetize": {
+        "order": "asc",
+        "caseInsensitive": true
+      }
+    }]
   }
 }

@@ -1,11 +1,13 @@
 import type { ChangeEvent } from 'react';
+
 import type { NavigateFunction } from 'react-router';
 
 import { action, computed, flow, makeObservable, observable } from 'mobx';
+
 import { createLobby } from 'api';
 
-import type { RootStore } from '../RootStore';
 import type { LibraryItem } from '../../api';
+import type { RootStore } from '../RootStore';
 
 export class CreateLobbyModalState {
   /** Root store */

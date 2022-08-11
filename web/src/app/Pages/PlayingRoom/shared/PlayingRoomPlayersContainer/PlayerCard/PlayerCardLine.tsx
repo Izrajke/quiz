@@ -1,8 +1,9 @@
 import type { FunctionComponent } from 'react';
-import clsx from 'clsx';
 
-import { computed } from 'mobx';
 import { PlayerColors } from 'store/Sockets/RoomSocket/types';
+
+import clsx from 'clsx';
+import { computed } from 'mobx';
 
 import classes from './PlayerCard.module.css';
 

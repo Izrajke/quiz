@@ -1,6 +1,6 @@
 import type { HomeStore } from 'store';
-import type { HomeSocket } from '../HomeSocket';
 
+import type { HomeSocket } from '../HomeSocket';
 import { HomeSocketResponse, HomeSocketResponseType } from '../types';
 
 export class HomeSocketResponseController {

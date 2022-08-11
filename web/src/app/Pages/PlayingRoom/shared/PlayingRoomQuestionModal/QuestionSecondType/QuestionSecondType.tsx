@@ -2,8 +2,8 @@ import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { useStore } from 'store';
 import { Modal } from 'components';
+import { useStore } from 'store';
 
 import { Question } from './Question';
 import { Result } from './Result';

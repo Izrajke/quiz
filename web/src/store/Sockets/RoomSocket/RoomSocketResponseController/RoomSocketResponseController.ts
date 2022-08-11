@@ -1,6 +1,7 @@
-import { RoomSocketResponse, RoomSocketResponseType } from '../types';
-import type { RoomSocket } from '../RoomSocket';
 import type { PlayerStore, RoomStore } from 'store/index';
+
+import type { RoomSocket } from '../RoomSocket';
+import { RoomSocketResponse, RoomSocketResponseType } from '../types';
 
 export class RoomSocketResponseController {
   socket: RoomSocket;

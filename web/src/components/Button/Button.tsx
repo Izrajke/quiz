@@ -1,7 +1,6 @@
 import { MouseEventHandler, FunctionComponent, useMemo } from 'react';
 
 import clsx from 'clsx';
-
 import { observer } from 'mobx-react-lite';
 
 import classes from './Button.module.css';

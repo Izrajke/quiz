@@ -2,19 +2,19 @@ import { useContext } from 'react';
 import type { FunctionComponent, ReactNode } from 'react';
 
 import { toJS } from 'mobx';
-import { observer } from 'mobx-react-lite';
-import { useLocalObservable } from 'mobx-react-lite';
+import { observer , useLocalObservable } from 'mobx-react-lite';
 
-import type { SettingsModalState } from '../Header';
+
 
 import { Avatar, DEFAULT_AVATAR_CONFIG, Input, Typography } from 'components';
 import type { AvatarConfig, SettingsItems } from 'components';
 
-import { renderSettingsItems } from './utils';
+import type { SettingsModalState } from '../Header';
+
 import { SettingsContext } from './context';
 import type { SettingsContextProps } from './context';
-
 import classes from './HeaderSettingsModalBody.module.css';
+import { renderSettingsItems } from './utils';
 
 interface HeaderSettingsModalBodyProps
   extends Required<Pick<SettingsModalState, 'nickname' | 'onChangeNickname'>> {

@@ -6,7 +6,6 @@ import type {
 import { useMemo } from 'react';
 
 import clsx from 'clsx';
-
 import { observer } from 'mobx-react-lite';
 
 import classes from './Input.module.css';

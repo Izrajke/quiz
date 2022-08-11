@@ -6,7 +6,6 @@ import { useTable } from 'react-table';
 import { observer } from 'mobx-react-lite';
 
 import { Pagination } from './Pagination';
-
 import classes from './Table.module.css';
 
 export interface TableData {

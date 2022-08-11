@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { Icon, Tooltip, Typography } from 'components';
+
 import { QuestionTypes } from '../Question';
 
 import classes from './QuestionCounter.module.css';

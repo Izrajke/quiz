@@ -1,11 +1,11 @@
 import { FC, useMemo } from 'react';
 
-import { makeRenderPaginationArray } from './utils';
 
 import { Typography } from 'components';
-import { PaginationButton } from './PaginationButton';
 
 import classes from './Pagination.module.css';
+import { PaginationButton } from './PaginationButton';
+import { makeRenderPaginationArray } from './utils';
 
 interface PaginationProps {
   current: number;

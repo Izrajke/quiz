@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
+
 import clsx from 'clsx';
 
 import classes from './Divider.module.css';

@@ -1,19 +1,20 @@
 import type { ChangeEvent } from 'react';
-import { action, computed, flow, makeObservable, observable } from 'mobx';
+
 import { NavigateFunction } from 'react-router';
+import { toast } from 'react-toastify';
+
+import { action, computed, flow, makeObservable, observable } from 'mobx';
 
 import type { NormalizedPackData, SuccessResponse } from 'api';
 import { createPack, deletePack, editPack, loadPack } from 'api';
-
-import { NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK } from 'const';
+import { ViewPackTypes } from 'app/Pages';
 import type { Option } from 'components';
+import { NUMBER_OF_ANY_TYPE_QUESTIONS_IN_PACK } from 'const';
 
 import type { RootStore } from '../RootStore';
 
-import { rangeQuestionState } from './RangeQuestionState';
 import { multipleChoiceQuestionState } from './MultipleChoiceQuestionState';
-import { ViewPackTypes } from '../../app/Pages';
-import { toast } from 'react-toastify';
+import { rangeQuestionState } from './RangeQuestionState';
 
 export class CreatePackStore {
   /** Root store */

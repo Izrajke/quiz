@@ -6,10 +6,9 @@ import { observer } from 'mobx-react-lite';
 import { CreateRoomModal } from 'components';
 import { useStore } from 'store';
 
+import classes from './Home.module.css';
 import { HomeChatSection } from './HomeChatSection';
 import { HomeLobbiesSection } from './HomeLobbiesSection';
-
-import classes from './Home.module.css';
 
 export const Home: FunctionComponent = observer(() => {
   const {

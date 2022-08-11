@@ -9,7 +9,6 @@ import { observer } from 'mobx-react-lite';
 
 import { Modal, Button } from 'components';
 import type { ButtonProps } from 'components';
-
 import { useStore } from 'store';
 
 export type ClickTypes = 'submit' | 'cancel';

@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
+import { RoomPlayer } from 'store/Sockets/RoomSocket/types';
+
 import { observer } from 'mobx-react-lite';
 
 import { Typography, Avatar } from 'components';
 import { encodeBase64 } from 'utils';
-import { RoomPlayer } from 'store/Sockets/RoomSocket/types';
 
-import { PlayerCardLine } from './PlayerCardLine';
 import classes from './PlayerCard.module.css';
+import { PlayerCardLine } from './PlayerCardLine';
 
 export type PlayerProps = RoomPlayer;
 

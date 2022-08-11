@@ -3,13 +3,13 @@ import { useContext } from 'react';
 import { MobXProviderContext } from 'mobx-react';
 
 import { AppStore } from './App';
-import { RootStore, root } from './RootStore';
+import { CreatePackStore } from './CreatePack';
+import { DictionariesStore } from './Dictionaries';
+import { HomeStore } from './Home';
+import { LibraryStore } from './Library';
 import { PlayerStore } from './Player';
 import { RoomStore } from './Room';
-import { DictionariesStore } from './Dictionaries';
-import { CreatePackStore } from './CreatePack';
-import { LibraryStore } from './Library';
-import { HomeStore } from './Home';
+import { RootStore, root } from './RootStore';
 import { SocketsStore } from './Sockets';
 
 interface Store {

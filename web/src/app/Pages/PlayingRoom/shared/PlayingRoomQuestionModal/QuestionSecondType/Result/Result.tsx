@@ -3,13 +3,13 @@ import { useMemo } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { useStore } from 'store';
 import { Modal, Typography } from 'components';
+import { useStore } from 'store';
 
 import { AnswerBar } from './AnswerBar';
+import classes from './Result.module.css';
 import { RightAnswerPointer } from './RigthAnswerPointer';
 
-import classes from './Result.module.css';
 
 /** Рузультаты игроков после ответа на вопрос второго типа */
 export const Result: FunctionComponent = observer(() => {

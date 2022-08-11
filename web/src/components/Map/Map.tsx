@@ -1,9 +1,9 @@
 import type { FunctionComponent } from 'react';
 
-import classes from './Map.module.css';
 
 import type { CellComponent } from './Cell';
 import { Cell } from './Cell';
+import classes from './Map.module.css';
 import type { RowComponent } from './Row';
 import { Row } from './Row';
 

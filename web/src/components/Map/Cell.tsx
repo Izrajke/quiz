@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
+import type { RoomCellData } from 'store/Sockets/RoomSocket/types';
+
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
-import type { RoomCellData } from 'store/Sockets/RoomSocket/types';
 
 import classes from './Map.module.css';
 

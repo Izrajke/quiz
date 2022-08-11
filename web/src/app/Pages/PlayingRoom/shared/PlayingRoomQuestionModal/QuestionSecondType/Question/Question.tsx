@@ -1,13 +1,14 @@
 import { useState, useCallback, useMemo } from 'react';
 import type { FunctionComponent, ChangeEvent } from 'react';
 
+import { RoomSocketRequestType } from 'store/Sockets/RoomSocket/types';
+
 import { observer } from 'mobx-react-lite';
 
-import { useStore } from 'store';
 import { Modal, Typography, Input, Button } from 'components';
+import { useStore } from 'store';
 
 import classes from './Question.module.css';
-import { RoomSocketRequestType } from 'store/Sockets/RoomSocket/types';
 
 export const Question: FunctionComponent = observer(() => {
   const [answer, setAnswer] = useState('');

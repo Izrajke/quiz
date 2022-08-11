@@ -1,17 +1,18 @@
 import { useMemo, useCallback } from 'react';
 import type { FunctionComponent, MouseEventHandler } from 'react';
+
 import { useNavigate } from 'react-router';
 
 import { observer } from 'mobx-react-lite';
 
+import type { LibraryItem } from 'api';
 import { Paper, Table, Button } from 'components';
 import type { TableColumns, TableData, TableClassNames } from 'components';
 import { useStore } from 'store';
-import type { LibraryItem } from 'api';
-
-import { ScoreStars } from './ScoreStars';
 
 import classes from './LibraryTable.module.css';
+import { ScoreStars } from './ScoreStars';
+
 
 export const LibraryTable: FunctionComponent = observer(() => {
   const {

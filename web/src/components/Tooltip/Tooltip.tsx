@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
+
 import ReactTooltip, { TooltipProps } from 'react-tooltip';
 
 import clsx from 'clsx';
-
 import { observer } from 'mobx-react-lite';
 
 import classes from './Tooltip.module.css';

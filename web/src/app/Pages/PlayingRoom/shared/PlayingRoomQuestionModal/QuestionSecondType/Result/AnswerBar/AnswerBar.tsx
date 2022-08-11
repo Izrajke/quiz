@@ -1,16 +1,17 @@
 import { useMemo, useCallback } from 'react';
 import type { FunctionComponent, CSSProperties } from 'react';
 
+import type { PlayerColors } from 'store/Sockets/RoomSocket/types';
+
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
-import { useAnimation } from 'utils';
-import type { PlayerColors } from 'store/Sockets/RoomSocket/types';
 import type { TypographyColor } from 'components';
-
-import { AnswerText } from './AnswerText';
+import { useAnimation } from 'utils';
 
 import classes from './AnswerBar.module.css';
+import { AnswerText } from './AnswerText';
+
 
 export interface AnswerBarProps {
   maximumPoints: number;

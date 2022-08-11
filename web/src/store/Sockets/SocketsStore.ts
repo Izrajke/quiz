@@ -1,14 +1,16 @@
-import { action, makeObservable, observable } from 'mobx';
 import { toast } from 'react-toastify';
-
 import { SocketLog, SocketSendingType } from 'store/Sockets';
 
-import { RoomSocket } from './RoomSocket';
-import type { RoomSocketRequest } from './RoomSocket';
-import { HomeSocket } from './HomeSocket';
-import type { HomeSocketRequest } from './HomeSocket';
+import { action, makeObservable, observable } from 'mobx';
+
 
 import type { RootStore } from '../RootStore';
+
+import { HomeSocket } from './HomeSocket';
+import type { HomeSocketRequest } from './HomeSocket';
+import { RoomSocket } from './RoomSocket';
+import type { RoomSocketRequest } from './RoomSocket';
+
 
 export class SocketsStore {
   /** Root store */

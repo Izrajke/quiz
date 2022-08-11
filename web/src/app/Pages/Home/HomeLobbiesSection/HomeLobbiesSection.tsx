@@ -5,9 +5,9 @@ import { observer } from 'mobx-react-lite';
 import { Paper, Divider, Button } from 'components';
 import { useStore } from 'store';
 
+import classes from './HomeLobbiesSection.module.css';
 import { LobbyCard } from './LobbyCard';
 
-import classes from './HomeLobbiesSection.module.css';
 
 export const HomeLobbiesSection: FunctionComponent = observer(() => {
   const { home } = useStore();

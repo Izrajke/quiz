@@ -8,16 +8,15 @@ import type {
 
 import clsx from 'clsx';
 
-import { ReactComponent as Cog } from './svg/Cog.svg';
-import { ReactComponent as Pointer } from './svg/Pointer.svg';
+import classes from './Icon.module.css';
 import { ReactComponent as Check } from './svg/Check.svg';
+import { ReactComponent as Close } from './svg/Close.svg';
+import { ReactComponent as Cog } from './svg/Cog.svg';
 import { ReactComponent as Info } from './svg/Info.svg';
+import { ReactComponent as Pointer } from './svg/Pointer.svg';
+import { ReactComponent as Random } from './svg/Random.svg';
 import { ReactComponent as StarFilled } from './svg/StarFilled.svg';
 import { ReactComponent as StarOutline } from './svg/StarOutline.svg';
-import { ReactComponent as Random } from './svg/Random.svg';
-import { ReactComponent as Close } from './svg/Close.svg';
-
-import classes from './Icon.module.css';
 
 const icons = {
   cog: Cog,

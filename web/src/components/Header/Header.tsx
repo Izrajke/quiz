@@ -2,13 +2,13 @@ import type { FunctionComponent, ChangeEvent } from 'react';
 
 import { observer, useLocalObservable } from 'mobx-react-lite';
 
-import { useStore } from 'store';
 import { Navigation, Icon, Typography, Avatar } from 'components';
 import type { AvatarConfig } from 'components';
+import { useStore } from 'store';
 
-import { HeaderSettingsModalBody } from './HeaderSettingsModalBody';
 
 import classes from './Header.module.css';
+import { HeaderSettingsModalBody } from './HeaderSettingsModalBody';
 
 export interface SettingsModalState {
   /** Обработчик нажатия на иконку настроек */

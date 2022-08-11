@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import type { FunctionComponent } from 'react';
 
+import { useLocation, useParams } from 'react-router';
+
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from 'store';
@@ -8,7 +10,6 @@ import { useStore } from 'store';
 import { CreatePackMainSection } from './CreatePackMainSection';
 import { CreatePackQuestionSection } from './CreatePackQuestionSection';
 
-import { useLocation, useParams } from 'react-router';
 
 export enum ViewPackTypes {
   create = 'create',

@@ -1,4 +1,5 @@
 import type { FunctionComponent } from 'react';
+
 import type { TextComponent } from './Text';
 import { Text } from './Text';
 

@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 import type { FunctionComponent } from 'react';
 
-import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router';
+
 import { computed } from 'mobx';
+import { observer } from 'mobx-react-lite';
 
 import { Modal, Input, Typography, Button, Select, Icon } from 'components';
 import { useStore } from 'store';
