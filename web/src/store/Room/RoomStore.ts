@@ -1,6 +1,3 @@
-import { action, computed, makeObservable, observable } from 'mobx';
-
-import { RootStore } from '../RootStore';
 import type {
   RoomAnswerOptions,
   RoomCurrentTurnData,
@@ -19,6 +16,10 @@ import {
   RoomSocketRequestType,
   RoomSocketResponseType,
 } from 'store/Sockets/RoomSocket/types';
+
+import { action, computed, makeObservable, observable } from 'mobx';
+
+import { RootStore } from '../RootStore';
 
 import type { CaptureCheckNames } from './classes';
 import { MapMoveControl, RoomToastController } from './classes';

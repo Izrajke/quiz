@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
-import { Paper, Input, Typography, RSelect } from 'components';
-import type { Option } from 'components';
-
 import { observer } from 'mobx-react-lite';
 
+import { Paper, Input, Typography, RSelect } from 'components';
+import type { Option } from 'components';
 import { useStore } from 'store';
+
 import { ViewPackTypes } from '../CreatePack';
 
 import classes from './CreatePackMainSection.module.css';

@@ -1,16 +1,17 @@
 import { useEffect, useCallback } from 'react';
 import type { FunctionComponent } from 'react';
 
-import { observer } from 'mobx-react-lite';
-import { computed } from 'mobx';
-
-import clsx from 'clsx';
-
-import { Modal, Button, Typography } from 'components';
-
-import { useStore } from 'store';
 import { RoomSocketRequestType } from 'store/Sockets/RoomSocket/types';
 import type { RoomSocketAnswer } from 'store/Sockets/RoomSocket/types';
+
+import clsx from 'clsx';
+import { computed } from 'mobx';
+import { observer } from 'mobx-react-lite';
+
+
+import { Modal, Button, Typography } from 'components';
+import { useStore } from 'store';
+
 
 import classes from './QuestionFirstType.module.css';
 

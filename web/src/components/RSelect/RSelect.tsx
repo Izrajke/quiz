@@ -2,6 +2,7 @@ import { useMemo, useCallback } from 'react';
 import type { FunctionComponent } from 'react';
 
 import Select, { ActionMeta } from 'react-select';
+
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 

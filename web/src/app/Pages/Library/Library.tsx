@@ -6,9 +6,9 @@ import { observer } from 'mobx-react-lite';
 import { CreateRoomModal } from 'components';
 import { useStore } from 'store';
 
+import classes from './Library.module.css';
 import { LibraryTable } from './LibraryTable';
 
-import classes from './Library.module.css';
 
 export const Library: FunctionComponent = observer(() => {
   const { library } = useStore();

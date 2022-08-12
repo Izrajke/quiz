@@ -3,9 +3,9 @@ import type { FunctionComponent, CSSProperties } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import { useAnimation } from 'utils';
-import { useStore } from 'store';
 import { Typography, Icon } from 'components';
+import { useStore } from 'store';
+import { useAnimation } from 'utils';
 
 import classes from './RigthAnswerPointer.module.css';
 

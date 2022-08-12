@@ -6,9 +6,8 @@ import { observer } from 'mobx-react-lite';
 import { Paper, Textarea } from 'components';
 import { useStore } from 'store';
 
-import { Message } from './Message';
-
 import classes from './HomeChatSection.module.css';
+import { Message } from './Message';
 
 export const HomeChatSection: FunctionComponent = observer(() => {
   const { home } = useStore();

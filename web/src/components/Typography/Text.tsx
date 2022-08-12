@@ -1,8 +1,8 @@
 import { FunctionComponent, useMemo } from 'react';
+
 import clsx from 'clsx';
 
 import type { TypographyColor } from './Typography';
-
 import classes from './Typography.module.css';
 
 export type TextType =

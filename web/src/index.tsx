@@ -1,12 +1,13 @@
 import 'normalize.css';
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
+
 import { Provider } from 'mobx-react';
 
 import './index.css';
 
+import { App } from 'app/App';
 import { store } from 'store';
-import { App } from './app/App';
 
 ReactDOM.render(
   <StrictMode>

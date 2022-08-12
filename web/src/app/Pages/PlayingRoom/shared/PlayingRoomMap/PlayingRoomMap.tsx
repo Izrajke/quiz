@@ -2,9 +2,9 @@ import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
+import { MapComponent } from 'components';
 import { useStore } from 'store';
 
-import { MapComponent } from 'components';
 
 import classes from './PlayingRoomMap.module.css';
 

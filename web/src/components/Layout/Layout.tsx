@@ -3,8 +3,9 @@ import type { FC } from 'react';
 
 import { useLocation } from 'react-router';
 
-import classes from './Layout.module.css';
 import { Header } from '../Header';
+
+import classes from './Layout.module.css';
 
 /** Пути на которых Layout не нужен */
 const excludedPaths = ['/room/'];

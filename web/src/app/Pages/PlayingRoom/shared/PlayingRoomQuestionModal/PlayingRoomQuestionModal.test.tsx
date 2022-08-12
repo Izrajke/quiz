@@ -1,11 +1,11 @@
-import { Provider } from 'mobx-react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { Provider } from 'mobx-react';
+import { RoomSocketResponseType } from 'store/Sockets/RoomSocket/types';
+import type { RoomSocketAnswerData } from 'store/Sockets/RoomSocket/types';
 
 import { store } from 'store';
 
 import { PlayingRoomQuestionModal } from './PlayingRoomQuestionModal';
-import { RoomSocketResponseType } from 'store/Sockets/RoomSocket/types';
-import type { RoomSocketAnswerData } from 'store/Sockets/RoomSocket/types';
 
 describe('INTEGRATION: PlayingRoomQuestionModal', () => {
   const { room } = store;

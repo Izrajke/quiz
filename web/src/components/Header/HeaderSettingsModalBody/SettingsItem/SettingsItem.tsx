@@ -7,8 +7,8 @@ import { Tooltip } from 'components';
 import type { AvatarConfig, AvatarConfigWithoutColors } from 'components';
 
 import { useSettingsContext } from '../HeaderSettingsModalBody';
-import { SettingItemIcon } from './SettingItemIcon';
 
+import { SettingItemIcon } from './SettingItemIcon';
 import classes from './SettingsItem.module.css';
 
 export enum SettingsItemTypes {

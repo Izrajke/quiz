@@ -1,13 +1,13 @@
-import { Provider } from 'mobx-react';
 import { screen, render } from '@testing-library/react';
-
-import { store } from 'store';
+import { Provider } from 'mobx-react';
 import { RoomSocketResponseType } from 'store/Sockets/RoomSocket/types';
 import type {
   RoomTurnQueueData,
   RoomCurrentTurnData,
   RoomSocketPlayersData,
 } from 'store/Sockets/RoomSocket/types';
+
+import { store } from 'store';
 
 import { PlayingRoomTurnQueue } from './PlayingRoomTurnQueue';
 

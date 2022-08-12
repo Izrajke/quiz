@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
-import clsx from 'clsx';
 
 import { useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
+
+import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { Typography } from 'components';
-import { NavigationPathways } from './Navigation';
 
+import { NavigationPathways } from './Navigation';
 import classes from './Navigation.module.css';
 
 interface NavigationItem {

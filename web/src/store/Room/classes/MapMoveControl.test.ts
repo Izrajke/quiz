@@ -70,6 +70,7 @@ describe('UNIT: MapMoveControl', () => {
 
     const result = testMapMoveControl(moveStatus);
 
+    //
     expect(result[2][1].canMove).toBe(true);
     expect(result[1][0].canMove).toBe(false);
     expect(result[3][1].canMove).toBe(false);

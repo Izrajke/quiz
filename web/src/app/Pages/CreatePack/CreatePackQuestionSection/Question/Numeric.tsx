@@ -1,12 +1,15 @@
 import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';
+
+import type { rangeQuestionState } from 'store/CreatePack/RangeQuestionState';
+
 import { observer } from 'mobx-react-lite';
 
+import { Input, Textarea } from 'components';
 import { useStore } from 'store';
+
 import { ViewPackTypes } from '../../CreatePack';
 
-import { Input, Textarea } from 'components';
-import type { rangeQuestionState } from 'store/CreatePack/RangeQuestionState';
 
 import classes from './Question.module.css';
 

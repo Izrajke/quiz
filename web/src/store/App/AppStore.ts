@@ -1,7 +1,7 @@
 import { makeObservable, observable, action } from 'mobx';
 
-import type { RootStore } from 'store';
 import type { DialogProps } from 'components';
+import type { RootStore } from 'store';
 
 export class AppStore {
   /** Root store */

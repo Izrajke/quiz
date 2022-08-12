@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
-import { observer } from 'mobx-react-lite';
 
 import NiceAvatar, { genConfig } from 'react-nice-avatar';
 import type {
@@ -8,6 +7,8 @@ import type {
   Style,
   AvatarFullConfig,
 } from 'react-nice-avatar';
+
+import { observer } from 'mobx-react-lite';
 
 import { selectRandomIndex } from 'utils';
 

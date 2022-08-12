@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 import type { FunctionComponent } from 'react';
 
+import { RoomSocketResponseType } from 'store/Sockets/RoomSocket/types';
+
 import { observer } from 'mobx-react-lite';
 
-import { RoomSocketResponseType } from 'store/Sockets/RoomSocket/types';
 
 import { useStore } from 'store';
 

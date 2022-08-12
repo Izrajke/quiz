@@ -1,9 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
+import type { PlayerColors } from 'store/Sockets/RoomSocket/types';
+
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
-import type { PlayerColors } from 'store/Sockets/RoomSocket/types';
+
 import { useStore } from 'store';
 
 import classes from './Attack.module.css';

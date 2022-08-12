@@ -1,12 +1,13 @@
 import type { ChangeEvent } from 'react';
+
 import { action, computed, makeObservable, observable } from 'mobx';
 
-import { uuid } from 'utils';
-import { NUMBER_OF_VARIANTS } from 'const';
 import type { NormalizedMultipleChoiceQuestionsData } from 'api';
+import { NUMBER_OF_VARIANTS } from 'const';
+import { uuid } from 'utils';
 
-import type { RootStore } from '../RootStore';
 import { ViewPackTypes } from '../../app/Pages';
+import type { RootStore } from '../RootStore';
 
 class QuestionAnswerState {
   questionState: multipleChoiceQuestionState;

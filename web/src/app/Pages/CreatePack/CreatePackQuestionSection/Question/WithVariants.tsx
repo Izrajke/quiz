@@ -1,14 +1,17 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
+import type { multipleChoiceQuestionState } from 'store/CreatePack/MultipleChoiceQuestionState';
+
 import { observer } from 'mobx-react-lite';
 
 import { Input, Textarea, Checkbox } from 'components';
-import type { multipleChoiceQuestionState } from 'store/CreatePack/MultipleChoiceQuestionState';
+import { useStore } from 'store';
+
 import { ViewPackTypes } from '../../CreatePack';
 
 import classes from './Question.module.css';
-import { useStore } from 'store';
+
 
 export interface WithVariantsProps {
   state: multipleChoiceQuestionState;

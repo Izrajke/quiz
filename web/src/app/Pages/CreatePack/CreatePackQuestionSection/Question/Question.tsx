@@ -1,18 +1,19 @@
 import type { FunctionComponent } from 'react';
 
-import { observer } from 'mobx-react-lite';
-
-import { Numeric } from './Numeric';
-import type { NumericComponent } from './Numeric';
-import { WithVariants } from './WithVariants';
-import type { WithVariantsComponent } from './WithVariants';
-
-import classes from './Question.module.css';
-
 import type {
   rangeQuestionState,
   multipleChoiceQuestionState,
 } from 'store/CreatePack';
+
+import { observer } from 'mobx-react-lite';
+
+import { Numeric } from './Numeric';
+import type { NumericComponent } from './Numeric';
+import classes from './Question.module.css';
+import { WithVariants } from './WithVariants';
+import type { WithVariantsComponent } from './WithVariants';
+
+
 
 export enum QuestionTypes {
   numeric = 'numeric',

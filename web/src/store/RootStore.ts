@@ -1,10 +1,10 @@
 import { AppStore } from './App';
+import { CreatePackStore } from './CreatePack';
+import { DictionariesStore } from './Dictionaries';
+import { HomeStore } from './Home';
+import { LibraryStore } from './Library';
 import { PlayerStore } from './Player';
 import { RoomStore } from './Room';
-import { DictionariesStore } from './Dictionaries';
-import { CreatePackStore } from './CreatePack';
-import { LibraryStore } from './Library';
-import { HomeStore } from './Home';
 import { SocketsStore } from './Sockets';
 
 export class RootStore {

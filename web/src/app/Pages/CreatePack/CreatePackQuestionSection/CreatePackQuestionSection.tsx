@@ -6,10 +6,9 @@ import { Paper, Typography } from 'components';
 import { useStore } from 'store';
 
 import { ControlButtons } from './ControlButtons';
+import classes from './CreatePackQuestionSection.module.css';
 import { Question, QuestionTypes } from './Question';
 import { QuestionCounter } from './QuestionCounter';
-
-import classes from './CreatePackQuestionSection.module.css';
 
 export const CreatePackQuestionSection: FunctionComponent = observer(() => {
   const { createPack } = useStore();

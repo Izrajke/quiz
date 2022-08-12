@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
+import type { HomeSocketLobbyCard } from 'store/Sockets/HomeSocket/types';
+
 import { observer } from 'mobx-react-lite';
 
 import { Typography, Button } from 'components';
-import type { HomeSocketLobbyCard } from 'store/Sockets/HomeSocket/types';
 
 import classes from './LobbyCard.module.css';
 

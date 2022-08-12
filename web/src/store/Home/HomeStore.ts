@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+
 import { makeObservable, observable, action } from 'mobx';
 
 import type { RootStore } from '../RootStore';
@@ -7,6 +8,7 @@ import type {
   HomeSocketCreatedLobbies,
   HomeSocketLobbyCard,
 } from '../Sockets/HomeSocket';
+
 import { CreateLobbyModalState } from './CreateLobbyModalState';
 
 export class HomeStore {

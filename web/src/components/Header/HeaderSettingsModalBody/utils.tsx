@@ -1,7 +1,7 @@
 import type { AvatarConfig, SettingsItems } from 'components';
 
-import { SettingsItemTypes } from './SettingsItem';
-import { SettingsItem } from './SettingsItem';
+import { SettingsItemTypes , SettingsItem } from './SettingsItem';
+
 
 export const renderSettingsItems = (config: AvatarConfig): SettingsItems => ({
   shirtColor: {

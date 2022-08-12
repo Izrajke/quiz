@@ -1,9 +1,9 @@
+import type { RootStore } from 'store/RootStore';
+
 import { makeObservable, action } from 'mobx';
 
-import type { RootStore } from 'store/RootStore';
-import type { RoomSocketRequest } from './types';
-
 import { RoomSocketResponseController } from './RoomSocketResponseController';
+import type { RoomSocketRequest } from './types';
 
 export class RoomSocket {
   root: RootStore;

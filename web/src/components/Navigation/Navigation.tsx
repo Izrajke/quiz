@@ -3,9 +3,9 @@ import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
+import classes from './Navigation.module.css';
 import { NavigationItem } from './NavigationItem';
 
-import classes from './Navigation.module.css';
 
 export enum NavigationPathways {
   home = '/',

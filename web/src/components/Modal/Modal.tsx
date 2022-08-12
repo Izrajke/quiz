@@ -2,14 +2,13 @@ import type { FunctionComponent } from 'react';
 
 import clsx from 'clsx';
 
-import { ModalHeader } from './ModalHeader';
-import type { IModalHeaderComponent as ModalHeaderComponent } from './ModalHeader';
+import classes from './Modal.module.css';
 import { ModalBody } from './ModalBody';
 import type { IModalBodyComponent as ModalBodyComponent } from './ModalBody';
 import { ModalFooter } from './ModalFooter';
 import type { ModalFooterComponent } from './ModalFooter';
-
-import classes from './Modal.module.css';
+import type { IModalHeaderComponent as ModalHeaderComponent } from './ModalHeader';
+import { ModalHeader } from './ModalHeader';
 
 interface ModalProps {
   show: boolean;

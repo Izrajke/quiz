@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import type { FunctionComponent } from 'react';
 
-import clsx from 'clsx';
+import type { HomeSocketMessage } from 'store/Sockets/HomeSocket';
 
+import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
 
 import { Typography } from 'components';
 import { useStore } from 'store';
 import { formatDate, FORMAT_DATE } from 'utils';
-import type { HomeSocketMessage } from 'store/Sockets/HomeSocket';
 
 import classes from './Message.module.css';
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { FunctionComponent } from 'react';
 
 import { observer } from 'mobx-react-lite';
+
 import { useStore } from 'store';
 
 import classes from './SocketLogger.module.css';

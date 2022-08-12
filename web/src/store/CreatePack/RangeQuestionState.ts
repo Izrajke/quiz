@@ -1,11 +1,12 @@
 import type { ChangeEvent } from 'react';
+
 import { action, computed, makeObservable, observable } from 'mobx';
 
-import { uuid } from 'utils';
 import { NormalizedRangeQuestionsData } from 'api';
+import { uuid } from 'utils';
 
-import type { RootStore } from '../RootStore';
 import { ViewPackTypes } from '../../app/Pages';
+import type { RootStore } from '../RootStore';
 
 export class rangeQuestionState {
   /** Root store */

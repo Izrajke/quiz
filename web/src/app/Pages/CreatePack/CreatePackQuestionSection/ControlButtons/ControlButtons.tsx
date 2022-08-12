@@ -1,11 +1,13 @@
 import type { FunctionComponent } from 'react';
 import { useMemo, useCallback } from 'react';
 
-import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router';
+
+import { observer } from 'mobx-react-lite';
 
 import { Button, Tooltip } from 'components';
 import { useStore } from 'store';
+
 import { ViewPackTypes } from '../../CreatePack';
 
 import classes from './ControlButtons.module.css';
