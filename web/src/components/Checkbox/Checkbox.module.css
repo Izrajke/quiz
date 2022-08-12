@@ -3,6 +3,7 @@
   cursor: pointer;
 }
 
+
 .checkInput {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -10,8 +11,8 @@
 }
 
 .checkIcon {
-  margin-top: 4px;
-  margin-right: 4px;
+  margin-top: 5px;
+  margin-right: 5px;
 }
 
 .checkBox {
@@ -21,6 +22,12 @@
   background: var(--dark-4);
   border-radius: 6px;
 }
+
+.checkInput:disabled + .checkBox{
+  opacity: 50%;
+  cursor: not-allowed;
+}
+
 
 .checkInput:checked + .checkBox {
   background: var(--player-1);

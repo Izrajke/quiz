@@ -18,6 +18,11 @@
   color: var(--white-50);
 }
 
+.textarea:disabled {
+  opacity: 50%;
+  cursor: not-allowed;
+}
+
 .root {
   display: flex;
   flex-direction: column;
