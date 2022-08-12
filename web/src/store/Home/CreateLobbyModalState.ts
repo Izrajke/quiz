@@ -5,8 +5,9 @@ import type { NavigateFunction } from 'react-router';
 import { action, computed, flow, makeObservable, observable } from 'mobx';
 
 import { createLobby } from 'api';
+import type { LibraryItem } from 'api';
+import type { Option } from 'components';
 
-import type { LibraryItem } from '../../api';
 import type { RootStore } from '../RootStore';
 
 export class CreateLobbyModalState {
@@ -60,8 +61,10 @@ export class CreateLobbyModalState {
     this.password = e.target.value;
   };
 
-  setPlayers = (e: ChangeEvent<HTMLSelectElement>) => {
-    this.players = Number(e.target.value);
+  setPlayers = (option: Option | null) => {
+    if (option) {
+      this.players = Number(option.value);
+    }
   };
 
   setPackInfo = (packInfo: LibraryItem | null) => {

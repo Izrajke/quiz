@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { computed } from 'mobx';
 import { observer } from 'mobx-react-lite';
 
-import { Modal, Input, Typography, Button, Select, Icon } from 'components';
+import { Modal, Input, Typography, Button, Icon, RSelect } from 'components';
 import { useStore } from 'store';
 
 import classes from './CreateRoomModal.module.css';
@@ -35,7 +35,16 @@ export const CreateRoomModal: FunctionComponent = observer(() => {
     createLobbyModal.setIsOpen();
   }).get();
 
-  const playersSelectOptions = computed(() => [2, 3, 4]).get();
+  const playersSelectOptions = computed(() => [
+    { value: 2, label: 2 },
+    { value: 3, label: 3 },
+    { value: 4, label: 4 },
+  ]).get();
+
+  const countOfPlayers = computed(() => ({
+    value: createLobbyModal.players,
+    label: createLobbyModal.players,
+  })).get();
 
   return (
     <Modal
@@ -61,8 +70,10 @@ export const CreateRoomModal: FunctionComponent = observer(() => {
             defaultValue={createLobbyModal.roomName}
             onChange={createLobbyModal.setRoomName}
           />
-          <Select
+          <RSelect
+            wrapperClassName={classes.select}
             options={playersSelectOptions}
+            value={countOfPlayers}
             onChange={createLobbyModal.setPlayers}
           />
         </div>

@@ -15,7 +15,7 @@ type RSelectOnChange = (
 
 export interface Option {
   value: string | number;
-  label: string;
+  label: string | number;
 }
 
 export interface RSelectProps {
