@@ -2,12 +2,11 @@ import { useContext } from 'react';
 import type { FunctionComponent, ReactNode } from 'react';
 
 import { toJS } from 'mobx';
-import { observer , useLocalObservable } from 'mobx-react-lite';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 
-
-
-import { Avatar, DEFAULT_AVATAR_CONFIG, Input, Typography } from 'components';
+import { Avatar, Input, Typography } from 'components';
 import type { AvatarConfig, SettingsItems } from 'components';
+import { DEFAULT_AVATAR_CONFIG } from 'utils';
 
 import type { SettingsModalState } from '../Header';
 

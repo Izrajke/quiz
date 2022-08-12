@@ -1,0 +1,12 @@
+.lobby-enter {
+  margin-right: -300px;
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.lobby-enter-active {
+  transform: scale(1);
+  margin-right: 0;
+  opacity: 1;
+  transition: all 140ms ease-in;
+}

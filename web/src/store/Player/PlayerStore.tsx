@@ -2,14 +2,14 @@ import { PlayerColors, RoomPlayer } from 'store/Sockets/RoomSocket/types';
 
 import { makeObservable, observable, action } from 'mobx';
 
-
-
-import { genDefaultConfig } from 'components';
 import type { AvatarConfig } from 'components';
-import { getFromLocalStorage, addToLocalStorage } from 'utils';
+import {
+  getFromLocalStorage,
+  addToLocalStorage,
+  genDefaultConfig,
+} from 'utils';
 
 import { RootStore } from '../RootStore';
-
 
 /** Информация о игроке */
 export class PlayerStore {
