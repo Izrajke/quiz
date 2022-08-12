@@ -16,6 +16,11 @@
   font-size: 20px;
 }
 
+.input:disabled {
+  opacity: 50%;
+  cursor: not-allowed;
+}
+
 .input::placeholder {
   color: var(--white-50);
   font-size: 20px;

@@ -37,7 +37,7 @@ export const Checkbox: FunctionComponent<CheckboxProps> = observer(
         />
         <span className={styles}>
           {checked && (
-            <Icon type="check" className={classes.checkIcon} size={16} />
+            <Icon type="check" size={14} className={classes.checkIcon} />
           )}
         </span>
       </label>

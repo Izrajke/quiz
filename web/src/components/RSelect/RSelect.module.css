@@ -5,7 +5,9 @@
   gap: 8px;
 }
 
-.select {
+.select :global(.select__control--is-disabled) {
+  opacity: 50%;
+  cursor: not-allowed;
 }
 
 .select :global(.select__control) {
