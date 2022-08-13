@@ -286,7 +286,8 @@ func (h *Hub) Home() {
 				close(homeClient.send)
 			}
 		case homeMessage := <-h.homeBroadcast:
-			msg := h.event.ChatMessage(string(homeMessage.message), homeMessage.author, 1651938896)
+			currentTime := time.Now().Unix()
+			msg := h.event.ChatMessage(homeMessage.message, homeMessage.author, currentTime)
 			for homeClient := range h.homeClients {
 				select {
 				case homeClient.send <- msg:

@@ -237,12 +237,12 @@ func (e *Event) SelectCell(color string, count int) *Event {
 }
 
 // ChatMessage сообщение из чата
-func (e *Event) ChatMessage(message string, playerName string, time int) []byte {
+func (e *Event) ChatMessage(message string, playerName string, time int64) []byte {
 	e.message = struct {
 		BaseType `json:"type"`
 		Message  string `json:"message"`
 		Author   string `json:"author"`
-		Time     int    `json:"time"`
+		Time     int64  `json:"time"`
 	}{
 		BaseType: eventChatMessageType,
 		Message:  message,

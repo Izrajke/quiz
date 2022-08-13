@@ -113,7 +113,7 @@ func (c *HomeClient) readPump(hub *Hub, logger *zap.Logger) {
 				)
 
 				request.Message = strings.ReplaceAll(request.Message, `\n`, " ")
-				hub.homeBroadcast <- &HomeMessage{message: []byte(request.Message), author: request.Author}
+				hub.homeBroadcast <- &HomeMessage{message: request.Message, author: request.Author}
 			} else {
 				logger.Error("request of unknown type", zap.Int("type", request.Type))
 			}
@@ -125,7 +125,7 @@ func (c *HomeClient) readPump(hub *Hub, logger *zap.Logger) {
 type homeRequest struct {
 	Type    int    `json:"type"`
 	Message string `json:"message"`
-	Author string `json:"author"`
+	Author  string `json:"author"`
 }
 
 // writePump pumps messages from the hub to the websocket connection.

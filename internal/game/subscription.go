@@ -28,8 +28,8 @@ type HomeClient struct {
 }
 
 type HomeMessage struct {
-	message []byte
-	author string
+	message string
+	author  string
 }
 
 type Subscription struct {
