@@ -11,6 +11,7 @@ import { useStore } from 'store';
 import classes from './HomeChatSection.module.css';
 import './animation.css';
 import { Message } from './Message';
+import { MessagesContainer } from './MessagesContainer';
 
 export const HomeChatSection: FunctionComponent = observer(() => {
   const { home, player } = useStore();
@@ -35,10 +36,10 @@ export const HomeChatSection: FunctionComponent = observer(() => {
 
   return (
     <Paper className={classes.chat}>
-      <TransitionGroup className={classes.messagesContainer}>
+      <TransitionGroup component={MessagesContainer}>
         {home.messages.map((data) => (
           <CSSTransition
-            key={data.time}
+            key={data.time + data.message}
             classNames={calculateTransitionClassNames(data.author)}
             timeout={140}
           >
