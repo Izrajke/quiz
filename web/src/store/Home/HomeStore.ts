@@ -55,6 +55,7 @@ export class HomeStore {
     this.root.sockets.homeSocket.send({
       type: 10,
       message: this.newMessageValue,
+      author: this.root.player.nickname,
     });
 
     this.newMessageValue = '';

@@ -1,16 +1,19 @@
 import { useCallback } from 'react';
 import type { FunctionComponent, KeyboardEvent } from 'react';
 
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+
 import { observer } from 'mobx-react-lite';
 
 import { Paper, Textarea } from 'components';
 import { useStore } from 'store';
 
 import classes from './HomeChatSection.module.css';
+import './animation.css';
 import { Message } from './Message';
 
 export const HomeChatSection: FunctionComponent = observer(() => {
-  const { home } = useStore();
+  const { home, player } = useStore();
 
   const onSendMessage = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -22,13 +25,27 @@ export const HomeChatSection: FunctionComponent = observer(() => {
     [home.newMessageValue],
   );
 
+  // TODO: сравнение должно быть с ID игрока
+  const calculateTransitionClassNames = useCallback(
+    (author: string) => {
+      return author === player.nickname ? 'author' : 'other';
+    },
+    [player.nickname],
+  );
+
   return (
     <Paper className={classes.chat}>
-      <div className={classes.messagesContainer}>
+      <TransitionGroup className={classes.messagesContainer}>
         {home.messages.map((data) => (
-          <Message key={data.uuid} {...data} />
+          <CSSTransition
+            key={data.time}
+            classNames={calculateTransitionClassNames(data.author)}
+            timeout={140}
+          >
+            <Message {...data} />
+          </CSSTransition>
         ))}
-      </div>
+      </TransitionGroup>
       <Textarea
         className={classes.textarea}
         value={home.newMessageValue}

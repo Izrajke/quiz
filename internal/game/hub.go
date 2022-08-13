@@ -14,7 +14,7 @@ import (
 type Hub struct {
 	ctx context.Context
 
-	homeBroadcast  chan []byte
+	homeBroadcast  chan *HomeMessage
 	homeRegister   chan *HomeClient
 	homeUnregister chan *HomeClient
 	homeClients    map[*HomeClient]bool
@@ -39,7 +39,7 @@ type Hub struct {
 func NewHub(ctx context.Context, workerPool *workerpool.Pool, logger *zap.Logger) *Hub {
 	return &Hub{
 		ctx:            ctx,
-		homeBroadcast:  make(chan []byte),
+		homeBroadcast:  make(chan *HomeMessage),
 		homeRegister:   make(chan *HomeClient),
 		homeUnregister: make(chan *HomeClient),
 		homeClients:    make(map[*HomeClient]bool),
@@ -285,8 +285,9 @@ func (h *Hub) Home() {
 				delete(h.homeClients, homeClient)
 				close(homeClient.send)
 			}
-		case message := <-h.homeBroadcast:
-			msg := h.event.ChatMessage(string(message), "test_name", 1651938896)
+		case homeMessage := <-h.homeBroadcast:
+			currentTime := time.Now().Unix()
+			msg := h.event.ChatMessage(homeMessage.message, homeMessage.author, currentTime)
 			for homeClient := range h.homeClients {
 				select {
 				case homeClient.send <- msg:

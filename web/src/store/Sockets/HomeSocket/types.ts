@@ -21,6 +21,7 @@ export interface HomeSocketMessage {
 export interface HomeSocketSendMessage {
   type: HomeSocketRequestType.sendMessage;
   message: string;
+  author: string;
 }
 
 export interface HomeSocketPlayer {

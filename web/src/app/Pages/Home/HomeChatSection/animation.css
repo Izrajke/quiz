@@ -1,0 +1,32 @@
+.author-enter {
+  margin-right: -300px;
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.author-enter-active {
+  transform: scale(1);
+  margin-right: 0;
+  opacity: 1;
+  transition: all 140ms ease-in;
+}
+
+.other-enter {
+  margin-left: -300px;
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.other-enter-active {
+  transform: scale(1);
+  margin-left: 0;
+  opacity: 1;
+  transition: all 140ms ease-in;
+}
+
+/* Hint: */
+/* .item-enter */
+/* .item-enter-active*/
+/* .item-exit*/
+/* .item-exit-active*/
+

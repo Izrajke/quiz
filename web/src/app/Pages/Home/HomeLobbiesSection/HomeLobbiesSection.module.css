@@ -13,6 +13,7 @@
   flex-direction: column;
   gap: 12px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .divider {

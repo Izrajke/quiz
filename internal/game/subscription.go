@@ -27,6 +27,11 @@ type HomeClient struct {
 	send chan []byte
 }
 
+type HomeMessage struct {
+	message string
+	author  string
+}
+
 type Subscription struct {
 	Conn   *Connection
 	Room   string
