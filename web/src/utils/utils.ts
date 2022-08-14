@@ -9,7 +9,7 @@ export enum FORMAT_DATE {
 export const formatDate = (
   date: string | number,
   formatDate: FORMAT_DATE = FORMAT_DATE.time,
-) => format(new Date(date), formatDate);
+) => format(new Date(Number(date) * 1000), formatDate);
 
 /** Вызвать функцию с указанной задержкой */
 export const withDelay = <T>(
