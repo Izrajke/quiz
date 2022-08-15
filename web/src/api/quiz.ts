@@ -3,6 +3,7 @@ import { api, BACKEND_URL, DICTIONARIES } from 'api';
 export interface CreateLobbyParams {
   name: string;
   players: number;
+  packId: string | number;
   password?: string;
 }
 
