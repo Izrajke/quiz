@@ -83,6 +83,7 @@ export class CreateLobbyModalState {
       name: this.roomName,
       password: this.password,
       players: this.players,
+      packId: this.packInfo?.id || '',
     })) as { id: string };
 
     this.root.app.setRoomId(id);
