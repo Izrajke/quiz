@@ -3,17 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
-	_ "github.com/georgysavva/scany/pgxscan"
 	"github.com/jackc/pgx/v4/pgxpool"
-	_ "github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"log"
 	"os/signal"
-	"quiz/internal/game"
 	httpserver "quiz/internal/http"
 	"quiz/internal/http/api"
+	"quiz/internal/hub"
+	"quiz/internal/storage/db"
 	"quiz/internal/workerpool"
 	"sync"
 	"syscall"
@@ -37,8 +36,11 @@ func main() {
 
 	ctx := context.Background()
 	// init db
-	databaseUrl := "postgres://postgres:postgres@127.0.0.1:5432/postgres"
-	db, _ := pgxpool.Connect(ctx, databaseUrl)
+	databaseUrl := "postgres://postgres:postgres@127.0.0.1:5432/postgres" // TODO to env
+	pool, err := pgxpool.Connect(ctx, databaseUrl)
+	if err != nil {
+		log.Fatal(fmt.Sprintf("failed to connect to db: %s", err.Error()))
+	}
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT)
 	defer cancel()
@@ -49,38 +51,42 @@ func main() {
 
 	defer func() {
 		if msg := recover(); msg != nil {
-			logger.Error("recovered from panic", zap.Error(fmt.Errorf("%s", msg)))
+			logger.Error("main recovered from panic", zap.Error(fmt.Errorf("%s", msg)))
 		}
 	}()
 
 	wg := sync.WaitGroup{}
+	gameStorage := hub.NewGameStorage()
 	workerPool := workerpool.NewPool(ctx, logger)
-	hub := game.NewHub(ctx, workerPool, logger)
+	appHub := hub.NewHub(ctx, gameStorage, pool, workerPool, logger)
+	packageStorage := db.NewPackageStorage(pool)
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		logger.Info("starting home hub")
-		hub.Home()
+		appHub.Home()
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		logger.Info("starting game hub")
-		hub.Game()
+		appHub.Game()
 	}()
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		logger.Info("starting HTTP server", zap.String("port", cfg.httpListenPort))
-		packController := api.NewPackController(db)
-		categoryController := api.NewCategoryController(db)
+		packController := api.NewPackController(pool)
+		categoryController := api.NewCategoryController(pool)
 		errCh := httpserver.NewServer(
 			packController,
 			categoryController,
-			hub,
+			appHub,
+			gameStorage,
+			packageStorage,
 			logger,
 		).ListenAndServe(ctx, cfg.httpListenPort, cfg.enablePprof)
 		err = <-errCh

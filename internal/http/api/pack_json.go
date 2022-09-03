@@ -7,23 +7,23 @@ type shortPack struct {
 	Rating     float32 `json:"rating"`
 }
 
-type rangeQuestion struct {
+type RangeQuestion struct {
 	Title  string `json:"title"`
 	Answer int    `json:"answer"`
 }
 
-type multipleChoiceQuestion struct {
+type MultipleChoiceQuestion struct {
 	Title   string   `json:"title"`
 	Options []string `json:"options"`
 	Answer  int      `json:"answer"`
 }
 
 type pack struct {
-	RangeQuestions          []rangeQuestion          `json:"rangeQuestions"`
-	MultipleChoiceQuestions []multipleChoiceQuestion `json:"multipleChoiceQuestions"`
+	RangeQuestions  []RangeQuestion          `json:"rangeQuestions"`
+	ChoiceQuestions []MultipleChoiceQuestion `json:"multipleChoiceQuestions"`
 }
 
-type fullPack struct {
+type FullPack struct {
 	Id         int    `json:"id"`
 	CategoryId int    `json:"categoryId" `
 	Title      string `json:"title"`

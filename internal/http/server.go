@@ -7,27 +7,34 @@ import (
 	"github.com/valyala/fasthttp/fasthttpadaptor"
 	"go.uber.org/zap"
 	"net/http/pprof"
-	"quiz/internal/game"
 	"quiz/internal/http/api"
+	"quiz/internal/hub"
+	"quiz/internal/storage/db"
 )
 
 type Server struct {
 	packController     *api.PackController
 	categoryController *api.CategoryController
-	hub                *game.Hub
+	hub                *hub.Hub
+	gameStorage        *hub.GameStorage
+	packageStorage     *db.PackageStorage
 	logger             *zap.Logger
 }
 
 func NewServer(
 	packController *api.PackController,
 	categoryController *api.CategoryController,
-	hub *game.Hub,
+	hub *hub.Hub,
+	gameStorage *hub.GameStorage,
+	packageStorage *db.PackageStorage,
 	logger *zap.Logger,
 ) *Server {
 	return &Server{
 		packController:     packController,
 		categoryController: categoryController,
 		hub:                hub,
+		gameStorage:        gameStorage,
+		packageStorage:     packageStorage,
 		logger:             logger.With(zap.String("channel", "http-server")),
 	}
 }

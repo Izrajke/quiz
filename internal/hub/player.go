@@ -1,4 +1,4 @@
-package game
+package hub
 
 import (
 	"github.com/google/uuid"
@@ -9,7 +9,7 @@ const (
 	defaultPoints = 300
 )
 
-type player struct {
+type Player struct {
 	Id        string `json:"id"`
 	Name      string `json:"name"`
 	Points    int    `json:"points"`
@@ -19,8 +19,8 @@ type player struct {
 }
 
 // newPlayer конструктор игрока
-func newPlayer(name string, avatar string) *player {
-	return &player{
+func newPlayer(name string, avatar string) *Player {
+	return &Player{
 		Id:        uuid.New().String(),
 		Name:      name,
 		Points:    defaultPoints,

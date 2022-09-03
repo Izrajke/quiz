@@ -1,9 +1,10 @@
-package game
+package hub
 
 import (
 	"encoding/json"
 	"github.com/fasthttp/websocket"
 	"go.uber.org/zap"
+	"strconv"
 	"time"
 )
 
@@ -24,18 +25,20 @@ type HomeClient struct {
 	conn *websocket.Conn
 
 	// Buffered channel of outbound messages.
-	send chan []byte
+	Send chan []byte
 }
 
 type HomeMessage struct {
+	client *HomeClient
+
 	message string
 	author  string
 }
 
 type Subscription struct {
 	Conn   *Connection
-	Room   string
-	Player *player
+	GameID string
+	Player *Player
 	logger *zap.Logger
 }
 
@@ -73,7 +76,7 @@ func (s *Subscription) WritePump() {
 func (s Subscription) ReadPump(hub *Hub) {
 	c := s.Conn
 	defer func() {
-		hub.Unregister <- s
+		hub.GameUnregister <- s
 		c.Ws.Close()
 	}()
 	c.Ws.SetReadLimit(maxMessageSize)
@@ -100,17 +103,21 @@ func (s Subscription) ReadPump(hub *Hub) {
 					"server received a message",
 					zap.String("message", string(message)),
 					zap.String("playerName", s.Player.Name),
-					zap.String("roomID", s.Room),
+					zap.String("roomID", s.GameID),
 				)
 
-				m := Message{
+				answerInt, _ := strconv.Atoi(request.Answer) // refactoring it
+				request.AnswerInt = answerInt
+				m := &Message{
 					data:        message,
-					Room:        s.Room,
+					Room:        s.GameID,
+					PlayerID:    s.Player.Id,
 					PlayerColor: s.Player.Color,
+					PlayerName:  s.Player.Name,
 					Request:     &request,
 					Time:        time.Now(),
 				}
-				hub.Broadcast <- m
+				hub.GameBroadcast <- m
 			} else {
 				s.logger.Error("request of unknown type", zap.Int("type", request.Type))
 			}
@@ -122,7 +129,9 @@ type Message struct {
 	data []byte
 	Room string
 	// TODO may change for player id
+	PlayerID    string
 	PlayerColor string
+	PlayerName  string
 	Request     *request
 	Time        time.Time
 }
@@ -132,7 +141,8 @@ type Message struct {
 // Type 4 - атака клетки
 type request struct {
 	Type      int    `json:"type"`
-	Option    string `json:"option,omitempty"`
-	RowIndex  int    `json:"rowIndex,omitempty"`
-	CellIndex int    `json:"cellIndex,omitempty"`
+	Answer    string `json:"option,omitempty"` // deprecated use AnswerInt
+	AnswerInt int
+	RowIndex  int `json:"rowIndex,omitempty"`
+	CellIndex int `json:"cellIndex,omitempty"`
 }

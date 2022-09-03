@@ -13,12 +13,12 @@ import (
 )
 
 type PackController struct {
-	db *pgxpool.Pool
+	pool *pgxpool.Pool
 }
 
-func NewPackController(db *pgxpool.Pool) *PackController {
+func NewPackController(pool *pgxpool.Pool) *PackController {
 	return &PackController{
-		db: db,
+		pool: pool,
 	}
 }
 
@@ -35,7 +35,7 @@ func (s *PackController) HandleFilter(ctx *fasthttp.RequestCtx) {
 	}
 
 	filterShortPacks := make([]*shortPack, 0)
-	err = pgxscan.Select(ctx, s.db, &filterShortPacks, `SELECT id, categoryid, title FROM packages`)
+	err = pgxscan.Select(ctx, s.pool, &filterShortPacks, `SELECT id, categoryid, title FROM packages`)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("failed to select from db: %s", err.Error()))
 		ctx.Error("internal server error", fasthttp.StatusInternalServerError)
@@ -81,14 +81,14 @@ func (s *PackController) HandleFilter(ctx *fasthttp.RequestCtx) {
 func (s *PackController) HandleCreate(ctx *fasthttp.RequestCtx) {
 	body := ctx.PostBody()
 
-	fullPackRequest := &fullPack{}
+	fullPackRequest := &FullPack{}
 	err := json.Unmarshal(body, &fullPackRequest)
 	if err != nil {
 		ctx.Error("bad request", fasthttp.StatusBadRequest)
 		return
 	}
 
-	_, err = s.db.Query(
+	_, err = s.pool.Query(
 		ctx,
 		`INSERT INTO packages (categoryId, title, data) VALUES ($1, $2, $3)`,
 		fullPackRequest.CategoryId,
@@ -134,14 +134,14 @@ func (s *PackController) HandleView(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	rows, err := s.db.Query(ctx, "SELECT id, categoryid, title, data FROM packages WHERE id = $1", packIdInt)
+	rows, err := s.pool.Query(ctx, "SELECT id, categoryid, title, data FROM packages WHERE id = $1", packIdInt)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("failed to select from db: %s", err.Error()))
 		ctx.Error("internal server error", fasthttp.StatusInternalServerError)
 		return
 	}
 
-	viewPack := &fullPack{}
+	viewPack := &FullPack{}
 	for rows.Next() {
 		err := rows.Scan(&viewPack.Id, &viewPack.CategoryId, &viewPack.Title, &viewPack.Pack)
 		if err != nil {
@@ -167,7 +167,7 @@ func (s *PackController) HandleDelete(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	_, err = s.db.Query(ctx, `DELETE FROM packages WHERE id = $1`, packIdInt)
+	_, err = s.pool.Query(ctx, `DELETE FROM packages WHERE id = $1`, packIdInt)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("failed to delete to db: %s", err.Error()))
 		ctx.Error("internal server error", fasthttp.StatusInternalServerError)

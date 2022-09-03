@@ -1,4 +1,4 @@
-package game
+package hub
 
 import (
 	"encoding/json"
@@ -32,6 +32,15 @@ func NewConnection(conn *websocket.Conn) *Connection {
 	}
 }
 
+// SendToOnePlayer отправляет сообщение
+func (c *Connection) SendToOnePlayer(message []byte) {
+	select {
+	case c.Send <- message:
+	default:
+		// TODO log
+	}
+}
+
 // ServeWs обработка подключения к сокету
 func ServeWs(
 	ctx *fasthttp.RequestCtx,
@@ -57,13 +66,13 @@ func ServeWs(
 			)
 			p := newPlayer(playerName, avatar)
 			c := NewConnection(conn)
-			s := Subscription{Conn: c, Room: roomId, Player: p, logger: logger}
-			hub.Register <- s
+			s := &Subscription{Conn: c, GameID: roomId, Player: p, logger: logger}
+			hub.GameRegister <- s
 			go s.WritePump()
 			s.ReadPump(hub)
 		} else {
 			logger.Info("server got a new connection for home", zap.String("playerName", playerName))
-			client := &HomeClient{conn: conn, send: make(chan []byte, 256)}
+			client := &HomeClient{conn: conn, Send: make(chan []byte, 256)}
 			hub.homeRegister <- client
 			go client.writePump()
 			client.readPump(hub, logger)
@@ -113,7 +122,7 @@ func (c *HomeClient) readPump(hub *Hub, logger *zap.Logger) {
 				)
 
 				request.Message = strings.ReplaceAll(request.Message, `\n`, " ")
-				hub.homeBroadcast <- &HomeMessage{message: request.Message, author: request.Author}
+				hub.homeBroadcast <- &HomeMessage{client: c, message: request.Message, author: request.Author}
 			} else {
 				logger.Error("request of unknown type", zap.Int("type", request.Type))
 			}
@@ -141,7 +150,7 @@ func (c *HomeClient) writePump() {
 	}()
 	for {
 		select {
-		case message, ok := <-c.send:
+		case message, ok := <-c.Send:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// The hub closed the channel.
@@ -156,10 +165,10 @@ func (c *HomeClient) writePump() {
 			w.Write(message)
 
 			// Add queued chat messages to the current websocket message.
-			n := len(c.send)
+			n := len(c.Send)
 			for i := 0; i < n; i++ {
 				w.Write(newline)
-				w.Write(<-c.send)
+				w.Write(<-c.Send)
 			}
 
 			if err := w.Close(); err != nil {

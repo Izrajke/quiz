@@ -10,12 +10,12 @@ import (
 )
 
 type CategoryController struct {
-	db *pgxpool.Pool
+	pool *pgxpool.Pool
 }
 
-func NewCategoryController(db *pgxpool.Pool) *CategoryController {
+func NewCategoryController(pool *pgxpool.Pool) *CategoryController {
 	return &CategoryController{
-		db: db,
+		pool: pool,
 	}
 }
 
@@ -27,7 +27,7 @@ type category struct {
 func (s *CategoryController) HandleFilter(ctx *fasthttp.RequestCtx) {
 	var categories []*category
 
-	err := pgxscan.Select(ctx, s.db, &categories, `SELECT id, title FROM categories`)
+	err := pgxscan.Select(ctx, s.pool, &categories, `SELECT id, title FROM categories`)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("failed to select from db: %s", err.Error()))
 		ctx.Error("internal server error", fasthttp.StatusInternalServerError)
