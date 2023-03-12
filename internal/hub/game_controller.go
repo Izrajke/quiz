@@ -30,10 +30,6 @@ func newGameController(
 	}
 }
 
-// Notes
-// TODO Подумать про перевод перевод событий на kafka в будущем!
-// TODO пройти весь путь по игре!
-
 // Register new connection registration
 func (g *gameController) Register(subscription *Subscription, homeClients map[*HomeClient]time.Time) {
 	game, found := g.gameStorage.Get(subscription.GameID)

@@ -1,28 +1,32 @@
 version: "3.9"
 
 services:
-#  backend:
-#    build:
-#      context: .
-#    ports:
-#      - '8080:8080'
-#
-#  frontend:
-#    build: ./web
-#    ports:
-#      - '3000:3000'
-#    stdin_open: true
-#    tty: true
-#    depends_on:
-#      - backend
   database:
+    container_name: postgres-db
     image: postgres:14.4
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-#      - POSTGRES_DB=quiz
+      - PGDATA=/data/postgres
     ports:
       - "5432:5432"
     volumes:
       - ./docker/postgres:/var/lib/postgresql/data
       - ./docker/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+  backend:
+    build:
+      context: .
+    ports:
+      - '8080:8080'
+    depends_on:
+      - database
+
+  frontend:
+    build: ./web
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend

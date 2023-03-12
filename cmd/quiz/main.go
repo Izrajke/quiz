@@ -36,7 +36,7 @@ func main() {
 
 	ctx := context.Background()
 	// init db
-	databaseUrl := "postgres://postgres:postgres@127.0.0.1:5432/postgres" // TODO to env
+	databaseUrl := "postgres://postgres:postgres@postgres-db:5432/postgres" // TODO to env
 	pool, err := pgxpool.Connect(ctx, databaseUrl)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("failed to connect to db: %s", err.Error()))
